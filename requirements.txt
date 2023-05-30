@@ -1,1 +1,4 @@
 node.js
+npm install express
+npm install websocket
+npm install path
