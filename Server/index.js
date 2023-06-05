@@ -42,16 +42,26 @@ wsServer.on("request", request => {
 
     connection.on("message", message => {
         //recebendo uma mensagem do cliente
-        const result = JSON.parse(message.utf8Data)
+        const result = JSON.parse(message.utf8Data);
+        
         //usuario quer criar uma nova sala
-        if (result.metodo === "create" && result.maxPlayer <= 10) {
+        if (result.method === "create" && result.maxPlayer <= 10) {
             const clientId = result.clientId;
-            const roomId = uuidv4()
+            const roomId = uuidv4();
             rooms[roomId] = {
                 "id": roomId,
-                "maxPlayer": result.maxPlayer
+                "maxPlayer": result.maxPlayer,
+                "init_coins": result.init_coins
             }
-            console.log(rooms[roomId])
+            console.log(result)
+
+            const payLoad = {
+                "method":"create",
+                "room":rooms[roomId]
+            }
+
+            const connection = clients[clientId].connection;
+            connection.send(JSON.stringify(payLoad));
         }
     })
 
@@ -64,8 +74,8 @@ wsServer.on("request", request => {
 
     //manda para o cliente qual é o ID dele
     const payLoad = {
-        "metodo":"connect",
+        "method":"connect",
         "clientId": clientId
     }
-    connection.send(JSON.stringify(payLoad))
+    connection.send(JSON.stringify(payLoad));
 })
