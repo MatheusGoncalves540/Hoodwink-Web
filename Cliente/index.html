@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Hoodwink</title>
 </head>
 <body>
-    <script>
-        let ws = new WebSocket("ws://localhost:9090")
-        ws.onmessage = message => {
-            //dados da mensagem
-            const response = JSON.parse(message.data);
-            console.log(response);
-        }
-    </script>
+    <!-- Botão de criar uma sala -->
+    <button id="createGame">Create new room</button>
+
+    <!-- Input de numero máximo de players -->
+    <input id="maxPlayer" type="range" min="2" max="10" oninput="this.nextElementSibling.value = this.value">
+    <output>Recomendado: 5</output>
+    
+    <script src="./static/script.js"></script>
 </body>
 </html>
