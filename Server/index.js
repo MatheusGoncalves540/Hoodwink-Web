@@ -1,8 +1,12 @@
+const {VerifyPlayerOnRoom,uuidv4} = require("./includes/functions")
+const {verifyCreategame} = require("./componentes/menu")
+const {login} = require("../Api/login")
+
 //conexão websocket
 const http = require("http");
 const webSocketServer = require("websocket").server;
 const httpServer = http.createServer();
-httpServer.listen(9090, () => console.log("escutando.. 9090"))
+httpServer.listen(9090, () => console.log("online na porta.. 9090"))
 
 const wsServer = new webSocketServer({
     "httpServer": httpServer
@@ -12,70 +16,116 @@ const wsServer = new webSocketServer({
 path = require('path');
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 
-app.get("/", (req,res) => res.sendFile(path.join(__dirname, '..', 'Cliente', 'index.html')));   
-app.use('/static', express.static(path.join(__dirname, '..', 'Cliente', 'static')))
-
-app.listen(9091, () => console.log("escutando.. 9091"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.json());
+app.get("/login", (req,res) => res.sendFile(path.join(__dirname, '..', 'Cliente', 'login.html')));   
+app.post("/api/login", (req,res) => login(req,res));
+app.listen(9091, () => console.log("online na porta.. 9091"));
 
 //mapa de clientes
-const clients = {};
+let clients = {};
 
 //mapa das salas
-const rooms = {};
+let rooms = {};
 
-//função que gera um uuid v4
-function uuidv4(){
-    var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (dt + Math.random()*16)%16 | 0;
-        dt = Math.floor(dt/16);
-        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-}
+
+//criar jogo
+
+
+//conexão estabelecida
+wsServer.on("connect", () => {
+    console.log("aberto");
+})
+
+//conexão encerrada
+wsServer.on("close", () => {
+    console.log("fechado");
+ }) 
 
 //server recebendo um request
 wsServer.on("request", request => {
     //conectar o websocket
     const connection = request.accept(null, request.origin);
-
-    connection.on("message", message => {
-        //recebendo uma mensagem do cliente
-        const result = JSON.parse(message.utf8Data);
-        
-        //usuario quer criar uma nova sala
-        if (result.method === "create" && result.maxPlayer <= 10) {
-            const clientId = result.clientId;
-            const roomId = uuidv4();
-            rooms[roomId] = {
-                "id": roomId,
-                "maxPlayer": result.maxPlayer,
-                "init_coins": result.init_coins
-            }
-            console.log(result)
-
-            const payLoad = {
-                "method":"create",
-                "room":rooms[roomId]
-            }
-
-            const connection = clients[clientId].connection;
-            connection.send(JSON.stringify(payLoad));
-        }
-    })
-
     //gera um uuid para o novo cliente conectado
     const clientId = uuidv4();
     //adiciona o novo cliente conectado ao mapa
     clients[clientId] = {
         "connection":connection
     }
-
     //manda para o cliente qual é o ID dele
     const payLoad = {
         "method":"connect",
         "clientId": clientId
     }
     connection.send(JSON.stringify(payLoad));
+
+    //recebendo uma mensagem do cliente
+    connection.on("message", message => {
+        const result = JSON.parse(message.utf8Data);
+        //usuario quer criar uma nova sala
+
+
+        const createdRoom = verifyCreategame(result);
+        if (createdRoom !== false) {
+            rooms[createdRoom.id] = createdRoom;
+            const payLoad = {
+                "method":"create",
+                "room":createdRoom
+            }
+            const connection = clients[clientId].connection;
+            connection.send(JSON.stringify(payLoad));
+            console.log(payLoad)
+        }
+
+        //usuario que entrar em uma sala
+        else if (result.method === "join") {
+            const roomId = result.roomId;
+            const room = rooms[roomId];
+            const clientId = result.clientId;
+            //verifica se o cliente já está na sala
+            if (!VerifyPlayerOnRoom(room,clientId)) { 
+                //verifica se a sala está cheia
+                if (room.players.length < room.maxPlayer) {
+                    
+                    room.players.push({
+                        "clientId": clientId,
+                        "playerNum": (room.players.length) + 1
+
+                    })
+                    const payLoad = {
+                        "method":"join",
+                        "room":room
+                    }
+                    //repete para cada player na sala, informando que entrou esse novo player
+                    room.players.forEach(player => {
+                        clients[player.clientId].connection.send(JSON.stringify(payLoad))
+                    });
+                } else {
+                    const msgErro = "A sala está cheia!"
+                    const payLoad = {
+                        "method":"error",
+                        "CauseOfError":"FullRoom",
+                        "msgErro":msgErro
+                    }
+                    connection.send(JSON.stringify(payLoad));
+                }
+            //sala cheia
+            } else {
+                const msgErro = "Você já está na sala"
+                    const payLoad = {
+                        "method":"error",
+                        "CauseOfError":"AlreadyInRoom",
+                        "msgErro":msgErro
+                    }
+                    connection.send(JSON.stringify(payLoad));                
+            }
+        }
+        //metodo invalido
+        else {
+            console.error("INVALID METHOD")
+        }
+    })
 })

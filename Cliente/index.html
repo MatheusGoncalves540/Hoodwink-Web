@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,12 +7,17 @@
     <title>Hoodwink</title>
 </head>
 <body>
-    <!-- Botão de criar uma sala -->
-    <button id="createGame">Create new room</button>
-
-    <!-- Input de numero máximo de players -->
-    <input id="maxPlayer" type="range" min="2" max="10" oninput="this.nextElementSibling.value = this.value">
+    <button id="createGame">Create Room</button>
+    <input id="maxPlayer" type="range" min="2" max="10" value="5" oninput="this.nextElementSibling.value = this.value">
     <output>Recomendado: 5</output>
+
+    <br><br>
+
+    <button id="joinGame">Join Room</button>
+    <input type="text" id="InputRoomId">
+
+
+    
     
     <script src="./static/script.js"></script>
 </body>
