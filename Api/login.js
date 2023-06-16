@@ -6,8 +6,22 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 
+//credenciais
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASS;
+
+//rota publica
 app.get('/', (req,res) => {
     res.status(200).json({"msg":"conectado com sucesso!"})
-})
+});
 
-app.listen(1010);
+//registrar usuario
+
+
+mongoose
+    .connect(`mongodb://localhost:27017/`)
+    .then(() => {
+        app.listen(1010);
+        console.log("connected to database");
+    }).catch((err) => console.log(err));
+
