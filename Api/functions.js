@@ -109,4 +109,4 @@ function ValidateRegisterData(Table,password,confirmpassword,nickname,email) {
     };
 };
 
-module.exports = {ValidNickname,ValidEmail,ValidPass,ValidConfirmPass}
+module.exports = {ValidateRegisterData}

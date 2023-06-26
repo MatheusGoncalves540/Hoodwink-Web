@@ -9,10 +9,7 @@ const { connectToDataBase } = require('./database/connection');
 const { userModel } = require('./database/models');
 
 const {
-    ValidNickname,
-    ValidEmail,
-    ValidPass,
-    ValidConfirmPass
+    ValidateRegisterData
 } = require("./functions");
 
 //connect to db
@@ -35,9 +32,9 @@ app.post('/register', async(req, res) => {
     const {nickname, email, password, confirmpassword} = req.body;
 
     //validações
+    ValidateRegisterData(User,confirmpassword,password,nickname,email);
     
-    
-    res.status(200).json({"msg":"cadastrado com sucesso!"})
+    res.status(200).json({"msg":"cadastrado com sucesso!"});
 
 });
 
