@@ -1,20 +1,14 @@
-const { Sequelize } = require('sequelize');
+const mongoose = require('mongoose');
 
 //connecting
-function connectToDataBase(dialect, storage) {
-    const dataBase = new Sequelize({
-        dialect: `${dialect}`,
-        storage: `${storage}`
+function connectToDataBase() {
+    mongoose.connect('mongodb://127.0.0.1:27017').then(() => {
+        console.log('conectou-se ao banco!');
+        return true;
+    }).catch((err) => {
+        console.log (err);
+        return false;
     });
-
-    try {
-        dataBase.authenticate();
-        console.log('Conexão estabelecida com sucesso');
-        return dataBase;
-    } catch (error) {
-        console.error('Não foi possivel se conectar ao db:', error);
-        return false
-    }
 }
 
 module.exports = {connectToDataBase}
