@@ -10,10 +10,7 @@ const User = require('./database/models');
 //const { registerNewUser } = require('./database/record_data');
 
 const {
-    ValidNickname,
-    ValidEmail,
-    ValidPass,
-    ValidConfirmPass
+    ValidadeData
 } = require("./validations");
 
 //connect to db
@@ -34,20 +31,8 @@ app.post('/register', async(req, res) => {
     const {nickname, email, password, confirmpassword} = req.body;
 
     //validations
-    if (!ValidNickname(nickname)) {
-        return res.status(422).json({"msg":"invalid nickname"});
-    };
-    //
-    if (!ValidEmail(email)) {
-        return res.status(422).json({"msg":"invalid email"});
-    };
-    //
-    if (!ValidPass(password)) {
-        return res.status(422).json({"msg":"invalid password"});
-    };
-    //
-    if (!ValidConfirmPass(password,confirmpassword)) {
-        return res.status(422).json({"msg":"the passwords do not match"});
+    if (ValidadeData(nickname,email,password,confirmpassword,res)){
+        return;
     };
     //
     const emailInUse =  await User.findOne({ email: email });

@@ -57,4 +57,23 @@ function ValidConfirmPass(password,confirmpassword) {
    return true;
 };
 
-module.exports = {ValidNickname, ValidPass, ValidEmail, ValidConfirmPass}
+function ValidadeData(nickname,email,password,confirmpassword,res){
+    if (!ValidNickname(nickname)) {
+        return res.status(422).json({"msg":"invalid nickname"});
+    };
+    //
+    if (!ValidEmail(email)) {
+        return res.status(422).json({"msg":"invalid email"});
+    };
+    //
+    if (!ValidPass(password)) {
+        return res.status(422).json({"msg":"invalid password"});
+    };
+    //
+    if (!ValidConfirmPass(password,confirmpassword)) {
+        return res.status(422).json({"msg":"the passwords do not match"});
+    };
+    return null
+}
+
+module.exports = {ValidadeData}
