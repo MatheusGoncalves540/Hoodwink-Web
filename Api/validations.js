@@ -57,23 +57,37 @@ function ValidConfirmPass(password,confirmpassword) {
    return true;
 };
 
-function ValidadeData(nickname,email,password,confirmpassword,res){
-    if (!ValidNickname(nickname)) {
-        return res.status(422).json({"msg":"invalid nickname"});
-    };
-    //
-    if (!ValidEmail(email)) {
-        return res.status(422).json({"msg":"invalid email"});
-    };
-    //
-    if (!ValidPass(password)) {
-        return res.status(422).json({"msg":"invalid password"});
-    };
-    //
-    if (!ValidConfirmPass(password,confirmpassword)) {
-        return res.status(422).json({"msg":"the passwords do not match"});
-    };
-    return null
-}
+function ValidadeData(nickname,email,password,confirmpassword,res,mothod){
+    //register
+    if (mothod === 'register') {
+        if (!ValidNickname(nickname)) {
+            return res.status(422).json({"msg":"invalid nickname"});
+        };
+        //
+        if (!ValidEmail(email)) {
+            return res.status(422).json({"msg":"invalid email"});
+        };
+        //
+        if (!ValidPass(password)) {
+            return res.status(422).json({"msg":"invalid password"});
+        };
+        //
+        if (!ValidConfirmPass(password,confirmpassword)) {
+            return res.status(422).json({"msg":"the passwords do not match"});
+        };
+        return null;
+    }
+    
+    //login
+    else if (mothod === 'login'){
+        if (!ValidEmail(email)) {
+            return res.status(422).json({"msg":"invalid email"});
+        };
+        //
+        if (!ValidPass(password)) {
+            return res.status(422).json({"msg":"invalid password"});
+        };
+    }
+};
 
-module.exports = {ValidadeData}
+module.exports = {ValidadeData};

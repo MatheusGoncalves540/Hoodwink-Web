@@ -1,15 +1,16 @@
-function registerNewUser (User,res,nickname,email,password) {
-    try {
-    const newUser = User.create({
-        nickname : nickname,
-        email : email,
-        password : password
+async function registerNewUser (User,res,nickname,email,passwordHash) {
+    const newUser = new User({
+        nickname,
+        email,
+        password : passwordHash,
     });
-        return res.status(201).json({"msg":"new user registered with success!"});
+    try {
+        await newUser.save({ timestamps: { createdAt: true, updatedAt: true } });
+        return res.status(200).json({ msg: "new user created successfully"});
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({msg: "A server error has occurred, try again later"});
+        return res.status(500).json({msg:"a server error has occurred"});
     }
 };
 

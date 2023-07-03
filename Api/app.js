@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 
 //importating internal functions
 const { connectToDataBase } = require('./database/connection');
-const User = require('./database/models');
-//const { registerNewUser } = require('./database/record_data');
+const User = require('./database/models and schemas');
+const { registerNewUser } = require('./database/record_data');
 
 const {
     ValidadeData
@@ -31,15 +31,15 @@ app.post('/register', async(req, res) => {
     const {nickname, email, password, confirmpassword} = req.body;
 
     //validations
-    if (ValidadeData(nickname,email,password,confirmpassword,res)){
+    if (ValidadeData(nickname,email,password,confirmpassword,res,'register')){
         return;
     };
-    //
+    //check if email in use
     const emailInUse =  await User.findOne({ email: email });
     if (emailInUse) {
         return res.status(422).json({"msg":"invalid email"});
     }
-    //
+    //check if nickname in use
     const nickInUse =  await User.findOne({ nickname: nickname });
     if (nickInUse) {
         return res.status(422).json({"msg":"invalid nickname"});
@@ -50,21 +50,44 @@ app.post('/register', async(req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     //write on db the new user
-    const newUser = new User({
-        nickname,
-        email,
-        password
-    });
+    registerNewUser(User,res,nickname,email,passwordHash);
+});
 
+
+//login
+app.post("/login", async (req,res) => {
+
+    const { email, password } = req.body;
+
+    //validation
+    if (ValidadeData(null,email,password,null,res,"login")){
+        return;
+    };
+    //check if email in use
+    const userDB =  await User.findOne({ email: email });
+    if (!userDB) {
+        return res.status(404).json({"msg":"email not found"});
+    }
+    //check if password match
+    const checkPass = await bcrypt.compare(password, userDB.password);
+    if (!checkPass) {
+        return res.status(422).json({"msg":"Invalid password"});
+    };
+
+    //generating a token and logging in the user
     try {
-        
-        await newUser.save();
-
-        res.status(201).json({ msg: "new user created successfully"})
+        const secret = process.env.SECRET
+        const token = jwt.sign(
+            { id: userDB._id },
+            secret
+        );
+        return res.status(200).json({
+            msg: "logged successfully",
+            token: token
+        }); 
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({msg:"a server error has occurred"});
-    }
-    //registerNewUser(User,res,nickname,email,passwordHash);
+        return res.status(500).json({msg:"a server error has occurred"});
+    };
 });
