@@ -27,11 +27,11 @@ app.get('/', (req,res) => {
 });
 
 //private route
-app.get('/user/:id', checkTocken, async(req, res) => {
+app.get('/logged/:id', checkTocken, async(req, res) => {
     const id = req.params.id
 
     //check if user exist
-    const user = await User.findById(id, '-password');
+    const user = await User.findById(id, '-password -createdAt -updatedAt -__v');
 
     if (!user) {
         return res.status(404).json({msg: "user not found"});
