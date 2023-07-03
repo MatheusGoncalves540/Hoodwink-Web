@@ -1,14 +1,14 @@
 //importating external functions
-require('dotenv').config();
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 //importating internal functions
 const { connectToDataBase } = require('./database/connection');
-const User = require('./database/models and schemas');
+const User = require('./database/models_schemas');
 const { registerNewUser } = require('./database/record_data');
-
+const { GenerateTokenAndLogin, checkTocken } = require('./token_functions')
 const {
     ValidadeData
 } = require("./validations");
@@ -24,6 +24,20 @@ app.listen(1010);
 //public route
 app.get('/', (req,res) => {
     res.status(200).json({"msg":"Api is online!"});
+});
+
+//private route
+app.get('/user/:id', checkTocken, async(req, res) => {
+    const id = req.params.id
+
+    //check if user exist
+    const user = await User.findById(id, '-password');
+
+    if (!user) {
+        return res.status(404).json({msg: "user not found"});
+    };
+
+    res.status(200).json({ user });
 });
 
 //register user
@@ -74,20 +88,6 @@ app.post("/login", async (req,res) => {
         return res.status(422).json({"msg":"Invalid password"});
     };
 
-    //generating a token and logging in the user
-    try {
-        const secret = process.env.SECRET
-        const token = jwt.sign(
-            { id: userDB._id },
-            secret
-        );
-        return res.status(200).json({
-            msg: "logged successfully",
-            token: token
-        }); 
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({msg:"a server error has occurred"});
-    };
+    //generating a token and try to logging in the user
+    GenerateTokenAndLogin(userDB,res);
 });
