@@ -1,7 +1,6 @@
 //importating external functions
 const express = require('express');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 //importating internal functions
@@ -28,66 +27,82 @@ app.get('/', (req,res) => {
 
 //private route
 app.get('/logged/:id', checkTocken, async(req, res) => {
-    const id = req.params.id
+    try {
+        const id = req.params.id;
 
-    //check if user exist
-    const user = await User.findById(id, '-password -createdAt -updatedAt -__v');
+        //check if user exist
+        const user = await User.findById(id, '-password -createdAt -updatedAt -__v');
 
-    if (!user) {
-        return res.status(404).json({msg: "user not found"});
+        if (!user) {
+            return res.status(404).json({msg: "user not found"});
+        };
+
+        res.status(200).json({ user });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({msg:"a server error has occurred"});
     };
-
-    res.status(200).json({ user });
 });
 
 //register user
 app.post('/register', async(req, res) => {
-    const {nickname, email, password, confirmpassword} = req.body;
+    try {
+        const {nickname, email, password} = req.body;
+        console.log(req)
+        //validations
+        if (ValidadeData(nickname,email,password,res,'register')){
+            return;
+        };
+        //check if email in use
+        const emailInUse =  await User.findOne({ email: email });
+        if (emailInUse) {
+            return res.status(422).json({"msg":"invalid email"});
+        }
+        //check if nickname in use
+        const nickInUse =  await User.findOne({ nickname: nickname });
+        if (nickInUse) {
+            return res.status(422).json({"msg":"invalid nickname"});
+        }
 
-    //validations
-    if (ValidadeData(nickname,email,password,confirmpassword,res,'register')){
-        return;
+        //encript password to save on db
+        const salt = await bcrypt.genSalt(12);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        //write on db the new user
+        registerNewUser(User,res,nickname,email,passwordHash);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({msg:"a server error has occurred"});
     };
-    //check if email in use
-    const emailInUse =  await User.findOne({ email: email });
-    if (emailInUse) {
-        return res.status(422).json({"msg":"invalid email"});
-    }
-    //check if nickname in use
-    const nickInUse =  await User.findOne({ nickname: nickname });
-    if (nickInUse) {
-        return res.status(422).json({"msg":"invalid nickname"});
-    }
-
-    //encript password to save on db
-    const salt = await bcrypt.genSalt(12);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    //write on db the new user
-    registerNewUser(User,res,nickname,email,passwordHash);
 });
 
 
 //login
 app.post("/login", async (req,res) => {
+    try {
+        const { nicknameOrEmail, password } = req.body;
 
-    const { email, password } = req.body;
-
-    //validation
-    if (ValidadeData(null,email,password,null,res,"login")){
+        //validation
+        if (ValidadeData(null,nicknameOrEmail,password,null,res,"login")){
         return;
-    };
-    //check if email in use
-    const userDB =  await User.findOne({ email: email });
-    if (!userDB) {
-        return res.status(404).json({"msg":"email not found"});
-    }
-    //check if password match
-    const checkPass = await bcrypt.compare(password, userDB.password);
-    if (!checkPass) {
-        return res.status(422).json({"msg":"Invalid password"});
-    };
+        };
+        
+        //check if email in use
+        const userDB =  await User.findOne({ email: email });
+        if (!userDB) {
+            return res.status(404).json({"msg":"login not found"});
+        }
+        //check if password match
+        const checkPass = await bcrypt.compare(password, userDB.password);
+        if (!checkPass) {
+            return res.status(422).json({"msg":"Invalid password"});
+        };
 
-    //generating a token and try to logging in the user
-    GenerateTokenAndLogin(userDB,res);
+        //generating a token and try to logging in the user
+        GenerateTokenAndLogin(userDB,res);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({msg:"a server error has occurred"});
+    };
+    
 });

@@ -49,15 +49,7 @@ function ValidPass(password) {
     return true;
 };
 
-//confirm password validation
-function ValidConfirmPass(password,confirmpassword) {
-    if (confirmpassword !== password) {
-        return false;
-    };
-   return true;
-};
-
-function ValidadeData(nickname,email,password,confirmpassword,res,mothod){
+function ValidadeData(nickname,email,password,res,mothod){
     //register
     if (mothod === 'register') {
         if (!ValidNickname(nickname)) {
@@ -70,10 +62,6 @@ function ValidadeData(nickname,email,password,confirmpassword,res,mothod){
         //
         if (!ValidPass(password)) {
             return res.status(422).json({"msg":"invalid password"});
-        };
-        //
-        if (!ValidConfirmPass(password,confirmpassword)) {
-            return res.status(422).json({"msg":"the passwords do not match"});
         };
         return null;
     }
