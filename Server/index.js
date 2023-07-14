@@ -97,6 +97,7 @@ wsServer.on("request", request => {
                     })
                     const payLoad = {
                         "method":"join",
+                        "clientId": clientId,
                         "room":room
                     }
                     //repete para cada player na sala, informando que entrou esse novo player
