@@ -48,9 +48,9 @@ app.get('/logged/:id', checkTocken, async(req, res) => {
 app.post('/register', async(req, res) => {
     try {
         const {nickname, email, password} = req.body;
-        console.log(req)
+        //console.log(req)
         //validations
-        if (ValidadeData(nickname,email,password,res,'register')){
+        if (!ValidadeData(nickname,email,password,res)){
             return;
         };
         //check if email in use
@@ -80,12 +80,7 @@ app.post('/register', async(req, res) => {
 //login
 app.post("/login", async (req,res) => {
     try {
-        const { nicknameOrEmail, password } = req.body;
-
-        //validation
-        if (ValidadeData(null,nicknameOrEmail,password,null,res,"login")){
-        return;
-        };
+        const { email, password } = req.body;
         
         //check if email in use
         const userDB =  await User.findOne({ email: email });

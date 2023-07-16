@@ -49,33 +49,20 @@ function ValidPass(password) {
     return true;
 };
 
-function ValidadeData(nickname,email,password,res,mothod){
+function ValidadeData(nickname,email,password,res){
     //register
-    if (mothod === 'register') {
-        if (!ValidNickname(nickname)) {
-            return res.status(422).json({"msg":"invalid nickname"});
-        };
-        //
-        if (!ValidEmail(email)) {
-            return res.status(422).json({"msg":"invalid email"});
-        };
-        //
-        if (!ValidPass(password)) {
-            return res.status(422).json({"msg":"invalid password"});
-        };
-        return null;
-    }
-    
-    //login
-    else if (mothod === 'login'){
-        if (!ValidEmail(email)) {
-            return res.status(422).json({"msg":"invalid email"});
-        };
-        //
-        if (!ValidPass(password)) {
-            return res.status(422).json({"msg":"invalid password"});
-        };
-    }
+    if (!ValidNickname(nickname)) {
+        return res.status(422).json({"msg":"invalid nickname"});
+    };
+    //
+    if (!ValidEmail(email)) {
+        return res.status(422).json({"msg":"invalid email"});
+    };
+    //
+    if (!ValidPass(password)) {
+        return res.status(422).json({"msg":"invalid password"});
+    };
+    return true;
 };
 
 module.exports = {ValidadeData};

@@ -21,20 +21,26 @@ async function GenerateTokenAndLogin(userDB,res){
 function checkTocken(req, res, proceed) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(" ")[1];
+    const idFromToken = JSON.parse(atob(token.split(".")[1])).id;
+    const id = req.params.id;
 
     if (!token) {
         return res.status(401).json({ msg: "access denied"});
-    }
+    };
 
     try {
         const secret = process.env.SECRET;
         jwt.verify(token, secret);
+        
+        if (idFromToken !== id) {
+            return res.status(400).json({msg:"invalid token for this id"});
+        };
 
         proceed();
         
     } catch (error) {
         res.status(400).json({msg : "invalid token"})
-    }
-}
+    };
+};
 
-module.exports = {GenerateTokenAndLogin,checkTocken}
+module.exports = {GenerateTokenAndLogin,checkTocken};
