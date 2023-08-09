@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Hoodwink</title>
+</head>
+<body>
+    <h1>Create Game</h1>
+    <form id="createRoomForm" action="/creating-room" method="post">
+        <abbr title="Aqui está sua abreviação em html 5">Nickname:</abbr>
+        <label for="nickname"></label>
+            <input id="nickname" type="text" name="nickname"> <br>
+
+        <label for="roomName">Room name:</label>
+            <input id="roomName" type="text" name="roomName"> <br>
+
+        <label for="roomPass">Room Password:</label>
+            <input id="roomPass" type="text" name="roomPass"> <br>
+        
+        <label for="maxPlayer">Max Players:</label>
+            <input id="maxPlayer" type="range" name="maxPlayer" min="2" max="10" value="5" oninput="this.nextElementSibling.value = this.value">
+        <output>Recomendado: 5</output> <br>
+        
+        <input type="submit" value="Create Room">
+    </form>
+
+    <br><hr>
+
+    <h1>Join Game</h1>
+    <form id="EnterRoom" action="/room/RoomId" method="post">
+        <label for="nickname">Nickname:</label>
+            <input id="nickname" type="text" name="nickname"> <br>
+        
+        <label for="InputRoomId">Room Id:</label>
+            <input type="text" id="InputRoomId" name="InputRoomId"> <br>
+
+        <label for="roomPass">Room Password:</label>
+            <input type="text" id="roomPass" name="roomPass">
+        <input type="submit" value="Join Room">
+    </form>
+
+    <script src="/js/index.js"></script>
+</body>
+</html>

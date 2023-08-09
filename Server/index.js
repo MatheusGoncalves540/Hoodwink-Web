@@ -1,132 +1,158 @@
-const {VerifyPlayerOnRoom,uuidv4} = require("./includes/functions")
-const {verifyCreategame} = require("./componentes/menu")
-const {login} = require("../Api/login")
-
-//conexão websocket
-const http = require("http");
-const webSocketServer = require("websocket").server;
-const httpServer = http.createServer();
-httpServer.listen(9090, () => console.log("online na porta.. 9090"))
-
-const wsServer = new webSocketServer({
-    "httpServer": httpServer
-})
-
-//requisição dos documentos
-path = require('path');
-const express = require("express");
+const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
+const path = require('path');
+const url = require('url');
+const WebSocket = require('ws');
+const {generateNewId, uuidv4} = require('./lib/functions');
+const {createRoom} = require('./engine/rooms');
+const {ValidateEntry, validateCreatedRoom} = require('./lib/validations');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+
+
+//configuração do express
 app.use(express.json());
-app.get("/login", (req,res) => res.sendFile(path.join(__dirname, '..', 'Cliente', 'login.html')));   
-app.post("/api/login", (req,res) => login(req,res));
-app.listen(9091, () => console.log("online na porta.. 9091"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('./client/static'));
+app.engine('html', require('ejs').renderFile);
 
-//mapa de clientes
-let clients = {};
+//servidor websocket
+const server = new WebSocket.Server({ port: 8080 }, () => { console.log("online em 8080... -Websocket") });
+
+//porta principal
+const PORT = 1235;
 
 //mapa das salas
 let rooms = {};
 
+//lobby
+app.get("/", (req,res) => res.render(path.join(__dirname, '..', 'client', 'index.html'))); 
 
-//criar jogo
+//ao receber um post aqui, tentará criar uma sala com os atributos que foram enviados
+app.post("/creating-room", (req, res) => {
+  //traz as informações passadas
+  const {nickname, roomName, maxPlayer, roomPass} = req.body;
+
+  if (!validateCreatedRoom(nickname, roomName, maxPlayer, roomPass)) {
+    return res.status(422).json({erro:"INFORMAÇÕES INVALIDAS"});
+  }
+
+  //gera um id para a sala
+  const idNewRoom = generateNewId();
+
+  //adiciona a sala no mapa de salas em memória
+  createRoom(rooms, idNewRoom, roomName, maxPlayer, roomPass); 
+
+  //envie a resposta com o ID da sala que acabou de criar
+  res.json({
+    room: rooms[idNewRoom],
+    nickname: nickname
+  });
+
+  console.log(rooms[idNewRoom]);
+});
+
+//ao receber um psot aqui, tentará entrar em uma sala com os atributo que foram enviados
+app.post("/room/:id", (req, res) => {
+  //traz as informações passadas
+  const {id} = req.params;
+  const {nickname, roomPass} = req.body;
+  const room = rooms[id];
+  
+  //valida os dados e libera a entrada
+  if (!room || !ValidateEntry(nickname, room, roomPass, null, 'express')) {
+    return res.status(422).json({erro:"INFORMAÇÕES INVALIDAS"});
+  };
+
+  const playeruuid = uuidv4();
+
+  // Envie o arquivo room.html com os valores personalizados como variaveis
+  res.render(path.join(__dirname, '..', 'client', 'room.html'), { uuidPlayer: playeruuid, nickname:nickname, roomPass:roomPass });
+});
+
+server.on('connection', function(socket, request) {
+  // Recuperando informações
+  const urlData = url.parse(request.url, true).query;
+  const {playeruuid, idRoom, nickname, roomPass} = urlData;
+  const room = rooms[idRoom];
+
+  //validação da entrada novamente
+  if (!room || !ValidateEntry(nickname, room, roomPass, playeruuid, 'socket')) {
+    socket.send("Sala, nick ou senha invalida!");
+    socket.close();
+    return;  //ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI
+  };
+
+  // Armazenando as informações no contexto do WebSocket
+  socket.context = {
+    idRoom: idRoom,
+    roomPass: roomPass,
+    nickname: nickname,
+    playeruuid: playeruuid,
+  };
+
+  //verifica se existe um player com o uuid fornecido dentro da sala
+  const playerToUpdate = room.players.find(player => player.uuidPlayer === playeruuid);
+  
+  //atualiza o "socket" do player, caso ele já estava conectado na sala anteriormente
+  if (playerToUpdate) {
+    playerToUpdate.socket = socket;
+    playerToUpdate.nickname = nickname;
+    //envia a mensagem aos outros jogadores da sala
+    room.players.forEach(player => {
+      player.socket.send(`Jogador ${nickname} foi reconectado!`);
+      room.chat.push([
+
+      ])
+    });
+  }
+  //caso o jogo ainda não tenha iniciado, adiciona o novo jogador na sala
+  else if (room.turn === 0) {
+    room.players.push({
+      nickname: nickname,
+      uuidPlayer: playeruuid,
+      socket: socket,
+      playerNum: (room.players.length) + 1,
+    });
+    //envia a mensagem aos outros jogadores da sala
+    room.players.forEach(player => {
+      player.socket.send(`Jogador ${nickname} foi conectado!`);
+    });
+  }
+  //caso ele não estava na partida antes e o jogo já começou, não é possivel se conectar
+  else {
+    socket.close();
+    return; //ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI
+  };
+
+  // Quando você receber uma mensagem, enviamos ela para todos os sockets
+  socket.on('message', function(msg) {
+    console.log(msg);
+  });
+
+  // Quando a conexão de um socket é fechada/disconectada, removemos o socket do array
+  socket.on('close', function() {
+    //identifica qual player foi desconectado
+    const desconectedPlayer = room.players.find(player => player.socket === socket);
+
+    //envia a mensagem aos outros jogadores da sala
+    room.players.forEach(player => {
+      player.socket.send(`Jogador ${desconectedPlayer.nickname} foi desconectado!`);
+    });
+
+    //se não for o primeiro turno, delete apenas o socket do player
+    if (room.turn !== 0) {
+      desconectedPlayer.socket = null;
+    //mas se o jogo não tiver iniciado ainda, delete o player por inteiro
+    } else {
+      room.players = room.players.filter(player => player.socket !== socket);
+    };
+  });
+});
 
 
-//conexão estabelecida
-wsServer.on("connect", () => {
-    console.log("aberto");
-})
-
-//conexão encerrada
-wsServer.on("close", () => {
-    console.log("fechado");
- }) 
-
-//server recebendo um request
-wsServer.on("request", request => {
-    //conectar o websocket
-    const connection = request.accept(null, request.origin);
-    //gera um uuid para o novo cliente conectado
-    const clientId = uuidv4();
-    //adiciona o novo cliente conectado ao mapa
-    clients[clientId] = {
-        "connection":connection
-    }
-    //manda para o cliente qual é o ID dele
-    const payLoad = {
-        "method":"connect",
-        "clientId": clientId
-    }
-    connection.send(JSON.stringify(payLoad));
-
-    //recebendo uma mensagem do cliente
-    connection.on("message", message => {
-        const result = JSON.parse(message.utf8Data);
-        //usuario quer criar uma nova sala
-
-
-        const createdRoom = verifyCreategame(result);
-        if (createdRoom !== false) {
-            rooms[createdRoom.id] = createdRoom;
-            const payLoad = {
-                "method":"create",
-                "room":createdRoom
-            }
-            const connection = clients[clientId].connection;
-            connection.send(JSON.stringify(payLoad));
-            console.log(payLoad)
-        }
-
-        //usuario que entrar em uma sala
-        else if (result.method === "join") {
-            const roomId = result.roomId;
-            const room = rooms[roomId];
-            const clientId = result.clientId;
-            //verifica se o cliente já está na sala
-            if (!VerifyPlayerOnRoom(room,clientId)) { 
-                //verifica se a sala está cheia
-                if (room.players.length < room.maxPlayer) {
-                    
-                    room.players.push({
-                        "clientId": clientId,
-                        "playerNum": (room.players.length) + 1
-
-                    })
-                    const payLoad = {
-                        "method":"join",
-                        "clientId": clientId,
-                        "room":room
-                    }
-                    //repete para cada player na sala, informando que entrou esse novo player
-                    room.players.forEach(player => {
-                        clients[player.clientId].connection.send(JSON.stringify(payLoad))
-                    });
-                } else {
-                    const msgErro = "A sala está cheia!"
-                    const payLoad = {
-                        "method":"error",
-                        "CauseOfError":"FullRoom",
-                        "msgErro":msgErro
-                    }
-                    connection.send(JSON.stringify(payLoad));
-                }
-            //sala cheia
-            } else {
-                const msgErro = "Você já está na sala"
-                    const payLoad = {
-                        "method":"error",
-                        "CauseOfError":"AlreadyInRoom",
-                        "msgErro":msgErro
-                    }
-                    connection.send(JSON.stringify(payLoad));                
-            }
-        }
-        //metodo invalido
-        else {
-            console.error("INVALID METHOD")
-        }
-    })
-})
+app.listen(PORT, function (err) {
+    if (err) console.log(err);
+    console.log("online na porta: ", PORT);
+});

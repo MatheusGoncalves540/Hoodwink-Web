@@ -1,0 +1,17 @@
+body {
+    color: rgb(27, 27, 27);
+    background-color: rgb(27, 27, 27);
+}
+
+#chat {
+margin: auto;
+background: rgb(58, 58, 58);
+text-align: right;
+width: 450px;
+}
+
+div#chat p {
+    margin: auto;
+    color: #EEEEEE;
+    text-align: center;
+}
