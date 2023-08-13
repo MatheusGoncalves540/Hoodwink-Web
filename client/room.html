@@ -13,7 +13,23 @@
     <title>Room => (id)</title>
 </head>
 <body>
-    <div id="chat"></div>
+    
+    <div class="container">
+        <div class="chat" id="chat">
+            <div class="chat-messages" id="chat-messages">
+                <!-- As mensagens serão adicionadas dinamicamente via JavaScript -->
+            </div>
+            <div class="message-input">
+                <input type="text" id="message" placeholder="Digite aqui... (limite de 50 caracteres)" onkeydown="if (event.key === 'Enter') { sendMessage(); }">
+                <button onclick="sendMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    
     <script src="/js/room.js"></script>
 </body>
 </html>

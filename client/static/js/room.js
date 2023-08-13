@@ -4,7 +4,7 @@
 const getPlayeruuid = () => {
     let playeruuid = localStorage.getItem("playeruuid");
     if (!playeruuid) {
-        playeruuid = uuidPlayer; // Implemente a geração do playeruuid aqui.
+        playeruuid = uuidPlayer; // playeruuid fornecido pelo servidor, que foi recebido no head do html.
         localStorage.setItem("playeruuid", playeruuid);
     };
     return playeruuid;
@@ -20,8 +20,32 @@ const playeruuid = getPlayeruuid();
 //cria conexão websocket
 const ws = new WebSocket(`ws://localhost:8080/?idRoom=${idRoom}&playeruuid=${playeruuid}&nickname=${nickname}&roomPass=${roomPass}`);
 
+//adiciona a mensagem no chat
+function addMessage(messageText) {
+    const chatMessages = document.getElementById("chat-messages");
+    const message = document.createElement("p");
+    message.textContent = `${messageText.owner}: ${messageText.content}`;
+    chatMessages.appendChild(message);
+    chatMessages.scrollTop = chatMessages.scrollHeight; // Mantém a barra de rolagem na parte inferior
+};
+
+//envia a mensagem para o servidor redistribui-lá
+function sendMessage() {
+    const messageInput = document.getElementById("message");
+    const messageText = messageInput.value;
+    if (messageText.trim() !== "" && messageText.length < 51) {
+      ws.send(JSON.stringify({
+        "type":"msg_chat",
+        "content":messageText,
+        "owner":playeruuid
+    }));
+      messageInput.value = ""; // Limpa a caixa de texto após enviar
+    };
+};
+
 //recebe msg do websocket
-ws.onmessage = function(msg) {
-    document.querySelector('#chat').innerHTML += `<p>${msg.data}</p>`;
-    console.log(msg.data)
-  };
+ws.onmessage = function(msg) { 
+    msg = JSON.parse(msg.data);
+    console.log(msg)
+    if  (msg.type === 'msg_chat') addMessage(msg);
+};

@@ -1,17 +1,54 @@
-body {
-    color: rgb(27, 27, 27);
-    background-color: rgb(27, 27, 27);
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". . . . . . ."
+        ". . . . . . ."
+        "chat chat . . . . ."
+        "chat chat . . . . .";
 }
 
-#chat {
-margin: auto;
-background: rgb(58, 58, 58);
-text-align: right;
-width: 450px;
+.chat {
+    color: rgb(58, 58, 58);
+    grid-area: chat;
+    display: flex;
+    flex-direction: column;
 }
 
-div#chat p {
-    margin: auto;
-    color: #EEEEEE;
-    text-align: center;
+.chat-messages {
+    flex: 1;
+    max-height: calc(50vh - 40px); /* Leve em consideração a altura do input */
+    overflow-y: scroll;
+}
+
+.chat p {
+    color: #000000;
+    margin: 5px;
+    word-wrap: break-word;
+    font-size: 26px;
+}
+
+.message-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: #f0f0f0;
+}
+
+.message-input input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+html, body, .container {
+    height: 100%;
+    margin: 0;
+}
+
+.container * {
+    border: 1px solid black;
+    position: relative;
 }

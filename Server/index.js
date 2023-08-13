@@ -6,8 +6,8 @@ const url = require('url');
 const WebSocket = require('ws');
 const {generateNewId, uuidv4} = require('./lib/functions');
 const {createRoom} = require('./engine/rooms');
-const {ValidateEntry, validateCreatedRoom} = require('./lib/validations');
-
+const {ValidateEntry, validateCreatedRoom, allowedMessage} = require('./lib/validations');
+const msg = require('./languages/messages.json')['ptbr'];
 
 
 //configuração do express
@@ -35,7 +35,7 @@ app.post("/creating-room", (req, res) => {
   const {nickname, roomName, maxPlayer, roomPass} = req.body;
 
   if (!validateCreatedRoom(nickname, roomName, maxPlayer, roomPass)) {
-    return res.status(422).json({erro:"INFORMAÇÕES INVALIDAS"});
+    return res.status(422).json({erro:msg.errors.invldData});
   }
 
   //gera um id para a sala
@@ -62,7 +62,7 @@ app.post("/room/:id", (req, res) => {
   
   //valida os dados e libera a entrada
   if (!room || !ValidateEntry(nickname, room, roomPass, null, 'express')) {
-    return res.status(422).json({erro:"INFORMAÇÕES INVALIDAS"});
+    return res.status(422).json({erro:msg.errors.invldEntry});
   };
 
   const playeruuid = uuidv4();
@@ -79,9 +79,9 @@ server.on('connection', function(socket, request) {
 
   //validação da entrada novamente
   if (!room || !ValidateEntry(nickname, room, roomPass, playeruuid, 'socket')) {
-    socket.send("Sala, nick ou senha invalida!");
+    if (socket) socket.send(msg.errors.alrdyInRoom);
     socket.close();
-    return;  //ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI
+    return;
   };
 
   // Armazenando as informações no contexto do WebSocket
@@ -101,7 +101,14 @@ server.on('connection', function(socket, request) {
     playerToUpdate.nickname = nickname;
     //envia a mensagem aos outros jogadores da sala
     room.players.forEach(player => {
-      player.socket.send(`Jogador ${nickname} foi reconectado!`);
+      try {
+        player.socket.send(JSON.stringify({
+          "type": "msg_chat",
+          "content": nickname + msg.chat.reconected,
+          "owner": "server"
+      }));
+      } catch {};
+      
       room.chat.push([
 
       ])
@@ -117,42 +124,70 @@ server.on('connection', function(socket, request) {
     });
     //envia a mensagem aos outros jogadores da sala
     room.players.forEach(player => {
-      player.socket.send(`Jogador ${nickname} foi conectado!`);
+      try {
+        player.socket.send(JSON.stringify({
+          "type": "msg_chat",
+          "content": nickname + msg.chat.connected,
+          "owner": "server"
+      }));
+      } catch {};
+      
     });
   }
   //caso ele não estava na partida antes e o jogo já começou, não é possivel se conectar
-  else {
+  else { //TODO conectar o cliente como espectador então
     socket.close();
     return; //ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI
   };
 
   // Quando você receber uma mensagem, enviamos ela para todos os sockets
-  socket.on('message', function(msg) {
-    console.log(msg);
+  socket.on('message', function message(data) {
+    const result = JSON.parse(data);
+
+    if (allowedMessage(result.content)) {
+      //encontra o nick de quem mandou a mensagem, pelo uuid
+      const messageOwnerNick = room.players.find(player => player.uuidPlayer === result.owner).nickname;
+
+      room.players.forEach(player => {
+        try {
+          player.socket.send(JSON.stringify({
+            "type":"msg_chat",
+            "content":result.content,
+            "owner": messageOwnerNick
+        }));
+
+        } catch {};
+      });
+      room.chat.push([[],result.owner,result.content]) //TODO incrementar o "horario" em cada mensagem
+    };
   });
 
-  // Quando a conexão de um socket é fechada/disconectada, removemos o socket do array
+  // Quando a conexão de um socket é fechada/disconectada, removeme o socket do player
   socket.on('close', function() {
     //identifica qual player foi desconectado
     const desconectedPlayer = room.players.find(player => player.socket === socket);
 
-    //envia a mensagem aos outros jogadores da sala
-    room.players.forEach(player => {
-      player.socket.send(`Jogador ${desconectedPlayer.nickname} foi desconectado!`);
-    });
-
-    //se não for o primeiro turno, delete apenas o socket do player
+    //se o jogo já tiver iniciado, delete apenas o socket do player
     if (room.turn !== 0) {
       desconectedPlayer.socket = null;
     //mas se o jogo não tiver iniciado ainda, delete o player por inteiro
     } else {
       room.players = room.players.filter(player => player.socket !== socket);
     };
+  
+    room.players.forEach(player => {
+    try {
+      player.socket.send(JSON.stringify({
+        "type": "msg_chat",
+        "content": desconectedPlayer.nickname + msg.chat.desconected,
+        "owner": "server"
+      }));
+    } catch {};
+  });
   });
 });
 
-
 app.listen(PORT, function (err) {
-    if (err) console.log(err);
-    console.log("online na porta: ", PORT);
+  if (err) console.log(err);
+  console.log("online na porta: ", PORT);
 });

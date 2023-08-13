@@ -54,10 +54,5 @@ document.getElementById("EnterRoom").addEventListener("submit", function(event) 
     form.action = `/room/${roomId}`;
 
     // Enviar o formulário com o novo URL no atributo "action"
-    form.submit().catch(function (error) {
-        if (error.response && error.response.status === 422) {
-            // Erro 422 (Unprocessable Entity)
-            window.alert("algum dado inserido é inválido, revise os dados e tente novamente.");
-        };
-    });
+    form.submit();
 });

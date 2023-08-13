@@ -1,0 +1,18 @@
+{
+    "ptbr":{
+        "errors":{
+            "invldData":"INFORMAÇÕES INVALIDAS",
+            "invldEntry":"Sala, nick ou senha invalida!",
+            "alrdyInRoom":"Você já está conectado a está sala! Feche sua outra seção para iniciar outra!"
+        },
+        "chat": {
+            "connected":" entrou na sala",
+            "reconected":" voltou para a sala!",
+            "desconected":" saiu da sala"
+        }
+    },
+
+    "en":{
+
+    }
+}
