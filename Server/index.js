@@ -1,193 +1,26 @@
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const path = require('path');
-const url = require('url');
-const WebSocket = require('ws');
-const {generateNewId, uuidv4} = require('./lib/functions');
-const {createRoom} = require('./engine/rooms');
-const {ValidateEntry, validateCreatedRoom, allowedMessage} = require('./lib/validations');
-const msg = require('./languages/messages.json')['ptbr'];
-
-
-//configuração do express
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('./client/static'));
-app.engine('html', require('ejs').renderFile);
-
-//servidor websocket
-const server = new WebSocket.Server({ port: 8080 }, () => { console.log("online em 8080... -Websocket") });
-
-//porta principal
-const PORT = 1235;
+const { StartExpress_Pages, Listen_App } = require('./engine/expressApp');
+const { Start_WebSocket } = require('./engine/websocket');
 
 //mapa das salas
 let rooms = {};
 
-//lobby
-app.get("/", (req,res) => res.render(path.join(__dirname, '..', 'client', 'index.html'))); 
+//setar as páginas no express
+try {
+  StartExpress_Pages(rooms);
+} catch (error) {
+  console.log(error);
+}
 
-//ao receber um post aqui, tentará criar uma sala com os atributos que foram enviados
-app.post("/creating-room", (req, res) => {
-  //traz as informações passadas
-  const {nickname, roomName, maxPlayer, roomPass} = req.body;
+//da inicio a tudo referente aos websockets
+try {
+  Start_WebSocket(rooms);
+} catch (error) {
+  console.log(error);
+}
 
-  if (!validateCreatedRoom(nickname, roomName, maxPlayer, roomPass)) {
-    return res.status(422).json({erro:msg.errors.invldData});
-  }
-
-  //gera um id para a sala
-  const idNewRoom = generateNewId();
-
-  //adiciona a sala no mapa de salas em memória
-  createRoom(rooms, idNewRoom, roomName, maxPlayer, roomPass); 
-
-  //envie a resposta com o ID da sala que acabou de criar
-  res.json({
-    room: rooms[idNewRoom],
-    nickname: nickname
-  });
-
-  console.log(rooms[idNewRoom]);
-});
-
-//ao receber um psot aqui, tentará entrar em uma sala com os atributo que foram enviados
-app.post("/room/:id", (req, res) => {
-  //traz as informações passadas
-  const {id} = req.params;
-  const {nickname, roomPass} = req.body;
-  const room = rooms[id];
-  
-  //valida os dados e libera a entrada
-  if (!room || !ValidateEntry(nickname, room, roomPass, null, 'express')) {
-    return res.status(422).json({erro:msg.errors.invldEntry});
-  };
-
-  const playeruuid = uuidv4();
-
-  // Envie o arquivo room.html com os valores personalizados como variaveis
-  res.render(path.join(__dirname, '..', 'client', 'room.html'), { uuidPlayer: playeruuid, nickname:nickname, roomPass:roomPass });
-});
-
-server.on('connection', function(socket, request) {
-  // Recuperando informações
-  const urlData = url.parse(request.url, true).query;
-  const {playeruuid, idRoom, nickname, roomPass} = urlData;
-  const room = rooms[idRoom];
-
-  //validação da entrada novamente
-  if (!room || !ValidateEntry(nickname, room, roomPass, playeruuid, 'socket')) {
-    if (socket) socket.send(msg.errors.alrdyInRoom);
-    socket.close();
-    return;
-  };
-
-  // Armazenando as informações no contexto do WebSocket
-  socket.context = {
-    idRoom: idRoom,
-    roomPass: roomPass,
-    nickname: nickname,
-    playeruuid: playeruuid,
-  };
-
-  //verifica se existe um player com o uuid fornecido dentro da sala
-  const playerToUpdate = room.players.find(player => player.uuidPlayer === playeruuid);
-  
-  //atualiza o "socket" do player, caso ele já estava conectado na sala anteriormente
-  if (playerToUpdate) {
-    playerToUpdate.socket = socket;
-    playerToUpdate.nickname = nickname;
-    //envia a mensagem aos outros jogadores da sala
-    room.players.forEach(player => {
-      try {
-        player.socket.send(JSON.stringify({
-          "type": "msg_chat",
-          "content": nickname + msg.chat.reconected,
-          "owner": "server"
-      }));
-      } catch {};
-      
-      room.chat.push([
-
-      ])
-    });
-  }
-  //caso o jogo ainda não tenha iniciado, adiciona o novo jogador na sala
-  else if (room.turn === 0) {
-    room.players.push({
-      nickname: nickname,
-      uuidPlayer: playeruuid,
-      socket: socket,
-      playerNum: (room.players.length) + 1,
-    });
-    //envia a mensagem aos outros jogadores da sala
-    room.players.forEach(player => {
-      try {
-        player.socket.send(JSON.stringify({
-          "type": "msg_chat",
-          "content": nickname + msg.chat.connected,
-          "owner": "server"
-      }));
-      } catch {};
-      
-    });
-  }
-  //caso ele não estava na partida antes e o jogo já começou, não é possivel se conectar
-  else { //TODO conectar o cliente como espectador então
-    socket.close();
-    return; //ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI
-  };
-
-  // Quando você receber uma mensagem, enviamos ela para todos os sockets
-  socket.on('message', function message(data) {
-    const result = JSON.parse(data);
-
-    if (allowedMessage(result.content)) {
-      //encontra o nick de quem mandou a mensagem, pelo uuid
-      const messageOwnerNick = room.players.find(player => player.uuidPlayer === result.owner).nickname;
-
-      room.players.forEach(player => {
-        try {
-          player.socket.send(JSON.stringify({
-            "type":"msg_chat",
-            "content":result.content,
-            "owner": messageOwnerNick
-        }));
-
-        } catch {};
-      });
-      room.chat.push([[],result.owner,result.content]) //TODO incrementar o "horario" em cada mensagem
-    };
-  });
-
-  // Quando a conexão de um socket é fechada/disconectada, removeme o socket do player
-  socket.on('close', function() {
-    //identifica qual player foi desconectado
-    const desconectedPlayer = room.players.find(player => player.socket === socket);
-
-    //se o jogo já tiver iniciado, delete apenas o socket do player
-    if (room.turn !== 0) {
-      desconectedPlayer.socket = null;
-    //mas se o jogo não tiver iniciado ainda, delete o player por inteiro
-    } else {
-      room.players = room.players.filter(player => player.socket !== socket);
-    };
-  
-    room.players.forEach(player => {
-    try {
-      player.socket.send(JSON.stringify({
-        "type": "msg_chat",
-        "content": desconectedPlayer.nickname + msg.chat.desconected,
-        "owner": "server"
-      }));
-    } catch {};
-  });
-  });
-});
-
-app.listen(PORT, function (err) {
-  if (err) console.log(err);
-  console.log("online na porta: ", PORT);
-});
+//depois que tudo foi definido corretamente: Inicie as páginas express
+try {
+  Listen_App();
+} catch (error) {
+  console.log(error);
+}

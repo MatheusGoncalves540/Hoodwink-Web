@@ -7,10 +7,12 @@ function createRoom (rooms, idNewRoom, roomName, maxPlayer, roomPass) {
           roomPass: roomPass 
         },
         //cada mensagem no chat, será um array, dentro do array "chat"
-        chat: [
-          //[[horas,minutos,segundos], uuui_do_remetente, mensagem]
-          [[0,0,0], "Servidor", "Sala criada!"]
-        ],
+        chat: [{  //{[segundos,minutos,horas], uuui_do_remetente, mensagem}
+            time:[0,0,0],
+            owner:"server",
+            ownerNick:"server",
+            content:"Sala criada!"
+          }],
         turn: 0,
         players: [
           // { 
@@ -21,45 +23,45 @@ function createRoom (rooms, idNewRoom, roomName, maxPlayer, roomPass) {
           // }
         ],
         spectators: [
+          // {
+          //   socket: websocket_connection
+          //   uuidPlayer: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          // }
           //se a sala estiver cheia, ou o jogo já tiver iniciado. os jogadores *novos*, serão conectados como espectadores automaticamente
           //mas antes do jogo começar, os jogadores podem escolher se querem ser espectadores ou players. (respeitando os limites, claro)
+          //as informações guardadas dos espectadores, serão: o socket de conexão e o uuid local deles (o mesmo dos jogadores) para evitar de algum jogador se conectar como espectador em outra aba 
         ]
     };
-}
+};
 
 class Room {
-  constructor(id, roomName, maxPlayers, password) {
+  constructor(idNewRoom, roomName, maxPlayer, roomPass) {
     this.header = {
-      roomId: id,
+      roomId: idNewRoom,
       roomName: roomName,
-      maxPlayer: maxPlayers,
-      roomPass: password,
+      maxPlayer: maxPlayer,
+      roomPass: roomPass,
     };
     this.chat = [
-      [[0, 0, 0], "Servidor", "Sala criada!"],
+      {
+        time: [0, 0, 0],
+        owner: "server",
+        ownerNick: "server",
+        content: "Sala criada!",
+      },
     ];
     this.turn = 0;
-    this.players = [
-      // { 
-      //   nickname: player_exemple,
-      //   uuidPlayer: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      //   socket: websocket_connection,
-      //   playerNum: (room.players.length) + 1
-      // }
-    ];
-    this.startTime = null;
-    this.timerInterval = null;
-  }
+    this.startTime = undefined;
+    this.players = [];
+    this.spectators = [];
+  };
 
   startGame() {
     if (this.turn === 0) {
       this.turn = 1;
       this.startTime = Date.now();
-
-      // Iniciar o timer
-      this.startTimer();
-    }
-  }
+    };
+  };
 
 //TODO a ideia é quando o jogo começar, gravar o date.now() e sempre que alguem conectar na sala, o servidor faz a conta de "elapsedTimeInSeconds = Math.floor((currentTime - this.startTime) / 1000);"
 //isso vai fazer com que o cliente saiba a quantos segundos começou aquela partida, e apartir dai, o timer fica apenas na parte do cliente.
