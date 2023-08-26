@@ -1,18 +1,16 @@
 {
-    "ptbr":{
-        "errors":{
-            "invldData":"INFORMAÇÕES INVALIDAS",
-            "invldEntry":"Sala, nick ou senha invalida!",
-            "alrdyInRoom":"Você já está conectado a está sala! Feche sua outra seção para iniciar outra!"
+    "ptbr": {
+        "errors": {
+            "invldData": "INFORMAÇÕES INVÁLIDAS",
+            "invldEntry": "alguma informação inválida, ou a sala está cheia!",
+            "invldReq": "O servidor recebeu uma requisição inválida. Tente novamente",
+            "alrdyInRoom": "Você já está conectado a está sala! Feche sua outra seção para iniciar outra!"
         },
         "chat": {
-            "connected":" entrou na sala",
-            "reconected":" voltou para a sala!",
-            "desconected":" saiu da sala"
+            "connected": " entrou na sala",
+            "reconected": " voltou para a sala!",
+            "desconected": " saiu da sala"
         }
     },
-
-    "en":{
-
-    }
+    "en": {}
 }

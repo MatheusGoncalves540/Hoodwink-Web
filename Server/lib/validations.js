@@ -3,7 +3,7 @@ function validateName(nickname) {
 
     if (!nickname) return false;
 
-    if (nickname.length > 20) return false;
+    if (nickname.length > 15) return false;
 
     if (nickname.length < 3) return false;
 
@@ -39,12 +39,16 @@ function ValidateEntry(nickname, room, roomPass, playeruuid, socketOrExpress) {
 
         if (!validateRoomPass(room, roomPass)) return false;
 
+        if (room.players.length >= room.header.maxPlayer) return false;
+
         return true;
 
     } else if (socketOrExpress === "socket") {
         if (!validateName(nickname)) return false;
 
         if (!validateRoomPass(room, roomPass)) return false;
+
+        if (room.players.length >= room.header.maxPlayer) return false;
 
         if (!ValidateAlreadyPlayerInRoom(room, playeruuid, nickname)) return false;
 
@@ -71,15 +75,27 @@ function validateCreatedRoom(nickname, roomName, maxPlayer, roomPass) {
 };
 
 //verifica se a mensagem passada é permitida
-function allowedMessage(message) {
+function allowedMessage(message, room) {
 
-    if (!message) return false;
+    //se o dono da mensagem for espectador
+    if (room.spectators.find(spectator => spectator.uuidPlayer === message['owner'])) return false;
 
-    if (message.length > 50) return false;
+    if (!message['content']) return false;
 
-    if (message.trim() === '') return false;
+    if (message['content'].length > 50) return false;
+
+    if (message['content'].trim() === '') return false;
 
     return true;
 };
 
-module.exports = {ValidateEntry, validateCreatedRoom, allowedMessage};
+function validRequest(data, socket) {
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+        if (socket) socket.send(msg.errors.invldReq);
+        return;
+    };
+};
+
+module.exports = { ValidateEntry, validateCreatedRoom, allowedMessage, validRequest };

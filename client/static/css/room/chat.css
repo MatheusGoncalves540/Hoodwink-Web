@@ -1,0 +1,112 @@
+#tabs-area {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.3fr 2.6fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "tabs-headers"
+        "atual-tab";
+    grid-area: chat;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+#tabs-headers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "chat notes";
+    grid-area: tabs-headers;
+    border: 0px;
+}
+
+#tabs-headers #SwitchTochat{
+    grid-area: chat;
+}
+
+#tabs-headers #SwitchTonotes{
+    grid-area: notes;
+}
+
+
+/* aba que estiver desativa */
+.hidden {
+    display: none !important;
+}
+
+
+/* aba do chat */
+
+#chat-tab {
+    grid-area: atual-tab;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 15fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "chat-messages"
+        "input-chat-area";
+    max-height: 100%;
+    overflow: hidden;
+    border: 0px;
+}
+
+#input-chat-area {
+    grid-area: input-chat-area;
+    display: grid;
+    grid-template-columns: 1.7fr 0.3fr; 
+    grid-template-rows: 1fr; 
+    gap: 0px 0px;
+    grid-template-areas:
+        "input button";
+    border: 0px;
+}
+
+#input-chat-area input {
+    font-size: larger;
+    grid-area: input;
+}
+#input-chat-area button {
+    font-size: medium;
+    grid-area: button;
+}
+
+
+#chat-messages {
+    grid-area: chat-messages;
+    max-height: 100%;
+    max-width: 100%;
+    overflow-y: scroll;
+}
+
+#chat-messages p {
+    font-size: large;
+    word-wrap: break-word;
+    margin: 5px;
+}
+
+/* aba das notas */
+
+#notes-tab {
+    grid-area: atual-tab;
+    max-height: 100%;
+    max-width: 100%;
+} 
+
+#notes-tab textarea{
+    resize: none;
+    padding: 0px;
+    height: 90%;
+    width: 100%;
+    font-size: larger;
+    border: 0px;
+}
+
+#notes-tab #clear-notes {
+    width: 100%;
+    height: 9%;
+}

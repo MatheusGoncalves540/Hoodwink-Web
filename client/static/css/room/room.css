@@ -1,0 +1,12 @@
+@import "./chat.css";
+
+@import "./grid.css";
+
+@import "./atual_moment.css";
+
+@import "./styles.css";
+
+/* mostrar areas*/
+.container * {
+  border: 1px solid black;
+}

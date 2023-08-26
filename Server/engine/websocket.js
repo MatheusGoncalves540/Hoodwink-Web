@@ -1,6 +1,6 @@
 const url = require('url');
 const WebSocket = require('ws');
-const msg = require('../languages/messages.json')['ptbr'];
+const msgServer = require('../languages/messages.json')['ptbr'];
 const { socketOnNewConnection } = require('./websockets_connection/connection');
 const { socketOnCloseConnection } = require('./websockets_connection/disconnection');
 const { socketOnMessage } = require('./game/recivedFromClient');
@@ -13,18 +13,18 @@ function Start_WebSocket(rooms) {
   server.on('connection', function (socket, request) {
     //buscando informações
     const urlData = url.parse(request.url, true).query;
-    const { playeruuid, idRoom, nickname, roomPass } = urlData;
+    const { idRoom } = urlData;
     const room = rooms[idRoom];
 
+    console.log('connected');
     //comandos executados quando um novo socket é conectado
-    socketOnNewConnection(socket, room, msg, playeruuid, idRoom, nickname, roomPass);
-
-    //comandos executados quando um socket é desconectado
-    socketOnCloseConnection(socket, room, msg);
+    socketOnNewConnection(socket, room, urlData, msgServer);
 
     //comandos executados quando uma mensagem chega ao servidor
     socketOnMessage(socket, room);
-    
+
+    //comandos executados quando um socket é desconectado
+    socketOnCloseConnection(socket, room, msgServer);
   });
 };
 

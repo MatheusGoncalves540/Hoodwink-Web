@@ -8,28 +8,93 @@
         const uuidPlayer = "<%= uuidPlayer %>";
         const nickname = "<%= nickname %>";
         const roomPass = "<%= roomPass %>";
+
+        document.title = 'Connecting at room: ' + ((window.location.href).split('/room/')[1]);
     </script>
-    <link rel="stylesheet" type="text/css" href="/css/room.css" />
-    <title>Room => (id)</title>
+    <link rel="stylesheet" type="text/css" href="/css/room/room.css" />
 </head>
 <body>
-    
     <div class="container">
-        <div class="chat" id="chat">
-            <div class="chat-messages" id="chat-messages">
-                <!-- As mensagens serão adicionadas dinamicamente via JavaScript -->
+        <!-- Chat e notas -->
+        <div id="tabs-area">
+
+            <div id="tabs-headers">
+                <button id="SwitchTochat" onclick="switchToTab('chat-tab')">chat</button>
+                <button id="SwitchTonotes" onclick="switchToTab('notes-tab')">notas</button>
             </div>
-            <div class="message-input">
-                <input type="text" id="message" placeholder="Digite aqui... (limite de 50 caracteres)" onkeydown="if (event.key === 'Enter') { sendMessage(); }">
-                <button onclick="sendMessage()">Enviar</button>
+            
+            <div id="chat-tab" class="tab">
+                <div id="chat-messages"></div>
+                <div id="input-chat-area">
+                    <input placeholder="Máximo 50 caracteres..." id="input-chat" onkeydown="if (event.key === 'Enter') { sendMessage(); }">
+                    <button id="input-chat-btn" onclick="sendMessage()">Enviar</button>
+                </div>
+            </div>          
+
+            <div id="notes-tab" class="tab hidden">
+                <textarea placeholder="Digite suas notas aqui... (Salvas localmente a cada 10 segundos)" id="notes"></textarea>
+                <button id="clear-notes" onclick="document.getElementById('notes').value = '';">Clear</button>
             </div>
         </div>
-    </div>
-    
-    
-    
-    
-    
-    <script src="/js/room.js"></script>
+
+        <!-- Cartas -->
+        <div class="cards">
+            <button id="card-1" class="card">Político</button>
+            <button id="card-2" class="card">Rebelde</button>
+            <button id="card-3" class="card">Assassino</button>
+            <button id="card-4" class="card">Trilionário</button>
+            <button id="card-5" class="card">Trapaceiro</button>
+            <button id="card-6" class="card">Necromante</button>
+            <button id="card-7" class="card">Crupiê</button>
+            <button id="card-8" class="card">Kamikaze</button>
+            <button id="card-9" class="card">Egoísta</button>
+            <button id="card-10" class="card">Clarividente</button>
+            <button id="card-11" class="card">Guardiã</button>
+            <button id="card-12" class="card">Investidor</button>
+        </div>
+
+        <!-- players -->
+        <div id="player-1" class="player">player 1</div>
+        <div id="player-2" class="player">player 2</div>
+        <div id="player-3" class="player">player 3</div>
+        <div id="player-4" class="player">player 4</div>
+        <div id="player-5" class="player">player 5</div>
+        <div id="player-6" class="player">player 6</div>
+        <div id="player-7" class="player">player 7</div>
+        <div id="player-8" class="player">player 8</div>
+        <div id="player-9" class="player">player 9</div>
+        <div id="player-10" class="player">player 10</div>
+
+        <!-- informações -->
+        <div class="infos">
+          <div id="room-code"></div>
+          <div id="tax">Taxas: <span id="tax-amount">undefined</span></div>
+          <div id="turn">Turno: <span id="turns">undefined</span></div>
+        </div>
+
+        <!-- acções básicas -->
+        <div class="basic-actions">
+          <button id="Buy" onclick="addCoin(1)">Comprar +1 moeda</button>
+          <button id="kill"></button>
+          <button id="switch"></button>
+        </div>
+
+        <div id="atual-moment">
+            <p id="atual-moment-text" class="hidden"></p>
+            <button id="startGame-button" onclick="startGame();" >Iniciar</button>
+        </div>
+
+        <!-- demais elementos -->
+        <div id="dead-deck"></div>
+        <div id="deck"></div>
+        <button id="contest">Contestar</button>
+        <button id="pass">Passar</button>
+        <div id="card-left"></div>
+        <div id="card-right"></div>
+        <div id="coin-amount-area">Moedas: <span id="coin-amount">undefined</span></div>
+        <div id="invest-amount"></div>
+        <div id="timer"></div>
+      </div>
+    <script src="/js/room/room.js"></script>
 </body>
 </html>

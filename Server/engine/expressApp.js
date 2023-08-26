@@ -3,9 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
 const { generateNewId, uuidv4 } = require('../lib/functions');
-const { createRoom } = require('./rooms');
+const { Room } = require('./game/room_class');
 const { validateCreatedRoom, ValidateEntry } = require('../lib/validations');
-const msg = require('../languages/messages.json')['ptbr'];
+const msgServer = require('../languages/messages.json')['ptbr'];
 
 //porta principal
 const PORT = 1235;
@@ -20,9 +20,21 @@ function ExpressConfigs() {
 };
 
 
+function StartExpress_Pages(rooms) {
+    //configuração do express
+    ExpressConfigs();
+    //lobby
+    Lobby_Page();
+    //página que recebe as informações que vieram do lobby e cria a sala
+    CreatingRoom_Page(rooms);
+    //página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala expecificada, se as informações forem validas
+    Room_Page(rooms);
+};
+
+
 //pagina do lobby
 function Lobby_Page() {
-    app.get("/", (req, res) => res.render(path.join(__dirname, '...', 'client', 'index.html'))); 
+    app.get("/", (req, res) => res.render(path.join(__dirname, '..', '..', 'client', 'index.html'))); 
 };
 
 
@@ -33,14 +45,14 @@ function CreatingRoom_Page(rooms) {
         const { nickname, roomName, maxPlayer, roomPass } = req.body;
       
         if (!validateCreatedRoom(nickname, roomName, maxPlayer, roomPass)) {
-          return res.status(422).json({ erro: msg.errors.invldData });
+          return res.status(422).json({ erro: msgServer.errors.invldData });
         }
       
         //gera um id para a sala
         const idNewRoom = generateNewId();
       
         //adiciona a sala no mapa de salas em memória
-        createRoom(rooms, idNewRoom, roomName, maxPlayer, roomPass);
+        rooms[idNewRoom] = new Room(idNewRoom, roomName, maxPlayer, roomPass);
       
         //envie a resposta com o ID da sala que acabou de criar
         res.json({
@@ -63,7 +75,7 @@ function Room_Page(rooms) {
     
         //valida os dados e libera a entrada
         if (!room || !ValidateEntry(nickname, room, roomPass, null, 'express')) {
-        return res.status(422).json({ erro: msg.errors.invldEntry });
+        return res.status(422).json({ erro: msgServer.errors.invldEntry });
         };
     
         const playeruuid = uuidv4();
@@ -80,18 +92,6 @@ function Listen_App(){
     if (err) console.log(err);
     console.log("online na porta: ", PORT);
     });
-};
-
-
-function StartExpress_Pages(rooms) {
-    //configuração do express
-    ExpressConfigs();
-    //lobby
-    Lobby_Page();
-    //página que recebe as informações que vieram do lobby e cria a sala
-    CreatingRoom_Page(rooms);
-    //página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala expecificada, se as informações forem validas
-    Room_Page(rooms);
 };
 
 module.exports = {StartExpress_Pages, Listen_App};
