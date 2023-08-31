@@ -129,8 +129,6 @@ body {
   
 #Buy { grid-area: Buy; }
 
-span { border: 0; }
-
 #kill { grid-area: kill; }
 
 #switch { grid-area: switch; }
@@ -141,7 +139,7 @@ span { border: 0; }
 
 #coin-amount-area { grid-area: coin-amount; }
 
-#invest-amount { grid-area: invest-amount; }
+#invest-amount-area { grid-area: invest-amount; }
 
 #contest { grid-area: contest; }
 

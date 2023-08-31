@@ -39,8 +39,6 @@ function ValidateEntry(nickname, room, roomPass, playeruuid, socketOrExpress) {
 
         if (!validateRoomPass(room, roomPass)) return false;
 
-        if (room.players.length >= room.header.maxPlayer) return false;
-
         return true;
 
     } else if (socketOrExpress === "socket") {

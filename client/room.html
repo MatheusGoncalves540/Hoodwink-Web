@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         // Recupere os valores passados pelo servidor
-        const uuidPlayer = "<%= uuidPlayer %>";
+        const uuidPlayer = "<%= playeruuid %>";
         const nickname = "<%= nickname %>";
         const roomPass = "<%= roomPass %>";
-
         document.title = 'Connecting at room: ' + ((window.location.href).split('/room/')[1]);
+        if (!uuidPlayer || !nickname) errorOnLoadingScript();
     </script>
     <link rel="stylesheet" type="text/css" href="/css/room/room.css" />
 </head>
@@ -72,9 +72,20 @@
           <div id="turn">Turno: <span id="turns">undefined</span></div>
         </div>
 
-        <!-- acções básicas -->
+        <div id="card-left"></div>
+        <div id="card-right"></div>
+
+        <div id="coin-amount-area">Moedas: <span id="coin-amount">undefined</span></div>
+        <div id="invest-amount-area">Investidos: <span id="invest-amount">undefined</span></div>
+
+        <div id="timer">
+            <img src="/images/room/clock.svg" alt="game time" width="20px" height="20px">
+            <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+        </div>
+
+        <!-- ações básicas -->
         <div class="basic-actions">
-          <button id="Buy" onclick="addCoin(1)">Comprar +1 moeda</button>
+          <button id="Buy" onclick="takeCoin_basic(1)">Pegar +1 moeda</button>
           <button id="kill"></button>
           <button id="switch"></button>
         </div>
@@ -87,14 +98,15 @@
         <!-- demais elementos -->
         <div id="dead-deck"></div>
         <div id="deck"></div>
-        <button id="contest">Contestar</button>
-        <button id="pass">Passar</button>
-        <div id="card-left"></div>
-        <div id="card-right"></div>
-        <div id="coin-amount-area">Moedas: <span id="coin-amount">undefined</span></div>
-        <div id="invest-amount"></div>
-        <div id="timer"></div>
+
+        <button id="contest" onclick="">Contestar</button>
+        <button id="pass" onclick="">Passar</button>
+
       </div>
-    <script src="/js/room/room.js"></script>
+    <script src="/js/room/client_functions.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/gameData.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/ws_connction.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/ws_onRecive.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/ws_sending.js" onerror="errorOnLoadingScript()"></script>
 </body>
 </html>

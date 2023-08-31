@@ -1,9 +1,9 @@
 const { allowedMessage } = require('../lib/validations');
 
 //manda para o player que entrou as mensagens que estão guardadas no chat
-function BringPastMessages(room, uuidPlayer) {
+function BringPastMessages(room, playeruuid) {
     const roomMessages = room.chat;
-    const playerSocket = room.players.find(player => player.header.uuidPlayer === uuidPlayer).header.socket;
+    const playerSocket = room.players.find(player => player.header.playeruuid === playeruuid).header.socket;
 
     let payload = {
         "type": "msg_chat",
@@ -25,24 +25,23 @@ function BringPastMessages(room, uuidPlayer) {
 
 function chatMessage_protocol(result, room) {
     if (allowedMessage(result, room)) {
-        //encontra o nick de quem mandou a mensagem, pelo uuid
-        const messageOwnerNick = room.players.find(player => player.header.uuidPlayer === result.owner).header.nickname;
-        const elapsedTime = room.elapsedTime();
-
-        room.players.forEach(player => {
-            try {
-                const payload = {
-                    "type": "msg_chat",
-                    "msgs": [{
-                        "time":[elapsedTime.hours, elapsedTime.minutes, elapsedTime.seconds],
-                        "content": result.content,
-                        "owner": messageOwnerNick
-                    }]
-                };
-                player.header.socket.send(JSON.stringify(payload));
-            } catch { };
-        });
-        room.recordMessageInChat(result, elapsedTime, messageOwnerNick);
+        try {
+            //encontra o nick de quem mandou a mensagem, pelo uuid
+            const messageOwnerNick = room.players.find(player => player.header.playeruuid === result.owner).header.nickname;
+            const elapsedTime = room.elapsedTime();
+            const payload = {
+                "type": "msg_chat",
+                "msgs": [{
+                    "time":[elapsedTime.hours, elapsedTime.minutes, elapsedTime.seconds],
+                    "content": result.content,
+                    "owner": messageOwnerNick
+                }]
+            };
+            room.sendInfoForAllPlayers(payload);
+            room.recordMessageInChat(result, elapsedTime, messageOwnerNick);
+        } catch (error) {
+            console.log(error);
+        };
     };
 };
 

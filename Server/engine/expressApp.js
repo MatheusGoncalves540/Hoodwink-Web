@@ -5,7 +5,7 @@ const path = require('path');
 const { generateNewId, uuidv4 } = require('../lib/functions');
 const { Room } = require('./game/room_class');
 const { validateCreatedRoom, ValidateEntry } = require('../lib/validations');
-const msgServer = require('../languages/messages.json')['ptbr'];
+const msgServer = require('../lib/languages/messages.json')['ptbr'];
 
 //porta principal
 const PORT = 1235;
@@ -21,14 +21,16 @@ function ExpressConfigs() {
 
 
 function StartExpress_Pages(rooms) {
-    //configuração do express
+    //Configuração do express
     ExpressConfigs();
-    //lobby
+    //Lobby
     Lobby_Page();
-    //página que recebe as informações que vieram do lobby e cria a sala
+    //Página que recebe as informações que vieram do lobby e cria a sala
     CreatingRoom_Page(rooms);
-    //página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala expecificada, se as informações forem validas
+    //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
     Room_Page(rooms);
+    //Página de erro ao carregar scripts da sala
+    errorOnLoadingScript();
 };
 
 
@@ -80,8 +82,15 @@ function Room_Page(rooms) {
     
         const playeruuid = uuidv4();
     
-        // Envie o arquivo room.html com os valores personalizados como variaveis
-        res.render(path.join(__dirname, '..', '..', 'client', 'room.html'), { uuidPlayer: playeruuid, nickname: nickname, roomPass: roomPass });
+        // Envie o arquivo room.html com os valores personalizados como variáveis
+        res.render(path.join(__dirname, '..', '..', 'client', 'room.html'), { playeruuid: playeruuid, nickname: nickname, roomPass: roomPass });
+    });
+};
+
+//Página de erro ao carregar scripts da sala
+function errorOnLoadingScript() {
+    app.get("/room/:id/LoadingError", (req, res) => {
+        return res.status(404).json({ erro: msgServer.errors.onLoadError });
     });
 };
 

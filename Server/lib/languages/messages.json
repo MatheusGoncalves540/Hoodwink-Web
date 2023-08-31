@@ -4,12 +4,13 @@
             "invldData": "INFORMAÇÕES INVÁLIDAS",
             "invldEntry": "alguma informação inválida, ou a sala está cheia!",
             "invldReq": "O servidor recebeu uma requisição inválida. Tente novamente",
-            "alrdyInRoom": "Você já está conectado a está sala! Feche sua outra seção para iniciar outra!"
+            "alrdyInRoom": "Você já está conectado a está sala! Feche sua outra seção para iniciar outra!",
+            "onLoadError": "Houve um erro ao carregar os scripts da sala. Tente novamente"
         },
         "chat": {
             "connected": " entrou na sala",
-            "reconected": " voltou para a sala!",
-            "desconected": " saiu da sala"
+            "reconnected": " voltou para a sala!",
+            "disconnected": " saiu da sala"
         }
     },
     "en": {}
