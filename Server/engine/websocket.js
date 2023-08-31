@@ -18,11 +18,11 @@ function Start_WebSocket(rooms) {
 
     console.log('connected');
 
-    //comandos executados quando um novo socket é conectado
-    socketOnNewConnection(socket, room, urlData, msgServer);
-
     //comandos executados quando um socket é desconectado
     socketOnCloseConnection(socket, room, msgServer);
+
+    //comandos executados quando um novo socket é conectado
+    socketOnNewConnection(socket, room, urlData, msgServer);
 
     //comandos executados quando uma mensagem chega ao servidor
     socketOnMessage(socket, room);

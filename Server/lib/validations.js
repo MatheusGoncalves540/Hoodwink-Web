@@ -1,5 +1,7 @@
 //valida se o nome passado é valido
-function validateName(nickname) {
+function validateName(nickname, room) {
+    nickname = nickname.trim();
+
 
     if (!nickname) return false;
 
@@ -7,7 +9,24 @@ function validateName(nickname) {
 
     if (nickname.length < 3) return false;
 
-    if (nickname === 'server') return false;
+    if (room !== undefined) {
+        const PlayerNickAlreadyUsed = room.players.find(player => player.header.nickname === nickname);
+        
+        if (PlayerNickAlreadyUsed && PlayerNickAlreadyUsed.header.socket !== null) return false;
+    };
+
+    return true;
+};
+
+//valida se o nome de sala passado é valido
+function validateRoomName(name) {
+    name = name.trim();
+
+    if (!name) return false;
+
+    if (name.length > 15) return false;
+
+    if (name.length < 3) return false;
 
     return true;
 };
@@ -21,13 +40,13 @@ function validateRoomPass(room, roomPass_byUser) {
 };
 
 //verifica se existe um player com o uuid fornecido dentro da sala
-function ValidateAlreadyPlayerInRoom(room, playeruuid, nickname) {
+function ValidateAlreadyPlayerInRoom(room, playeruuid) {
 
-    const playerAlreadyInRoom = room.players.find(player => player.uuidPlayer === playeruuid || player.nickname === nickname);
+    const playerAlreadyInRoom = room.players.find(player => player.header.playeruuid === playeruuid);
 
-    if (!playerAlreadyInRoom) return true;
-
-    if (playerAlreadyInRoom.socket !== null) return false;
+    if (playerAlreadyInRoom) {
+        if (playerAlreadyInRoom.header.socket !== null) return false;
+    };
 
     return true;
 }
@@ -35,18 +54,16 @@ function ValidateAlreadyPlayerInRoom(room, playeruuid, nickname) {
 //Valida se com os dados passados, é permitida a entrada
 function ValidateEntry(nickname, room, roomPass, playeruuid, socketOrExpress) {
     if (socketOrExpress === "express") {
-        if (!validateName(nickname)) return false;
-
         if (!validateRoomPass(room, roomPass)) return false;
+
+        if (!validateName(nickname , room)) return false;
 
         return true;
 
     } else if (socketOrExpress === "socket") {
-        if (!validateName(nickname)) return false;
+        if (!validateName(nickname, room)) return false;
 
         if (!validateRoomPass(room, roomPass)) return false;
-
-        if (room.players.length >= room.header.maxPlayer) return false;
 
         if (!ValidateAlreadyPlayerInRoom(room, playeruuid, nickname)) return false;
 
@@ -58,10 +75,10 @@ function ValidateEntry(nickname, room, roomPass, playeruuid, socketOrExpress) {
 //valida se com os dados passados, pode-se criar uma sala
 function validateCreatedRoom(nickname, roomName, maxPlayer, roomPass) {
     //nome do player tem que se enquadrar nos padrões de nome
-    if (!validateName(nickname)) return false;
+    if (!validateName(nickname, undefined)) return false;
 
     //nome da sala tem que se enquadrar nos padrões de nome
-    if (!validateName(roomName)) return false;
+    if (!validateRoomName(roomName)) return false;
 
     //não pode ter mais que 10 players ou menos que 2
     if (maxPlayer > 10 || maxPlayer < 2) return false;

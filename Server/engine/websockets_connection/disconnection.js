@@ -1,7 +1,7 @@
 function socketOnCloseConnection(socket, room, msg) {
     socket.on('close', function () {
         
-            const disconnectedPlayer = room.players.find(player => player.header.playeruuid === socket.context.playeruuid);
+            const disconnectedPlayer = room.players.find(player => player.header.socket === socket);
 
             if (!disconnectedPlayer) return;
 

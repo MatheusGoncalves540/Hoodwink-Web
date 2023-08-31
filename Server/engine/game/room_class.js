@@ -50,7 +50,8 @@ class Room {
         me: {
             coins: connectedPlayer.coins,
             cardsInHand: ['left','right'],
-            invested: connectedPlayer.invested
+            invested: connectedPlayer.invested,
+            playerNum: connectedPlayer.header.playerNum
         },
       }
     };
