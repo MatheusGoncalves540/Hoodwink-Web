@@ -1,3 +1,12 @@
+function verifyFirstReceipt(msg) {
+    if (msg.content.roomName) document.title = msg.content.roomName;
+    if (msg.content.time) startTimer(msg.content.time.startTime);
+    if (gameData.turn !== 0) {
+        document.getElementById('startGame-button').classList.add('hidden');
+        document.getElementById('atual-moment-text').classList.remove('hidden');
+    };
+};
+
 function updateTimer() {
     if (gameData.time.seconds < 10) {
         document.getElementById('seconds').innerHTML =  `0${gameData.time.seconds}`;

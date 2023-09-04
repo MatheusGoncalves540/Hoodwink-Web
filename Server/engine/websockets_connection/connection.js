@@ -7,12 +7,15 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
         const newPlayer = {
             playeruuid: urlData['playeruuid'],
             nickname: urlData['nickname'],
-            socket: socket
+            socket: socket,
+            roomPass: roomPass,
+            room: room
         };
 
         //validação da entrada novamente
-        if (!room || !ValidateEntry(newPlayer.nickname, room, roomPass, newPlayer.playeruuid, 'socket')) {
-            if (socket) socket.send(msgServer.errors.alrdyInRoom);
+        const validation = ValidateEntry(null, msgServer, newPlayer, 'socket');
+        if (!room || validation !== true) {
+            if (socket) socket.send(validation);
             socket.close();
             return;
         };

@@ -52,20 +52,20 @@ function ValidateAlreadyPlayerInRoom(room, playeruuid) {
 }
 
 //Valida se com os dados passados, é permitida a entrada
-function ValidateEntry(nickname, room, roomPass, playeruuid, socketOrExpress) {
+function ValidateEntry(res, msgServer, entryData, socketOrExpress) {
     if (socketOrExpress === "express") {
-        if (!validateRoomPass(room, roomPass)) return false;
+        if (!validateRoomPass(entryData.room, entryData.roomPass)) return res.status(401).json({ erro: msgServer.errors.invldData.roomPass });
 
-        if (!validateName(nickname , room)) return false;
+        if (!validateName(entryData.nickname , undefined)) return res.status(422).json({ erro: msgServer.errors.invldData.nickname });
 
         return true;
 
     } else if (socketOrExpress === "socket") {
-        if (!validateName(nickname, room)) return false;
+        if (!validateName(entryData.nickname, entryData.room)) return msgServer.errors.invldData.nick;
 
-        if (!validateRoomPass(room, roomPass)) return false;
+        if (!validateRoomPass(entryData.room, entryData.roomPass)) return msgServer.errors.invldData.roomPass;
 
-        if (!ValidateAlreadyPlayerInRoom(room, playeruuid, nickname)) return false;
+        if (!ValidateAlreadyPlayerInRoom(entryData.room, entryData.playeruuid, entryData.nickname)) return msgServer.errors.invldEntry.alrdyInRoom;
 
         return true;
     };
@@ -73,18 +73,19 @@ function ValidateEntry(nickname, room, roomPass, playeruuid, socketOrExpress) {
 };
 
 //valida se com os dados passados, pode-se criar uma sala
-function validateCreatedRoom(nickname, roomName, maxPlayer, roomPass) {
+function validateCreatedRoom(res, msgServer, roomData) {
+    
     //nome do player tem que se enquadrar nos padrões de nome
-    if (!validateName(nickname, undefined)) return false;
+    if (!validateName(roomData.nickname, undefined)) return res.status(422).json({ erro: msgServer.errors.invldData.nickname });
 
     //nome da sala tem que se enquadrar nos padrões de nome
-    if (!validateRoomName(roomName)) return false;
+    if (!validateRoomName(roomData.roomName)) return res.status(422).json({ erro: msgServer.errors.invldData.roomName });
 
     //não pode ter mais que 10 players ou menos que 2
-    if (maxPlayer > 10 || maxPlayer < 2) return false;
+    if (roomData.maxPlayer > 10 || roomData.maxPlayer < 2) return res.status(422).json({ erro: msgServer.errors.invldData.generic });
 
     //senha da sala não pode ter mais que 30 caracteres
-    if (roomPass.length > 30) return false;
+    if (roomData.roomPass.length > 30) return res.status(422).json({ erro: msgServer.errors.invldData.roomPass });
 
     return true;
 };
@@ -104,9 +105,11 @@ function allowedMessage(message, room) {
     return true;
 };
 
-function validRequest(data, socket) {
+function validRequest(data, socket, room) {
     try {
-        return JSON.parse(data);
+        data = JSON.parse(data);
+        if (!(room.players.find(player => player.header.playeruuid === data['owner']))) throw new Error("player not in Room");
+        return data;
     } catch (error) {
         if (socket) socket.send(msg.errors.invldReq);
         return;

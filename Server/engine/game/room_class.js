@@ -35,29 +35,6 @@ class Room {
     this.players.push(new Player(newPlayer, this));
   };
 
-  //manda para o socket passado, as informações necessárias para conectar e jogar
-  BringGameInfos(socket) {
-    const connectedPlayer = this.players.find(player => player.header.playeruuid === socket.context.playeruuid);
-    const time = this.elapsedTime();
-
-    const payload = {
-      type: "gameData",
-      content: { //TODO enviar todas as informações necessárias para a construção da tela do jogo na tela do cliente
-        roomName: this.header.roomName,
-        turn: this.turn,
-        time: time,
-        tax: this.tax,
-        me: {
-            coins: connectedPlayer.coins,
-            cardsInHand: ['left','right'],
-            invested: connectedPlayer.invested,
-            playerNum: connectedPlayer.header.playerNum
-        },
-      }
-    };
-    socket.send(JSON.stringify(payload));
-  };
-
   //começa o jogo
   startGame() {
     if (this.turn !== 0) return;
@@ -69,8 +46,6 @@ class Room {
   //TODO a ideia é quando o jogo começar, gravar o date.now() e sempre que alguém fizer algo que precise do horário, o servidor faz a conta de "elapsedTimeInSeconds = Math.floor((currentTime - this.startTime) / 1000);"
   //isso vai fazer com que o cliente saiba a quantos segundos começou aquela partida, e a partir dai, o timer fica apenas na parte do cliente.
   //assim, é possível manter um timer preciso, mas sem precisar ficar contando cada segundo no servidor, apenas grava o horário de inicio e quando alguém precisa dessa informação, o próprio cliente começa a contar.
-
- 
 
   //retorna os segundos, minutos e horas passadas desde o inicio da partida
   elapsedTime() {
@@ -115,6 +90,29 @@ class Room {
       "ownerNick": messageOwnerNick,
       "content": message.content
     });
+  };
+
+  //manda para o socket passado, as informações necessárias para conectar e jogar
+  BringGameInfos(socket) {
+    const connectedPlayer = this.players.find(player => player.header.playeruuid === socket.context.playeruuid);
+    const time = this.elapsedTime();
+
+    const payload = {
+      type: "gameData",
+      content: { //TODO enviar todas as informações necessárias para a construção da tela do jogo na tela do cliente
+        roomName: this.header.roomName,
+        turn: this.turn,
+        time: time,
+        tax: this.tax,
+        me: {
+            coins: connectedPlayer.coins,
+            cardsInHand: ['left','right'],
+            invested: connectedPlayer.invested,
+            playerNum: connectedPlayer.header.playerNum
+        },
+      }
+    };
+    socket.send(JSON.stringify(payload));
   };
 };
 

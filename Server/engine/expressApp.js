@@ -44,22 +44,34 @@ function Lobby_Page() {
 function CreatingRoom_Page(rooms) {
     app.post("/creating-room", (req, res) => {
         //traz as informações passadas
-        const { nickname, roomName, maxPlayer, roomPass } = req.body;
+        const newRoomData = {
+            nickname: req.body['nickname'],
+            roomName: req.body['roomName'],
+            maxPlayer: req.body['maxPlayer'],
+            roomPass: req.body['roomPass']
+        };
       
-        if (!validateCreatedRoom(nickname, roomName, maxPlayer, roomPass)) {
-          return res.status(422).json({ erro: msgServer.errors.invldData });
-        }
+        if (validateCreatedRoom(res, msgServer, newRoomData) !== true) return;
       
         //gera um id para a sala
         const idNewRoom = generateNewId();
       
         //adiciona a sala no mapa de salas em memória
-        rooms[idNewRoom] = new Room(idNewRoom, roomName, maxPlayer, roomPass);
+        try {
+            rooms[idNewRoom] = new Room (
+                idNewRoom,
+                newRoomData.roomName,
+                newRoomData.maxPlayer,
+                newRoomData.roomPass
+            );
+        } catch (error) {
+            console.error(error)
+        };       
       
         //envie a resposta com o ID da sala que acabou de criar
         res.json({
           room: rooms[idNewRoom],
-          nickname: nickname
+          nickname: newRoomData.nickname
         });
       
         console.log(rooms[idNewRoom]);
@@ -71,19 +83,21 @@ function CreatingRoom_Page(rooms) {
 function Room_Page(rooms) {
     app.post("/room/:id", (req, res) => {
         //traz as informações passadas
-        const { id } = req.params;
-        const { nickname, roomPass } = req.body;
-        const room = rooms[id];
+        const entryData = {
+            id: req.params['id'],
+            nickname: req.body['nickname'],
+            roomPass: req.body['roomPass'],
+            room: rooms[req.params['id']]
+        };
     
         //valida os dados e libera a entrada
-        if (!room || !ValidateEntry(nickname, room, roomPass, null, 'express')) {
-        return res.status(422).json({ erro: msgServer.errors.invldEntry });
-        };
+        if (!entryData.room) return res.status(404).json({erro:"sala não encontrada"})
+        if (ValidateEntry(res, msgServer, entryData, 'express') !== true) return;
     
         const playeruuid = uuidv4();
     
         // Envie o arquivo room.html com os valores personalizados como variáveis
-        res.render(path.join(__dirname, '..', '..', 'client', 'room.html'), { playeruuid: playeruuid, nickname: nickname, roomPass: roomPass });
+        res.render(path.join(__dirname, '..', '..', 'client', 'room.html'), { playeruuid: playeruuid, nickname: entryData.nickname, roomPass: entryData.roomPass });
     });
 };
 

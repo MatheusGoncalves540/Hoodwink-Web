@@ -16,12 +16,8 @@ ws.onmessage = function(msg) {
         break;
 
         case 'gameData':
-            for (const [key, value] of Object.entries(msg.content)) {
-                gameData[key] = value;
-            };
-            if (msg.content.roomName) document.title = msg.content.roomName;
-            if (msg.content.time) startTimer(msg.content.time.startTime);
-
+            mergeObjects(gameData, msg.content);
+            verifyFirstReceipt(msg);
             updateScreenInfos();
         break;
     
@@ -29,3 +25,16 @@ ws.onmessage = function(msg) {
             break;
     };
 };
+
+function mergeObjects(target, source) {
+    for (const key in source) {
+        if (typeof source[key] === 'object' && source[key] !== null) {
+            if (!target.hasOwnProperty(key)) {
+                target[key] = {};
+            }
+            mergeObjects(target[key], source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    }
+}

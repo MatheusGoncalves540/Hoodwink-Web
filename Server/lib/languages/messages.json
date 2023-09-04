@@ -1,10 +1,17 @@
 {
     "ptbr": {
         "errors": {
-            "invldData": "INFORMAÇÕES INVÁLIDAS",
-            "invldEntry": "alguma informação inválida, ou a sala está cheia!",
+            "invldData": {
+                "nick": "Nickname inválido!",
+                "roomName": "nome de sala inválido!",
+                "roomPass": "Senha inválida!",
+                "generic": "informações inválidas!"
+            },
+            "invldEntry": {
+                "fullRoom": "A sala está cheia!",
+                "alrdyInRoom": "Você já está conectado a está sala! Feche sua outra seção para iniciar outra!"
+            },
             "invldReq": "O servidor recebeu uma requisição inválida. Tente novamente",
-            "alrdyInRoom": "Você já está conectado a está sala! Feche sua outra seção para iniciar outra!",
             "onLoadError": "Houve um erro ao carregar os scripts da sala. Tente novamente"
         },
         "chat": {
