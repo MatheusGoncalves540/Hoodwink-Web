@@ -15,7 +15,7 @@ function ExpressConfigs() {
     app.use(express.json());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(express.static('./client/static'));
+    app.use(express.static(path.join(__dirname, '..', '..', 'client', 'static')));
     app.engine('html', require('ejs').renderFile);
 };
 
@@ -29,6 +29,8 @@ function StartExpress_Pages(rooms) {
     CreatingRoom_Page(rooms);
     //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
     Room_Page(rooms);
+    //Página de regras
+    Rules_Page();
     //Página de erro ao carregar scripts da sala
     errorOnLoadingScript();
 };
@@ -36,7 +38,9 @@ function StartExpress_Pages(rooms) {
 
 //pagina do lobby
 function Lobby_Page() {
-    app.get("/", (req, res) => res.render(path.join(__dirname, '..', '..', 'client', 'index.html'))); 
+    app.get("/", (req, res) => {
+        res.render(path.join(__dirname, '..', '..', 'client', 'index.html'));
+    }); 
 };
 
 
@@ -101,7 +105,14 @@ function Room_Page(rooms) {
     });
 };
 
-//Página de erro ao carregar scripts da sala
+//Página de regras
+function Rules_Page() {
+    app.get("/rules", (req, res) => {
+        res.render(path.join(__dirname, '..', '..', 'client', 'rules.html'));
+    });
+};
+
+//Página caso aconteça um erro nos scripts
 function errorOnLoadingScript() {
     app.get("/room/:id/LoadingError", (req, res) => {
         return res.status(404).json({ erro: msgServer.errors.onLoadError });

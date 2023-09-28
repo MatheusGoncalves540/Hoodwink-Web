@@ -72,8 +72,8 @@
           <div id="turn">Turno: <span id="turns">undefined</span></div>
         </div>
 
-        <div id="card-left"></div>
-        <div id="card-right"></div>
+        <div id="card-left">left</div>
+        <div id="card-right">right</div>
 
         <div id="coin-amount-area">Moedas: <span id="coin-amount">undefined</span></div>
         <div id="invest-amount-area">Investidos: <span id="invest-amount">undefined</span></div>
@@ -85,7 +85,7 @@
 
         <!-- ações básicas -->
         <div class="basic-actions">
-          <button id="Buy" onclick="takeCoin_basic(1)">Pegar +1 moeda</button>
+          <button id="Buy" onclick="if (gameData.turn !== 0) takeCoin_basic(1)">Pegar +1 moeda</button>
           <button id="kill"></button>
           <button id="switch"></button>
         </div>
@@ -96,8 +96,8 @@
         </div>
 
         <!-- demais elementos -->
-        <div id="dead-deck"></div>
-        <div id="deck"></div>
+        <div id="dead-deck"><span id="dead-deck-amount"></span></div>
+        <div id="deck"><span id="deck-amount"></span></div>
 
         <button id="contest" onclick="">Contestar</button>
         <button id="pass" onclick="">Passar</button>

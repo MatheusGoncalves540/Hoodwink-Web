@@ -1,7 +1,9 @@
 function verifyFirstReceipt(msg) {
     if (msg.content.roomName) document.title = msg.content.roomName;
-    if (msg.content.time) startTimer(msg.content.time.startTime);
-    if (gameData.turn !== 0) {
+    if (msg.content.time) {
+	startTimer(msg.content.time.startTime);
+    };
+    if (gameData.turn !== 0 && !document.getElementById('startGame-button').classList.contains('hidden')) {
         document.getElementById('startGame-button').classList.add('hidden');
         document.getElementById('atual-moment-text').classList.remove('hidden');
     };
@@ -31,6 +33,14 @@ function updateScreenInfos() {
     document.getElementById('tax-amount').innerHTML = gameData.tax;
     document.getElementById('turns').innerHTML = gameData.turn;
     document.getElementById('invest-amount').innerHTML = gameData.me.invested.length;
+    document.getElementById('atual-moment-text').innerHTML = gameData.currentMove; 
+    document.getElementById('card-left').innerHTML = gameData.me.cardsInHand[0];
+    document.getElementById('card-right').innerHTML = gameData.me.cardsInHand[1];
+    document.getElementById('room-code').innerHTML = gameData.turn ==! 0 ? 'vez de: ' + gameData.currentTurnOwner : gameData.currentTurnOwner;
+    document.getElementById('dead-deck-amount').innerHTML = gameData.deadDeck
+    document.getElementById('deck-amount').innerHTML = gameData.aliveDeck
+
+
     updateTimer();
 };
 
@@ -81,8 +91,10 @@ function startTimer(startTime) {
     if (!startTime) return;
     if (gameData.turn === 0) return;
     if (timeRunning === true) return;
+	
     setInterval(() => {
-        const secondsPassTotal = Math.floor((Date.now() - startTime) / 1000);
+	const agora = (Date.now()); 
+        const secondsPassTotal = Math.floor((agora - startTime) / 1000);
         const minutesPassTotal = Math.floor(secondsPassTotal / 60);
         const hoursPassTotal = Math.floor(minutesPassTotal / 60);
 

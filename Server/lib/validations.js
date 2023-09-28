@@ -67,6 +67,12 @@ function ValidateEntry(res, msgServer, entryData, socketOrExpress) {
 
         if (!ValidateAlreadyPlayerInRoom(entryData.room, entryData.playeruuid, entryData.nickname)) return msgServer.errors.invldEntry.alrdyInRoom;
 
+        const playerAlreadyInRoom = entryData.room.players.find(player => player.header.playeruuid === entryData.playeruuid);
+
+        if (!playerAlreadyInRoom) {
+            if(entryData.room.players.length >= entryData.room.header.maxPlayer) return msgServer.errors.invldEntry.fullRoom;
+        };
+        
         return true;
     };
 
@@ -80,6 +86,9 @@ function validateCreatedRoom(res, msgServer, roomData) {
 
     //nome da sala tem que se enquadrar nos padrões de nome
     if (!validateRoomName(roomData.roomName)) return res.status(422).json({ erro: msgServer.errors.invldData.roomName });
+
+    //validando senha da sala
+    if (roomData.roomPass.length > 20) return res.status(422).json({ erro: msgServer.errors.invldData.roomPass})
 
     //não pode ter mais que 10 players ou menos que 2
     if (roomData.maxPlayer > 10 || roomData.maxPlayer < 2) return res.status(422).json({ erro: msgServer.errors.invldData.generic });
@@ -112,7 +121,7 @@ function validRequest(data, socket, room) {
         return data;
     } catch (error) {
         if (socket) socket.send(msg.errors.invldReq);
-        return;
+        return false;
     };
 };
 

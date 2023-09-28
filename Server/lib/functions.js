@@ -15,4 +15,50 @@ function uuidv4(){
     return uuid;
 };
 
-module.exports = {generateNewId, uuidv4};
+//embaralha um array
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    while (currentIndex > 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    };
+  
+    return array;
+};
+
+//traz o próximo maior numero de um array, se não houver, traz o menor
+function nextBigger(array, givenNumber) {
+    let nextBigger = undefined;
+    
+    for (const number of array) {
+      if (number > givenNumber) {
+        if (nextBigger === undefined || number < nextBigger) {
+          nextBigger = number;
+        }
+      }
+    };
+
+    if (nextBigger === undefined) return Math.min(...array);
+    
+    return nextBigger;
+};
+
+//recebe um objeto e faz com que os componentes dentro do "header" dele, sejam colocados na raiz do objeto
+function getPlayerPublicInfos(object) {
+  const publicInfos = {
+    nick: object.header.nickname,
+    playerNum: object.header.playerNum,
+    coins: object.coins,
+    num_cards: object.cards.length,
+    invested: object.invested,
+    usedCards: object.usedCards
+  };
+
+  return publicInfos;
+};
+
+module.exports = {generateNewId, uuidv4, shuffle, nextBigger, getPlayerPublicInfos};

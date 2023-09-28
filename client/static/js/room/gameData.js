@@ -1,18 +1,28 @@
 //estrutura para armazenamento das informações
 let gameData = {
-    turn: undefined,
+    turn: 0,
 
     time: {
         startTime: undefined,
-        seconds: undefined,
-        minutes: undefined,
-        hours: undefined
+        seconds: 0,
+        minutes: 0,
+        hours: 0
     },
 
-    tax: undefined,
-//TODO terminar aq
+    timesDoubledRebel: 0,
+    timesDoubledPolitical: 0,
+
+    aliveDeck: 0,
+    deadDeck: 0,
+
+    currentTurnOwner: `sala: ${document.title.split(':')[1]}`,
+    currentMove: "undefined",
+    moveTime: 0,
+
+    tax: 0,
+
     me: {
-        nick: "",
+        nick: nickname,
         coins: 0,
         invested: [],
         cardsInHand: ['left','right'],
@@ -91,6 +101,4 @@ let gameData = {
             usedCards: {}
         }
     }
-    //TODO Terminar de adicionar as informações necessárias para construir o andamento do jogo na tela do cliente
-
 }

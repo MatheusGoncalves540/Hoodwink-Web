@@ -46,7 +46,7 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
         }
         //caso o jogo ainda não tenha iniciado, adiciona o novo jogador na sala
         else if (room.turn === 0) {
-            room.addPlayerOnRoom(newPlayer);
+            room.addNewPlayerOnRoom(newPlayer);
 
             const payload = {
                 "type": "msg_chat",
@@ -56,6 +56,27 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
                 }]
             };
             room.sendInfoForAllPlayers(payload);
+
+            room.players.forEach(player => {
+                const payload = {
+                    type: "gameData",
+                    content: {
+                        me: {
+                            playerNum: player.header.playerNum
+                        },
+                        players: {}
+                    }
+                };
+                //TODO as informações do player 1, não estão sendo enviadas ao cliente
+                room.players.forEach(player_ => {
+                    payload.content.players[`${player_.header.playerNum}`] = {
+                        nick: player_.header.nickname,
+                        playerNum: player_.header.playerNum,
+                    }
+                });
+
+                player.header.socket.send(JSON.stringify(payload));
+            });
         }
         //caso ele não estava na partida antes e o jogo já começou
         else { //TODO conectar o cliente como espectador então

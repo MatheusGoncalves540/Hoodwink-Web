@@ -20,16 +20,25 @@ function socketOnCloseConnection(socket, room, msg) {
             //TODO quando um player for desconectado, rearranjar os playerNum de cada player.
             if (room.turn === 0) {
                 room.players.forEach(player => {
-                    player.header.playerNum = room.players.length;
+                    player.header.playerNum = room.players.indexOf(player) + 1;
+                });
 
+                room.players.forEach(player => {
                     const payload = {
                         type: "gameData",
                         content: {
                             me: {
                                 playerNum: player.header.playerNum
-                            }
+                            },
+                            players: {}
                         }
                     };
+                    room.players.forEach(player_ => {
+                        payload.content.players[`${player_.header.playerNum}`] = {
+                            nick: player_.header.nickname,
+                            playerNum: player_.header.playerNum,
+                        }
+                    });
 
                     player.header.socket.send(JSON.stringify(payload));
                 });

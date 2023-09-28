@@ -7,8 +7,9 @@ function getPlayeruuid () {
     return playeruuid;
 };
 
+const url = window.location.href.split(':')[1];
 const idRoom = (window.location.href).split('/room/')[1];
 const playeruuid = getPlayeruuid();
 
 //cria conexão websocket
-const ws = new WebSocket(`ws://localhost:8080/?idRoom=${idRoom}&playeruuid=${playeruuid}&nickname=${nickname}&roomPass=${roomPass}`);
+const ws = new WebSocket(`ws://${url}:8080/?idRoom=${idRoom}&playeruuid=${playeruuid}&nickname=${nickname}&roomPass=${roomPass}`);

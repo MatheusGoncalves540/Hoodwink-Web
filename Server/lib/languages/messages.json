@@ -18,6 +18,10 @@
             "connected": " entrou na sala",
             "reconnected": " voltou para a sala!",
             "disconnected": " saiu da sala"
+        },
+        "game": {
+            "takeCoin_basic":" pegou 1 moeda",
+            "playerTurn": "Aguardando jogada de: "
         }
     },
     "en": {}

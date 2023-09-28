@@ -22,13 +22,15 @@
         <label for="nickname"></label>
             <input id="nickname" type="text" name="nickname"> <br>
 
-        <label for="roomName">Room name:</label>
+        <abbr title="Minímo de 3 e máximo de 15 caracteres">Room name:</abbr>
+        <label for="roomName"></label>
             <input id="roomName" type="text" name="roomName"> <br>
 
-        <label for="roomPass">Room Password:</label>
+        <abbr title="Máximo de 20 caracteres">Room Password:</abbr>
+        <label for="roomPass"></label>
             <input id="roomPass" type="text" name="roomPass"> <br>
         
-        <label for="maxPlayer">Max Players:</label>
+        <label for="maxPlayer"></label>
             <input id="maxPlayer" type="range" name="maxPlayer" min="2" max="10" value="5" oninput="this.nextElementSibling.value = this.value">
         <output>Recomendado: 5</output> <br>
         
@@ -50,6 +52,10 @@
         <input type="submit" value="Join Room">
     </form>
 
+    <br><hr>
+
+    <h1><a href="/rules">Como jogar</a></h1>
+    
     <script src="/js/index.js"></script>
 </body>
 </html>

@@ -1,4 +1,7 @@
 const { Player } = require('./player_class');
+const msgServer = require('../../lib/languages/messages.json')['ptbr'];
+const { nextBigger } = require('../../lib/functions');
+const { getPlayerPublicInfos } = require('../../lib/functions');
 
 class Room {
   constructor(idNewRoom, roomName, maxPlayer, roomPass) {
@@ -10,43 +13,48 @@ class Room {
       startTime: undefined,
       startCoins: 2,
       maxCoins: 20,
+      timeToThink: 10,
     };
+
+    this.alreadyPlayed = false;
+    this.turn = 0;
+    this.currentTurnOwner = undefined;
+    this.tax = 0;
+    this.currentMove = "waiting to start";
+    this.rebel = {
+      doubled: 0, //se utilizado: +1 | //se "turnsUntilCheap" = 0: -1 e "turnsUntilCheap" = 3
+      usedThisTurn: false, //quando ser usado: = true
+      turnsUntilCheap: 3 //se passou um turno e não foi usado: -1
+    };
+    this.political = {
+      doubled: 0, //se utilizado: +1 | //se "turnsUntilCheap" = 0: -1 e "turnsUntilCheap" = 3
+      usedThisTurn: false, //quando ser usado = true
+      turnsUntilCheap: 3 //se passou um turno e não foi usado: -1
+    };
+
+    this.aliveDeck = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,11,11,11,12,12,12]; //nos decks, ficará o id de cada carta
+    this.deadDeck = []; 
+
+    this.players = [];
+    this.spectators = [];
     this.chat = [
-      {
+      { //estrutura de mensagem do chat
         time: [0, 0, 0],
         owner: "server",
         ownerNick: "server",
         content: "Sala criada!",
       },
     ];
-    this.turn = 0;
-    this.tax = 2;
-    
-    this.players = [];
-    this.spectators = [];
   };
 
   //adiciona o novo player na sala
   //parâmetros do player
-  addPlayerOnRoom(newPlayer) {
+  addNewPlayerOnRoom(newPlayer) {
     newPlayer['coins'] = this.header.startCoins < this.header.maxCoins ? this.header.startCoins : this.header.maxCoins;
-    newPlayer['cards'] = 2;
 
     this.players.push(new Player(newPlayer, this));
   };
-
-  //começa o jogo
-  startGame() {
-    if (this.turn !== 0) return;
-    
-    this.turn = 1;
-    this.header.startTime = Date.now();
-  };
-
-  //TODO a ideia é quando o jogo começar, gravar o date.now() e sempre que alguém fizer algo que precise do horário, o servidor faz a conta de "elapsedTimeInSeconds = Math.floor((currentTime - this.startTime) / 1000);"
-  //isso vai fazer com que o cliente saiba a quantos segundos começou aquela partida, e a partir dai, o timer fica apenas na parte do cliente.
-  //assim, é possível manter um timer preciso, mas sem precisar ficar contando cada segundo no servidor, apenas grava o horário de inicio e quando alguém precisa dessa informação, o próprio cliente começa a contar.
-
+  
   //retorna os segundos, minutos e horas passadas desde o inicio da partida
   elapsedTime() {
     if (this.turn !== 0) {
@@ -61,7 +69,7 @@ class Room {
       };
     } else {
       return {
-        startTime: undefined,
+        startTime: 0,
         seconds: 0,
         minutes: 0,
         hours: 0
@@ -104,16 +112,116 @@ class Room {
         turn: this.turn,
         time: time,
         tax: this.tax,
+        currentTurnOwner: this.currentTurnOwner !== undefined ? this.currentTurnOwner.header.nickname : this.currentTurnOwner,
+        currentMove: this.currentMove,
+        timesDoubledRebel: this.rebel.doubled,
+        timesDoubledPolitical: this.political.doubled,
+        aliveDeck: this.aliveDeck.length,
+        deadDeck: this.deadDeck.length,
+
         me: {
-            coins: connectedPlayer.coins,
-            cardsInHand: ['left','right'],
-            invested: connectedPlayer.invested,
-            playerNum: connectedPlayer.header.playerNum
+          coins: connectedPlayer.coins,
+          cardsInHand: [connectedPlayer.cards[0],connectedPlayer.cards[1]],
+          invested: connectedPlayer.invested,
+          playerNum: connectedPlayer.header.playerNum
         },
+
+        players: {}
       }
     };
+
+    this.players.forEach(player => {
+      payload.content.players[`${player.header.playerNum}`] = getPlayerPublicInfos(player);
+  });
+
     socket.send(JSON.stringify(payload));
   };
+
+  passTurnToNextPlayer(moveOwner) {
+    const playersNumbers = [];
+    this.players.forEach(player => {
+      if (player.isAlive) playersNumbers.push(player.header.playerNum);
+    });
+
+    const nextPlayer = nextBigger(playersNumbers, moveOwner.header.playerNum);
+    this.currentTurnOwner = this.players.find(player => player.header.playerNum === nextPlayer);
+    this.currentMove = `${msgServer.game.playerTurn}`+`${this.currentTurnOwner.header.nickname}`;
+
+    //caso o próximo a jogar, for o player com a menor posição, então é um novo turno
+    if (nextPlayer === Math.min(...playersNumbers)) this.newTurn();
+
+    const payload = {
+      type: "gameData",
+      content: {
+        turn: this.turn,
+        currentMove: this.currentMove,
+        currentTurnOwner: getPlayerPublicInfos(this.currentTurnOwner).nick,
+        moveTimer: this.header.timeToThink,
+      }
+    };
+
+    this.sendInfoForAllPlayers(payload);
+    this.alreadyPlayed = false;
+  };
+
+  newTurn() {
+    //troca o turno
+    this.turn ++;
+
+    //mecânica de preço do rebelde
+    if (this.rebel.doubled > 0 && !this.rebel.usedThisTurn) {
+      this.rebel.turnsUntilCheap --;
+
+      if (this.rebel.turnsUntilCheap <= 0) {
+        this.rebel.turnsUntilCheap = 3;
+        this.rebel.doubled --;
+      };
+    };
+
+    //mecânica de preço do politico
+    if (this.political.doubled > 0 && !this.political.usedThisTurn) {
+      this.political.turnsUntilCheap --;
+
+      if (this.political.turnsUntilCheap <= 0) {
+        this.political.turnsUntilCheap = 3;
+        this.political.doubled --;
+      };
+    };
+
+    //mecânica de aumento e diminuição aleatório das taxas
+    if (Math.random() <= 0.05) { //se cair nos 5% de chance
+
+      //50% de aumentar ou diminuir
+      
+      if (Math.random() <= 0.50) { 
+        //caso esteja no limite, faz o contrario
+        if (this.tax <= -5) { 
+          this.tax ++;
+        } else {
+          this.tax --; //TODO verificar aqui pois acho que só estão aumentando as taxas
+        };
+      } else {
+        if (this.tax >= 5) {
+          this.tax --;
+        } else {
+          this.tax ++;
+        };
+      };
+    };
+
+    //envia as informações para o cliente
+    const payload = {
+      type: "gameData",
+        content: {
+          turn: this.turn,
+          tax: this.tax,
+          timesDoubledRebel: this.rebel.doubled,
+          timesDoubledPolitical: this.political.doubled
+        }
+    };
+    this.sendInfoForAllPlayers(payload);
+  };
+
 };
 
 module.exports = { Room };

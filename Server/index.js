@@ -4,6 +4,9 @@ const { Start_WebSocket } = require('./engine/websocket');
 //mapa das salas
 let rooms = {};
 
+//define o fuso horário para o padrão UTC0
+process.env.TZ = 'UTC';
+
 //setar as páginas no express
 try {
   StartExpress_Pages(rooms);
