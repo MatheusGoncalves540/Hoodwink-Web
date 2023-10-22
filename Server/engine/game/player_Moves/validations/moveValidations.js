@@ -6,3 +6,9 @@
 //caso o player enviou uma jogada que não é possível ser feita, ele será expulso da sala por trapaça
 //Pois serão feitas validações no lado do cliente para que apenas as jogadas válidas sejam enviadas ao servidor.
 //então, caso elas tenham sido enviadas mesmo assim, o jogador adulterou os arquivos do cliente, e enviou uma jogada invalida à força.
+
+function updatePossibleMovesArray(possiblesMoves) {
+    
+};
+
+module.exports = { updatePossibleMovesArray }

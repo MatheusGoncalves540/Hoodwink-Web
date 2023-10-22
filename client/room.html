@@ -13,7 +13,7 @@
     </script>
     <link rel="stylesheet" type="text/css" href="/css/room/room.css" />
 </head>
-<body>
+<body oncontextmenu="return false;">
     <div class="container">
         <!-- Chat e notas -->
         <div id="tabs-area">
@@ -38,23 +38,23 @@
         </div>
 
         <!-- Cartas -->
-        <div class="cards">
-            <button id="card-1" class="card">Político</button>
-            <button id="card-2" class="card">Rebelde</button>
-            <button id="card-3" class="card">Assassino</button>
-            <button id="card-4" class="card">Trilionário</button>
-            <button id="card-5" class="card">Trapaceiro</button>
-            <button id="card-6" class="card">Necromante</button>
-            <button id="card-7" class="card">Crupiê</button>
-            <button id="card-8" class="card">Kamikaze</button>
-            <button id="card-9" class="card">Egoísta</button>
-            <button id="card-10" class="card">Clarividente</button>
-            <button id="card-11" class="card">Guardiã</button>
-            <button id="card-12" class="card">Investidor</button>
+        <div class="cards"> <!-- botões -->
+            <button id="card-1" class="card" disabled>Político</button>
+            <button id="card-2" class="card" disabled>Rebelde</button>
+            <button id="card-3" class="card" disabled>Assassino</button>
+            <button id="card-4" class="card" disabled>Trilionário</button>
+            <button id="card-5" class="card" disabled>Trapaceiro</button>
+            <button id="card-6" class="card" disabled>Necromante</button>
+            <button id="card-7" class="card" disabled>Crupiê</button>
+            <button id="card-8" class="card" disabled>Kamikaze</button>
+            <button id="card-9" class="card" disabled>Egoísta</button>
+            <button id="card-10" class="card" disabled>Clarividente</button>
+            <button id="card-11" class="card" disabled>Guardiã</button>
+            <button id="card-12" class="card" disabled>Investidor</button>
         </div>
 
         <!-- players -->
-        <div id="player-1" class="player">player 1</div>
+        <div id="player-1" class="player" style="word-wrap: break-word">player 1</div>
         <div id="player-2" class="player">player 2</div>
         <div id="player-3" class="player">player 3</div>
         <div id="player-4" class="player">player 4</div>
@@ -85,22 +85,22 @@
 
         <!-- ações básicas -->
         <div class="basic-actions">
-          <button id="Buy" onclick="if (gameData.turn !== 0) takeCoin_basic(1)">Pegar +1 moeda</button>
-          <button id="kill"></button>
-          <button id="switch"></button>
+          <button id="Buy" onclick="takeCoin_basic(1)" disabled>Pegar +1 moeda</button> <!-- botão -->
+          <button id="kill" disabled>Matar com as próprias mãos</button> <!-- botão -->
+          <button id="switch" disabled>Trocar cartas</button> <!-- botão -->
         </div>
 
         <div id="atual-moment">
             <p id="atual-moment-text" class="hidden">Iniciando...</p>
-            <button id="startGame-button" onclick="startGame();" >Iniciar</button>
+            <button id="startGame-button" onclick="startGame();" disabled>Iniciar</button> <!-- botão -->
         </div>
 
         <!-- demais elementos -->
         <div id="dead-deck"><span id="dead-deck-amount"></span></div>
         <div id="deck"><span id="deck-amount"></span></div>
 
-        <button id="contest" onclick="">Contestar</button>
-        <button id="pass" onclick="">Passar</button>
+        <button id="contest" onclick="" disabled>Contestar</button> <!-- botão -->
+        <button id="pass" onclick="pass_basic()" disabled>Passar</button> <!-- botão -->
 
       </div>
     <script src="/js/room/client_functions.js" onerror="errorOnLoadingScript()"></script>
@@ -108,5 +108,6 @@
     <script src="/js/room/ws_connction.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/ws_onRecive.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/ws_sending.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>
 </body>
 </html>

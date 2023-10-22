@@ -14,8 +14,8 @@ function startGame() {
 
 //ação básica de pegar moeda
 function takeCoin_basic(amount) {
-  // gameData.me.coins = gameData.me.coins + amount;
-  // document.getElementById('coin-amount').innerHTML = gameData.me.coins;
+  if (gameData.turn === 0) return;
+  if (gameData.currentTurnOwner !== gameData.me.nick) return;
   const payload = {
     type: "playerMove",
     owner: playeruuid,
@@ -28,7 +28,7 @@ function takeCoin_basic(amount) {
   ws.send(JSON.stringify(payload));
 };
 
-//ação básica de pegar 1 moeda
+//não fazer nada
 function pass_basic() {
   const payload = {
     type: "playerMove",

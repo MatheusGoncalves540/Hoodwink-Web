@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+
+body {
+    background-color: rgb(32, 32, 32);
+}
+
+#header {
+    background: rgb(32, 32, 32);
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0px;
+    width: 100%;
+}
+
+hr {
+    margin: 0px;
+}
+
+h1 {
+    margin: 0px;
+    font-size: 48px;
+    text-align: center;
+}
+
+p, h1, label {
+    font-family: 'EB Garamond', serif;
+    color: rgb(240, 240, 240);
+}
+
+p, abbr, label {
+    font-family: 'EB Garamond', serif;
+    color: rgb(240, 240, 240);
+    font-size: 25px;
+    word-wrap: break-word;
+}
+
+form {
+    text-align: center;
+    margin: 10%;
+    margin-top: 15%;
+}
+
+input {
+    color: rgb(240, 240, 240);
+    border-color: rgb(240, 240, 240);
+    background-color: rgb(32, 32, 32);
+    width: 15%;
+}
+
+input.button {
+    width: 25%;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(240, 240, 240);
+    border-radius: 20px;
+}
+
+#InputRoomId {
+    
+}

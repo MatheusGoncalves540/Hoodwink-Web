@@ -1,7 +1,7 @@
 const { Player } = require('./player_class');
-const msgServer = require('../../lib/languages/messages.json')['ptbr'];
 const { nextBigger } = require('../../lib/functions');
 const { getPlayerPublicInfos } = require('../../lib/functions');
+const { getPlayerNickFromCurrentMove } = require('../../lib/functions');
 
 class Room {
   constructor(idNewRoom, roomName, maxPlayer, roomPass) {
@@ -16,11 +16,13 @@ class Room {
       timeToThink: 10,
     };
 
+    this.possiblesMoves = {};
     this.alreadyPlayed = false;
     this.turn = 0;
     this.currentTurnOwner = undefined;
     this.tax = 0;
-    this.currentMove = "waiting to start";
+    this.coinLimit = 20;
+    this.currentMove = {};
     this.rebel = {
       doubled: 0, //se utilizado: +1 | //se "turnsUntilCheap" = 0: -1 e "turnsUntilCheap" = 3
       usedThisTurn: false, //quando ser usado: = true
@@ -32,13 +34,13 @@ class Room {
       turnsUntilCheap: 3 //se passou um turno e não foi usado: -1
     };
 
-    this.aliveDeck = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,11,11,11,12,12,12]; //nos decks, ficará o id de cada carta
+    
+    this.aliveDeck = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,11,11,11,12,12,12]; 
     this.deadDeck = []; 
 
     this.players = [];
     this.spectators = [];
-    this.chat = [
-      { //estrutura de mensagem do chat
+    this.chat = [{ //estrutura de mensagem do chat
         time: [0, 0, 0],
         owner: "server",
         ownerNick: "server",
@@ -47,11 +49,24 @@ class Room {
     ];
   };
 
+  //quando for executado, verifica se não há players, e depois do tempo faz a mesma verificação e exclui se não houver mais players
+  selfDestructionByNoPlayers(rooms) {
+    if (this.players.length <= 0) {
+      const timeWithoutPlayers = 1800; //30 min
+
+      setTimeout(() => {
+        if (this.players.length <= 0) {
+          delete rooms[this.header.roomId];
+        };
+
+      }, timeWithoutPlayers * 1000);
+    };
+  };
+
   //adiciona o novo player na sala
   //parâmetros do player
   addNewPlayerOnRoom(newPlayer) {
     newPlayer['coins'] = this.header.startCoins < this.header.maxCoins ? this.header.startCoins : this.header.maxCoins;
-
     this.players.push(new Player(newPlayer, this));
   };
   
@@ -83,8 +98,8 @@ class Room {
     
     this.players.forEach(player => {
       try {
-          player.header.socket.send(payload);
-      } catch { };
+        player.header.socket.send(payload);
+      } catch {};
     });
   };
 
@@ -107,11 +122,12 @@ class Room {
 
     const payload = {
       type: "gameData",
-      content: { //TODO enviar todas as informações necessárias para a construção da tela do jogo na tela do cliente
+      content: {
         roomName: this.header.roomName,
         turn: this.turn,
         time: time,
         tax: this.tax,
+        coinLimit: this.coinLimit,
         currentTurnOwner: this.currentTurnOwner !== undefined ? this.currentTurnOwner.header.nickname : this.currentTurnOwner,
         currentMove: this.currentMove,
         timesDoubledRebel: this.rebel.doubled,
@@ -140,21 +156,28 @@ class Room {
   passTurnToNextPlayer(moveOwner) {
     const playersNumbers = [];
     this.players.forEach(player => {
-      if (player.isAlive) playersNumbers.push(player.header.playerNum);
+      if (player.isAlive && player.header.socket !== null) playersNumbers.push(player.header.playerNum);
     });
 
     const nextPlayer = nextBigger(playersNumbers, moveOwner.header.playerNum);
     this.currentTurnOwner = this.players.find(player => player.header.playerNum === nextPlayer);
-    this.currentMove = `${msgServer.game.playerTurn}`+`${this.currentTurnOwner.header.nickname}`;
+
+    this.currentMove = {
+      moveType: "waitingFirstMove",
+      player: this.currentTurnOwner
+    };
 
     //caso o próximo a jogar, for o player com a menor posição, então é um novo turno
     if (nextPlayer === Math.min(...playersNumbers)) this.newTurn();
+
+    const currentMove_clients = this.currentMove;
+    currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);
 
     const payload = {
       type: "gameData",
       content: {
         turn: this.turn,
-        currentMove: this.currentMove,
+        currentMove: currentMove_clients,
         currentTurnOwner: getPlayerPublicInfos(this.currentTurnOwner).nick,
         moveTimer: this.header.timeToThink,
       }
@@ -189,7 +212,7 @@ class Room {
     };
 
     //mecânica de aumento e diminuição aleatório das taxas
-    if (Math.random() <= 0.05) { //se cair nos 5% de chance
+    if (Math.random() <= 0.05) { //se cair nos 10% de chance
 
       //50% de aumentar ou diminuir
       
@@ -198,7 +221,7 @@ class Room {
         if (this.tax <= -5) { 
           this.tax ++;
         } else {
-          this.tax --; //TODO verificar aqui pois acho que só estão aumentando as taxas
+          this.tax --;
         };
       } else {
         if (this.tax >= 5) {
@@ -212,15 +235,21 @@ class Room {
     //envia as informações para o cliente
     const payload = {
       type: "gameData",
-        content: {
-          turn: this.turn,
-          tax: this.tax,
-          timesDoubledRebel: this.rebel.doubled,
-          timesDoubledPolitical: this.political.doubled
-        }
+      content: {
+        turn: this.turn,
+        tax: this.tax,
+        timesDoubledRebel: this.rebel.doubled,
+        timesDoubledPolitical: this.political.doubled
+      }
     };
     this.sendInfoForAllPlayers(payload);
   };
+
+  // revalidateAllPlayersPossiblesMoves() {
+  //   this.players.forEach(player => {
+      
+  //   });
+  // }
 
 };
 

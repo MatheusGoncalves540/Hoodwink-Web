@@ -5,3 +5,13 @@ span {
 img {
     border: 0px !important;
 }
+
+#room-code, #tax, #turn, #timer, .player, #deck, #dead-deck, #coin-amount-area, #invest-amount-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.disconnectedPlayer {
+    opacity: 0.5;
+}

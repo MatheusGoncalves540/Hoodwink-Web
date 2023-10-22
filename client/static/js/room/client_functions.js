@@ -1,7 +1,10 @@
-function verifyFirstReceipt(msg) {
-    if (msg.content.roomName) document.title = msg.content.roomName;
+function FirstReceipt(msg) {
+    if (msg.content.roomName) {
+        document.title = msg.content.roomName;
+        if (gameData.turn === 0) window.alert("Compartilhe o link desta página com seus amigos. Ou envie à eles o id da sala!");
+    };
     if (msg.content.time) {
-	startTimer(msg.content.time.startTime);
+	    startTimer(msg.content.time.startTime);
     };
     if (gameData.turn !== 0 && !document.getElementById('startGame-button').classList.contains('hidden')) {
         document.getElementById('startGame-button').classList.add('hidden');
@@ -28,21 +31,86 @@ function updateTimer() {
 };
 
 //atualiza todas as informações da tela com base no "gameData"
-function updateScreenInfos() {
+function updateScreenInfos(msg) {
+    document.getElementById('room-code').innerHTML = gameData.turn !== 0 ? 'vez de: ' + gameData.currentTurnOwner : gameData.currentTurnOwner;
     document.getElementById('coin-amount').innerHTML = gameData.me.coins;
     document.getElementById('tax-amount').innerHTML = gameData.tax;
     document.getElementById('turns').innerHTML = gameData.turn;
     document.getElementById('invest-amount').innerHTML = gameData.me.invested.length;
-    document.getElementById('atual-moment-text').innerHTML = gameData.currentMove; 
+    document.getElementById('atual-moment-text').innerHTML = generateCurrentTurnText();
     document.getElementById('card-left').innerHTML = gameData.me.cardsInHand[0];
     document.getElementById('card-right').innerHTML = gameData.me.cardsInHand[1];
-    document.getElementById('room-code').innerHTML = gameData.turn ==! 0 ? 'vez de: ' + gameData.currentTurnOwner : gameData.currentTurnOwner;
-    document.getElementById('dead-deck-amount').innerHTML = gameData.deadDeck
-    document.getElementById('deck-amount').innerHTML = gameData.aliveDeck
-
+    document.getElementById('dead-deck-amount').innerHTML = gameData.deadDeck;
+    document.getElementById('deck-amount').innerHTML = gameData.aliveDeck;
+    updateConnectedPlayers(msg);
+    document.getElementById('startGame-button').innerHTML = gameData.players[2].connected === false ? 'Aguardando players...' : 'Iniciar';
 
     updateTimer();
+    updateToggleButtons();
 };
+
+function updateConnectedPlayers(msg) {
+    Object.keys(gameData.players).forEach(playerNum => {
+        if ('players' in msg.content) {
+            if (playerNum in msg.content.players) {
+            document.getElementById(`player-${playerNum}`).innerHTML =
+            `${gameData.players[playerNum].playerNum} - ${gameData.players[playerNum].nick}, cartas: ${gameData.players[playerNum].num_cards}, moedas: ${gameData.players[playerNum].coins}
+            investido: ${gameData.players[playerNum].invested.length}`;
+
+            } else if (gameData.turn === 0) {
+                document.getElementById(`player-${playerNum}`).innerHTML = "";
+                gameData.players[playerNum] = {
+                    nick: "",
+                    playerNum: playerNum,
+                    num_cards: null,
+                    coins: null,
+                    invested: [],
+                    usedCards: {},
+                    connected: false
+                };
+            };
+        };
+    });
+
+    if (gameData.turn !== 0) {
+        Object.keys(gameData.players).forEach(playerNum => {
+            if (!gameData.players[playerNum].connected){
+                document.getElementById(`player-${playerNum}`).classList.add('disconnectedPlayer');
+                if (gameData.players[playerNum].nick !== "" && !document.getElementById(`player-${playerNum}`).textContent.includes(' - AFK')) {
+                    document.getElementById(`player-${playerNum}`).innerHTML += ' - AFK';
+                };
+            };
+
+            if (gameData.players[playerNum].connected) {
+                document.getElementById(`player-${playerNum}`).classList.remove('disconnectedPlayer');
+            };
+        });
+    };
+};
+
+//gera o texto da jogada atual, com base no que foi recebido do servidor
+function generateCurrentTurnText() {
+    switch (gameData.currentMove.moveType) {
+        case "waitingFirstMove":
+            if (gameData.me.nick == gameData.currentTurnOwner) return "aguardando sua jogada..."
+            return `aguardando jogada de: ${gameData.currentTurnOwner}`
+            
+        case "takeCoin_basic":
+            if (gameData.currentMove.amount > 1) return `${gameData.currentTurnOwner} pegou ${gameData.currentMove.amount} moedas`
+            return `${gameData.currentTurnOwner} pegou ${gameData.currentMove.amount} moeda`
+
+        case "pass_basic":
+            return `${gameData.currentTurnOwner} passou a vez...`
+            
+        case "": //TODO continuar a adicionar as jogadas
+            return ``
+
+        default:
+
+        break;
+    };
+};
+
 
 //recupera as notas do localStorage
 document.getElementById("notes").value = localStorage.getItem("notes");

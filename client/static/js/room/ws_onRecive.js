@@ -17,8 +17,8 @@ ws.onmessage = function(msg) {
 
         case 'gameData':
             mergeObjects(gameData, msg.content);
-            verifyFirstReceipt(msg);
-            updateScreenInfos();
+            FirstReceipt(msg);
+            updateScreenInfos(msg);
         break;
     
         default:
@@ -35,6 +35,6 @@ function mergeObjects(target, source) {
             mergeObjects(target[key], source[key]);
         } else {
             target[key] = source[key];
-        }
-    }
-}
+        };
+    };
+};

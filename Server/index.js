@@ -7,23 +7,16 @@ let rooms = {};
 //define o fuso horário para o padrão UTC0
 process.env.TZ = 'UTC';
 
-//setar as páginas no express
-try {
-  StartExpress_Pages(rooms);
-} catch (error) {
-  console.log(error);
-}
+//não parar o processo caso ocorra um erro
+process.on('uncaughtException', (error) => {
+  console.error('Erro não tratado:', error);
+});
 
-//da inicio a tudo referente aos websockets
-try {
-  Start_WebSocket(rooms);
-} catch (error) {
-  console.log(error);
-}
+//define as páginas no express
+StartExpress_Pages(rooms);
 
-//depois que tudo foi definido corretamente: Inicie as páginas express
-try {
-  Listen_App();
-} catch (error) {
-  console.log(error);
-}
+//executa inicio a tudo referente aos websockets
+Start_WebSocket(rooms);
+
+//depois que tudo foi definido corretamente: execute as páginas express
+Listen_App();

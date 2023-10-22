@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preparando entrada...</title>
+    <link rel="stylesheet" type="text/css" href="/css/enteringByUrl.css">
+</head>
+<body>
+    <div id="header">
+        <h1>HOODWINK</h1>
+        <hr>
+    </div>
+    
+    
+    <form id="EnterRoom" action="/room/RoomId" method="post">
+        <h1 id="titlePage">Preparando entrada na sala: </h1>
+        <label for="nickname">Nickname:</label>
+            <input id="nickname" type="text" name="nickname"> <br>
+        
+        <input type="text" id="InputRoomId" name="InputRoomId" hidden><br>
+
+        <label for="roomPass">Senha da sala:</label>
+            <input type="text" id="roomPass" name="roomPass"> <br><br>
+        <input class="button" type="submit" value="Entrar na sala">
+    </form>
+
+    <script src="/js/enteringByUrl.js"></script>
+</body>
+</html>

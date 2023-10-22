@@ -36,27 +36,28 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
             playerToUpdate.header.socket = newPlayer.socket;
             playerToUpdate.header.nickname = newPlayer.nickname;
             const payload = {
-                "type": "msg_chat",
-                "msgs": [{
-                    "content": newPlayer.nickname + msgServer.chat.reconnected,
-                    "owner": "server"
-                }]
+                type: "gameData",
+                content: {
+                    players: {}
+                }
             };
+            room.players.forEach(player_ => {
+                payload.content.players[`${player_.header.playerNum}`] = {
+                    nick: player_.header.nickname,
+                    playerNum: player_.header.playerNum,
+                    coins: player_.coins,
+                    num_cards: player_.cards.length,
+                    invested: player_.invested,
+                    usedCards: player_.usedCards,
+                    connected: player_.header.socket !== null ? true : false
+                }
+            });
+            
             room.sendInfoForAllPlayers(payload);
         }
         //caso o jogo ainda não tenha iniciado, adiciona o novo jogador na sala
         else if (room.turn === 0) {
             room.addNewPlayerOnRoom(newPlayer);
-
-            const payload = {
-                "type": "msg_chat",
-                "msgs": [{
-                    "content": newPlayer.nickname + msgServer.chat.connected,
-                    "owner": "server"
-                }]
-            };
-            room.sendInfoForAllPlayers(payload);
-
             room.players.forEach(player => {
                 const payload = {
                     type: "gameData",
@@ -67,11 +68,15 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
                         players: {}
                     }
                 };
-                //TODO as informações do player 1, não estão sendo enviadas ao cliente
                 room.players.forEach(player_ => {
                     payload.content.players[`${player_.header.playerNum}`] = {
                         nick: player_.header.nickname,
                         playerNum: player_.header.playerNum,
+                        coins: player_.coins,
+                        num_cards: player_.cards.length,
+                        invested: player_.invested,
+                        usedCards: player_.usedCards,
+                        connected: player_.header.socket !== null ? true : false
                     }
                 });
 
@@ -79,14 +84,14 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
             });
         }
         //caso ele não estava na partida antes e o jogo já começou
-        else { //TODO conectar o cliente como espectador então
+        else { //
             socket.close();
-            return; //ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI
+            return; //TODO ADICIONAR RETORNO DE ERRO PARA O CLIENTE AQUI ou conectar o cliente como espectador então
         };
 
         room.BringGameInfos(socket);
-
         BringPastMessages(room, newPlayer.playeruuid);
+        console.log('somebody connected');
 };
 
 module.exports = { socketOnNewConnection };

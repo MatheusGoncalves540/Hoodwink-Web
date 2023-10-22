@@ -16,40 +16,48 @@
         <option value="en">en</option>
     </select>
     </div> -->
-    <h1>Create Game</h1> 
+    <div id="header">
+        <h1>HOODWINK</h1>
+        <hr>
+    </div>
+    <br>
+    <br>
+    <br>
+    <h1>Criar sala</h1> 
     <form id="createRoomForm" action="/creating-room" method="post">
-        <abbr title="Minímo de 3 e máximo de 15 caracteres">Nickname:</abbr>
+        <abbr title="Mínimo de 3 e máximo de 15 caracteres">Nickname:</abbr>
         <label for="nickname"></label>
             <input id="nickname" type="text" name="nickname"> <br>
 
-        <abbr title="Minímo de 3 e máximo de 15 caracteres">Room name:</abbr>
+        <abbr title="Mínimo de 3 e máximo de 15 caracteres">Nome da sala:</abbr>
         <label for="roomName"></label>
             <input id="roomName" type="text" name="roomName"> <br>
 
-        <abbr title="Máximo de 20 caracteres">Room Password:</abbr>
+        <abbr title="Máximo de 20 caracteres">Senha da sala:</abbr>
         <label for="roomPass"></label>
             <input id="roomPass" type="text" name="roomPass"> <br>
         
+        <abbr title="Recomendado 5">Vagas:</abbr>
         <label for="maxPlayer"></label>
             <input id="maxPlayer" type="range" name="maxPlayer" min="2" max="10" value="5" oninput="this.nextElementSibling.value = this.value">
-        <output>Recomendado: 5</output> <br>
+        <output>5</output> <br>
         
-        <input type="submit" value="Create Room">
+        <input class="button" type="submit" value="Criar sala">
     </form>
 
     <br><hr>
 
-    <h1>Join Game</h1>
+    <h1>Entrar em sala</h1>
     <form id="EnterRoom" action="/room/RoomId" method="post">
         <label for="nickname">Nickname:</label>
             <input id="nickname" type="text" name="nickname"> <br>
         
-        <label for="InputRoomId">Room Id:</label>
+        <label for="InputRoomId">Id da sala:</label>
             <input type="text" id="InputRoomId" name="InputRoomId"> <br>
 
-        <label for="roomPass">Room Password:</label>
-            <input type="text" id="roomPass" name="roomPass">
-        <input type="submit" value="Join Room">
+        <label for="roomPass">Senha da sala:</label>
+            <input type="text" id="roomPass" name="roomPass"> <br><br>
+        <input class="button" type="submit" value="Entrar na sala">
     </form>
 
     <br><hr>

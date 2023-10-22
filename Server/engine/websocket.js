@@ -16,10 +16,8 @@ function Start_WebSocket(rooms) {
     const { idRoom } = urlData;
     const room = rooms[idRoom];
 
-    console.log('connected');
-
     //comandos executados quando um socket é desconectado
-    socketOnCloseConnection(socket, room, msgServer);
+    socketOnCloseConnection(socket, room, rooms);
 
     //comandos executados quando um novo socket é conectado
     socketOnNewConnection(socket, room, urlData, msgServer);

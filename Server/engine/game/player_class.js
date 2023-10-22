@@ -15,6 +15,27 @@ class Player {
         //  o comprimento deste array, é a quantidade de moedas investida
         //  o número que estiver neste array, é a quantidade de turnos que a moeda permanecerá aqui
         ];
+        this.possiblesMoves = {
+            card: {
+                1: false,
+                2: false,
+                3: false,
+                4: false,
+                5: false,
+                6: false,
+                7: false,
+                8: false,
+                9: false,
+                11: false,
+                12: false
+            },
+            pass: false,
+            contest: false,
+            takeCoin: false,
+            killByHands: false,
+            switchCardsInHand: false
+        },
+        this.passed = false;
     };
     
 };

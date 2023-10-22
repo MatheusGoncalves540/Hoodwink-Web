@@ -27,6 +27,8 @@ function StartExpress_Pages(rooms) {
     Lobby_Page();
     //Página que recebe as informações que vieram do lobby e cria a sala
     CreatingRoom_Page(rooms);
+    //Página que recebe requisições de entrada por link
+    EnterByUrl_Page();
     //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
     Room_Page(rooms);
     //Página de regras
@@ -82,6 +84,11 @@ function CreatingRoom_Page(rooms) {
     });
 };
 
+function EnterByUrl_Page() {
+    app.get("/room/:id", (req, res) => {
+        res.render(path.join(__dirname, '..', '..', 'client', 'enteringByUrl.html'));
+    });
+}
 
 //ao receber um post aqui, tentará entrar em uma sala com os atributo que foram enviados
 function Room_Page(rooms) {
