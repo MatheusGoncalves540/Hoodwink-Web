@@ -22,7 +22,7 @@ ws.onmessage = function(msg) {
         break;
     
         default:
-            break;
+        break;
     };
 };
 

@@ -1,0 +1,58 @@
+{
+    "1": {
+        "fixPrice": 2,
+        "doubled": 0,
+        "usedThisTurn": false,
+        "roundsUntilCheaper": 3
+    },
+    "2": {
+        "fixPrice": 2,
+        "doubled": 0,
+        "usedThisTurn": false,
+        "roundsUntilCheaper": 3
+    },
+    "3": {
+        "price": 3,
+        "taxMinimum": 2
+    },
+    "4": {
+        "amountReceived": 3,
+        "taxMinimum": 1
+    },
+    "5": {
+        "amountWithdrawn": 2,
+        "taxMinimum": 2,
+        "taxMax": 5
+    },
+    "6": {
+        "price": 6,
+        "taxMinimum": 3
+    },
+    "7": {
+        "price": 6,
+        "taxMinimum": 3
+    },
+    "8": {
+
+    },
+    "9": {
+        "fixPrice": 1,
+        "price": 6,
+        "taxMinimum": 3,
+        "taxMax": 5
+    },
+    "10": {
+        "price": 4,
+        "taxMinimum": 2
+    },
+    "11": {
+        "price": 5,
+        "taxMinimum": 3
+    },
+    "12": {
+        "investPrice": 1,
+        "investedMaxAmount": 3,
+        "taxMinimum": 2,
+        "taxMax": 5
+    }
+}

@@ -1,6 +1,6 @@
 //TODO quando o player for desconectado: player.waitReconnecting = true. Se depois de 5 segundos: player.waitReconnecting === true, então: exibe a mensagem de desconectado e torna a variável false.
 //E na parte que exibe a mensagem de conectado, se player.waitReconnecting === true: Não exibe a mensagem, caso contrario, exibe normalmente.
-function socketOnCloseConnection(socket, room, rooms) {
+function socketOnCloseConnection(socket, room, rooms, playingNow) {
     socket.on('close', function () {
         
             const disconnectedPlayer = room.players.find(player => player.header.socket === socket);
@@ -47,6 +47,8 @@ function socketOnCloseConnection(socket, room, rooms) {
             });
 
             room.selfDestructionByNoPlayers(rooms);
+            playingNow.connected --;
+            console.log(playingNow)
             console.log('somebody disconnected');
     });
 };

@@ -1,6 +1,15 @@
 const { getPlayerNickFromCurrentMove } = require('../../../../lib/functions');
 
 function takeCoin_basic(playerMove, room) {
+    // playerMove = {
+    //     type: "playerMove",
+    //     owner: playeruuid,
+    //     content: {
+    //       action: "takeCoin_basic",
+    //       amount: amount
+    //     }
+    // };
+
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
     
     moveOwner.coins += playerMove.content.amount;
@@ -16,7 +25,7 @@ function takeCoin_basic(playerMove, room) {
     currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);
 
     //tempo em segundos que será mostrado no "currentMove"
-    const displayTime = 2;
+    const displayTime = room.header.displayTime;
 
     const payloadToOwner = {
         type: "gameData",

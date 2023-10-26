@@ -13,7 +13,7 @@
     </script>
     <link rel="stylesheet" type="text/css" href="/css/room/room.css" />
 </head>
-<body oncontextmenu="return false;">
+<body oncontextmenu="return false;" ononline="location.reload();" onoffline="location.reload();">
     <div class="container">
         <!-- Chat e notas -->
         <div id="tabs-area">
@@ -39,22 +39,22 @@
 
         <!-- Cartas -->
         <div class="cards"> <!-- botões -->
-            <button id="card-1" class="card" disabled>Político</button>
-            <button id="card-2" class="card" disabled>Rebelde</button>
-            <button id="card-3" class="card" disabled>Assassino</button>
-            <button id="card-4" class="card" disabled>Trilionário</button>
-            <button id="card-5" class="card" disabled>Trapaceiro</button>
-            <button id="card-6" class="card" disabled>Necromante</button>
-            <button id="card-7" class="card" disabled>Crupiê</button>
-            <button id="card-8" class="card" disabled>Kamikaze</button>
-            <button id="card-9" class="card" disabled>Egoísta</button>
-            <button id="card-10" class="card" disabled>Clarividente</button>
-            <button id="card-11" class="card" disabled>Guardiã</button>
-            <button id="card-12" class="card" disabled>Investidor</button>
+            <button id="card-1" class="card" onclick="card_1()" disabled>Político: <span id="card-1-price"></span></button>
+            <button id="card-2" class="card" onclick="card_2()" disabled>Rebelde: <span id="card-2-price"></span></button>
+            <button id="card-3" class="card" onclick="card_3()" disabled>Assassino: <span id="card-3-price"></span></button>
+            <button id="card-4" class="card" onclick="card_4()" disabled>Trilionário: <span id="card-4-price"></span></button>
+            <button id="card-5" class="card" onclick="card_5()" disabled>Trapaceiro: <span id="card-5-price"></span></button>
+            <button id="card-6" class="card" onclick="card_6()" disabled>Coveiro: <span id="card-6-price"></span></button>
+            <button id="card-7" class="card" onclick="card_7()" disabled>Crupiê: <span id="card-7-price"></span></button>
+            <button id="card-8" class="card" onclick="card_8()" disabled>Kamikaze: <span id="card-8-price"></span></button>
+            <button id="card-9" class="card" onclick="card_9()" disabled>Egoísta: 1 ou <span id="card-9-price"></span></button>
+            <button id="card-10" class="card" onclick="card_10()" disabled>Clarividente: <span id="card-10-price"></span></button>
+            <button id="card-11" class="card" onclick="card_11()" disabled>Guardiã: <span id="card-11-price"></span></button>
+            <button id="card-12" class="card" onclick="card_12()" disabled>Investidor: <span id="card-12-price"></span></button>
         </div>
 
-        <!-- players -->
-        <div id="player-1" class="player" style="word-wrap: break-word">player 1</div>
+        <!-- players -->  
+        <div id="player-1" class="player">player 1</div> <!-- TODO pesquisar como transformar essas divs em check box pra seleção de interação com os players e cartas -->
         <div id="player-2" class="player">player 2</div>
         <div id="player-3" class="player">player 3</div>
         <div id="player-4" class="player">player 4</div>
@@ -99,8 +99,8 @@
         <div id="dead-deck"><span id="dead-deck-amount"></span></div>
         <div id="deck"><span id="deck-amount"></span></div>
 
-        <button id="contest" onclick="" disabled>Contestar</button> <!-- botão -->
-        <button id="pass" onclick="pass_basic()" disabled>Passar</button> <!-- botão -->
+        <button id="dispute" onclick="" disabled>Contestar</button> <!-- botão -->
+        <button id="pass" onclick="(gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === 'waitingFirstMove') ? pass_basic() : pass()" disabled>Passar</button> <!-- botão -->
 
       </div>
     <script src="/js/room/client_functions.js" onerror="errorOnLoadingScript()"></script>

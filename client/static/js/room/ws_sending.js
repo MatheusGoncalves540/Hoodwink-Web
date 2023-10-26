@@ -1,7 +1,5 @@
 //começar o jogo
 function startGame() {
-  document.getElementById('startGame-button').classList.add('hidden');
-  document.getElementById('atual-moment-text').classList.remove('hidden');
   const payload = {
     type: "playerMove",
     owner: playeruuid,
@@ -16,6 +14,7 @@ function startGame() {
 function takeCoin_basic(amount) {
   if (gameData.turn === 0) return;
   if (gameData.currentTurnOwner !== gameData.me.nick) return;
+  if (gameData.me.coins >= gameData.coinLimit) return;
   const payload = {
     type: "playerMove",
     owner: playeruuid,
@@ -30,11 +29,72 @@ function takeCoin_basic(amount) {
 
 //não fazer nada
 function pass_basic() {
+  if (gameData.turn === 0) return;
+  if (gameData.currentTurnOwner !== gameData.me.nick || gameData.currentMove.moveType !== "waitingFirstMove") return pass();
   const payload = {
     type: "playerMove",
     owner: playeruuid,
     content: {
       action: "pass_basic"
+    }
+  };
+  
+  ws.send(JSON.stringify(payload));
+}; //TODO adicionar variante do "pass_basic", só o "pass", que é enviado quando voce quer ignorar/não contestar a jogada de alguém, e não passar seu turno
+
+function pass() {
+  if (
+    (gameData.turn === 0) ||
+    (gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === "waitingFirstMove"))
+  return pass_basic();
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "pass"
+    }
+  };
+  
+  ws.send(JSON.stringify(payload));
+}
+
+//TODO fazer a ação de contestação
+
+//usar a carta 1
+function card_1() {
+  if (
+    (gameData.turn === 0) ||
+    (gameData.currentTurnOwner !== gameData.me.nick) ||
+    (gameData.me.coins < (gameData.cards["1"].fixPrice ** (gameData.cards["1"].doubled + 1))) ||
+    (gameData.tax > 5))
+  return;
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "card_1"
+    }
+  };
+  
+  ws.send(JSON.stringify(payload));
+};
+
+//usar a carta 2
+function card_2() {
+  if (
+    (gameData.turn === 0) ||
+    (gameData.currentTurnOwner !== gameData.me.nick) ||
+    (gameData.me.coins < (gameData.cards["2"].fixPrice ** (gameData.cards["2"].doubled + 1))) ||
+    (gameData.tax < -5))
+  return;
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "card_2"
     }
   };
   

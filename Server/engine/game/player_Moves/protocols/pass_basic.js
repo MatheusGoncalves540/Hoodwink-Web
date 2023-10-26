@@ -1,6 +1,14 @@
 const { getPlayerNickFromCurrentMove } = require('../../../../lib/functions');
 
 function pass_basic(playerMove, room) {
+    // playerMove = {
+    //     type: "playerMove",
+    //     owner: playeruuid,
+    //     content: {
+    //       action: "pass_basic"
+    //     }
+    // };
+
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
 
     if (room.currentMove.moveType === 'waitingFirstMove') {
@@ -11,7 +19,7 @@ function pass_basic(playerMove, room) {
         };
 
         //tempo em segundos que será mostrado no "currentMove"
-        const displayTime = 2;
+        const displayTime = room.header.displayTime;
 
         const currentMove_clients = room.currentMove;
         currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);

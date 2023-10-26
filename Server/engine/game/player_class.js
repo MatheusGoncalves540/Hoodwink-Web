@@ -29,8 +29,9 @@ class Player {
                 11: false,
                 12: false
             },
+            pass_basic: false,
             pass: false,
-            contest: false,
+            dispute: false,
             takeCoin: false,
             killByHands: false,
             switchCardsInHand: false

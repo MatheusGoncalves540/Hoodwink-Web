@@ -45,8 +45,37 @@ function updateScreenInfos(msg) {
     updateConnectedPlayers(msg);
     document.getElementById('startGame-button').innerHTML = gameData.players[2].connected === false ? 'Aguardando players...' : 'Iniciar';
 
+    updateCardsPrice();
     updateTimer();
     updateToggleButtons();
+};
+
+function updateCardsPrice() {
+    Object.keys(gameData.cards).forEach(cardId => {
+        if (cardId == 1 || cardId == 2) {
+            document.getElementById(`card-${cardId}-price`).innerHTML = `${calculateCard1And2Prices(gameData.cards[`${cardId}`])}`;
+            return
+        };
+        if ('price' in gameData.cards[`${cardId}`]) {
+            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].price}`;
+        }
+        else if ('fixPrice' in gameData.cards[`${cardId}`]) {
+            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].fixPrice}`;
+        };
+        if ('investPrice' in gameData.cards[`${cardId}`]) {
+            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].investPrice}`;
+        };
+        if ('amountWithdrawn' in gameData.cards[`${cardId}`]) {
+            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].amountWithdrawn}`;
+        };
+        if ('amountReceived' in gameData.cards[`${cardId}`]) {
+            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].amountReceived}`;
+        };
+    });
+};
+
+function calculateCard1And2Prices(card) {
+    return (card.fixPrice ** (card.doubled + 1));
 };
 
 function updateConnectedPlayers(msg) {
@@ -102,10 +131,13 @@ function generateCurrentTurnText() {
         case "pass_basic":
             return `${gameData.currentTurnOwner} passou a vez...`
             
-        case "": //TODO continuar a adicionar as jogadas
-            return ``
+        case "card_1": 
+            return `${gameData.currentTurnOwner} quer utilizar o Político. As taxas serão aumentadas em 1.`
 
-        default:
+        case "card_2": 
+            return `${gameData.currentTurnOwner} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
+
+        default://TODO continuar a adicionar as jogadas
 
         break;
     };
@@ -161,8 +193,7 @@ function startTimer(startTime) {
     if (timeRunning === true) return;
 	
     setInterval(() => {
-	const agora = (Date.now()); 
-        const secondsPassTotal = Math.floor((agora - startTime) / 1000);
+        const secondsPassTotal = Math.floor((Date.now() - startTime) / 1000);
         const minutesPassTotal = Math.floor(secondsPassTotal / 60);
         const hoursPassTotal = Math.floor(minutesPassTotal / 60);
 

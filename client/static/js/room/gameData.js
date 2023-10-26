@@ -22,6 +22,8 @@ let gameData = {
     tax: 0,
     coinLimit: 20,
 
+    cards: {},
+
     me: {
         nick: nickname,
         coins: 0,

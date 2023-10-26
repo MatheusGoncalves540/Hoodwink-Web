@@ -2,6 +2,7 @@ const { Player } = require('./player_class');
 const { nextBigger } = require('../../lib/functions');
 const { getPlayerPublicInfos } = require('../../lib/functions');
 const { getPlayerNickFromCurrentMove } = require('../../lib/functions');
+const cardsData = require('./cardsDefaultData.json');
 
 class Room {
   constructor(idNewRoom, roomName, maxPlayer, roomPass) {
@@ -11,29 +12,22 @@ class Room {
       maxPlayer: maxPlayer,
       roomPass: roomPass,
       startTime: undefined,
-      startCoins: 2,
+      startCoins: 8,
       maxCoins: 20,
-      timeToThink: 10,
+      displayTime_withPossibleCounterPlays: 8,
+      displayTime: 2
     };
 
-    this.possiblesMoves = {};
     this.alreadyPlayed = false;
     this.turn = 0;
     this.currentTurnOwner = undefined;
     this.tax = 0;
     this.coinLimit = 20;
     this.currentMove = {};
-    this.rebel = {
-      doubled: 0, //se utilizado: +1 | //se "turnsUntilCheap" = 0: -1 e "turnsUntilCheap" = 3
-      usedThisTurn: false, //quando ser usado: = true
-      turnsUntilCheap: 3 //se passou um turno e não foi usado: -1
-    };
-    this.political = {
-      doubled: 0, //se utilizado: +1 | //se "turnsUntilCheap" = 0: -1 e "turnsUntilCheap" = 3
-      usedThisTurn: false, //quando ser usado = true
-      turnsUntilCheap: 3 //se passou um turno e não foi usado: -1
-    };
-
+    
+    this.playInTimeOut = undefined;
+    this.moveFunction = undefined;
+    this.playersWhoWantsToSkip = [];
     
     this.aliveDeck = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,11,11,11,12,12,12]; 
     this.deadDeck = []; 
@@ -42,11 +36,13 @@ class Room {
     this.spectators = [];
     this.chat = [{ //estrutura de mensagem do chat
         time: [0, 0, 0],
-        owner: "server",
-        ownerNick: "server",
+        owner: "Servidor",
+        ownerNick: "Servidor",
         content: "Sala criada!",
       },
     ];
+
+    this.cards = cardsData;
   };
 
   //quando for executado, verifica se não há players, e depois do tempo faz a mesma verificação e exclui se não houver mais players
@@ -130,10 +126,9 @@ class Room {
         coinLimit: this.coinLimit,
         currentTurnOwner: this.currentTurnOwner !== undefined ? this.currentTurnOwner.header.nickname : this.currentTurnOwner,
         currentMove: this.currentMove,
-        timesDoubledRebel: this.rebel.doubled,
-        timesDoubledPolitical: this.political.doubled,
         aliveDeck: this.aliveDeck.length,
         deadDeck: this.deadDeck.length,
+        cards: this.cards,
 
         me: {
           coins: connectedPlayer.coins,
@@ -191,25 +186,27 @@ class Room {
     //troca o turno
     this.turn ++;
 
-    //mecânica de preço do rebelde
-    if (this.rebel.doubled > 0 && !this.rebel.usedThisTurn) {
-      this.rebel.turnsUntilCheap --;
-
-      if (this.rebel.turnsUntilCheap <= 0) {
-        this.rebel.turnsUntilCheap = 3;
-        this.rebel.doubled --;
-      };
-    };
-
     //mecânica de preço do politico
-    if (this.political.doubled > 0 && !this.political.usedThisTurn) {
-      this.political.turnsUntilCheap --;
+    if (this.cards["1"].doubled > 0 && !this.cards["1"].usedThisTurn) {
+      this.cards["1"].roundsUntilCheaper --;
 
-      if (this.political.turnsUntilCheap <= 0) {
-        this.political.turnsUntilCheap = 3;
-        this.political.doubled --;
+      if (this.cards["1"].roundsUntilCheaper <= 0) {
+        this.cards["1"].roundsUntilCheaper = 3;
+        this.cards["1"].doubled --;
       };
     };
+    if (this.cards["1"].usedThisTurn) this.cards["1"].usedThisTurn = false;
+
+    //mecânica de preço do rebelde
+    if (this.cards["2"].doubled > 0 && !this.cards["2"].usedThisTurn) {
+      this.cards["2"].roundsUntilCheaper --;
+
+      if (this.cards["2"].roundsUntilCheaper <= 0) {
+        this.cards["2"].roundsUntilCheaper = 3;
+        this.cards["2"].doubled --;
+      };
+    };
+    if (this.cards["2"].usedThisTurn) this.cards["2"].usedThisTurn = false;
 
     //mecânica de aumento e diminuição aleatório das taxas
     if (Math.random() <= 0.05) { //se cair nos 10% de chance
@@ -238,8 +235,10 @@ class Room {
       content: {
         turn: this.turn,
         tax: this.tax,
-        timesDoubledRebel: this.rebel.doubled,
-        timesDoubledPolitical: this.political.doubled
+        cards: {
+          "1": this.cards["1"],
+          "2": this.cards["2"]
+        }
       }
     };
     this.sendInfoForAllPlayers(payload);

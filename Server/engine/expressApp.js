@@ -20,11 +20,11 @@ function ExpressConfigs() {
 };
 
 
-function StartExpress_Pages(rooms) {
+function StartExpress_Pages(rooms, playingNow) {
     //Configuração do express
     ExpressConfigs();
     //Lobby
-    Lobby_Page();
+    Lobby_Page(playingNow);
     //Página que recebe as informações que vieram do lobby e cria a sala
     CreatingRoom_Page(rooms);
     //Página que recebe requisições de entrada por link
@@ -39,9 +39,9 @@ function StartExpress_Pages(rooms) {
 
 
 //pagina do lobby
-function Lobby_Page() {
+function Lobby_Page(playingNow) {
     app.get("/", (req, res) => {
-        res.render(path.join(__dirname, '..', '..', 'client', 'index.html'));
+        res.render(path.join(__dirname, '..', '..', 'client', 'index.html'), { playingNow : playingNow.connected });
     }); 
 };
 

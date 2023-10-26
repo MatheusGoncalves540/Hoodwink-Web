@@ -1,7 +1,7 @@
 const { ValidateEntry } = require('../../lib/validations');
 const { BringPastMessages } = require('../chat');
 
-function socketOnNewConnection(socket, room, urlData, msgServer) {
+function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
         const { idRoom, roomPass } = urlData;
 
         const newPlayer = {
@@ -91,6 +91,8 @@ function socketOnNewConnection(socket, room, urlData, msgServer) {
 
         room.BringGameInfos(socket);
         BringPastMessages(room, newPlayer.playeruuid);
+        playingNow.connected ++;
+        console.log(playingNow)
         console.log('somebody connected');
 };
 

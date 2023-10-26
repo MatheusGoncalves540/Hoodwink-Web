@@ -17,14 +17,14 @@
     </select>
     </div> -->
     <div id="header">
-        <h1>HOODWINK</h1>
+        <h1>HOODWINK - jogando no momento: <span id="playingNow"></span></h1>
         <hr>
     </div>
     <br>
     <br>
     <br>
     <h1>Criar sala</h1> 
-    <form id="createRoomForm" action="/creating-room" method="post">
+    <form id="createRoomForm" action="/creating-room" method="post" autocomplete="off">
         <abbr title="Mínimo de 3 e máximo de 15 caracteres">Nickname:</abbr>
         <label for="nickname"></label>
             <input id="nickname" type="text" name="nickname"> <br>
@@ -48,7 +48,7 @@
     <br><hr>
 
     <h1>Entrar em sala</h1>
-    <form id="EnterRoom" action="/room/RoomId" method="post">
+    <form id="EnterRoom" action="/room/RoomId" method="post" autocomplete="off">
         <label for="nickname">Nickname:</label>
             <input id="nickname" type="text" name="nickname"> <br>
         
@@ -63,7 +63,7 @@
     <br><hr>
 
     <h1><a href="/rules">Como jogar</a></h1>
-    
+    <script>document.getElementById("playingNow").innerHTML = "<%= playingNow %>"</script>
     <script src="/js/index.js"></script>
 </body>
 </html>

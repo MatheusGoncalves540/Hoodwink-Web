@@ -6,6 +6,7 @@ function startGame(room) {
     
     room.turn = 1;
     room.header.startTime = Date.now();
+
     room.currentTurnOwner = room.players.find(player => player.header.playerNum === 1);
     
     room.currentMove = {

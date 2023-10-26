@@ -9,7 +9,7 @@ const { socketOnMessage } = require('./game/receivedFromClient');
 const server = new WebSocket.Server({ port: 8080 }, () => { console.log("online em 8080... -Websocket") });
 
 
-function Start_WebSocket(rooms) {
+function Start_WebSocket(rooms, playingNow) {
   server.on('connection', function (socket, request) {
     //buscando informações
     const urlData = url.parse(request.url, true).query;
@@ -17,10 +17,10 @@ function Start_WebSocket(rooms) {
     const room = rooms[idRoom];
 
     //comandos executados quando um socket é desconectado
-    socketOnCloseConnection(socket, room, rooms);
+    socketOnCloseConnection(socket, room, rooms, playingNow);
 
     //comandos executados quando um novo socket é conectado
-    socketOnNewConnection(socket, room, urlData, msgServer);
+    socketOnNewConnection(socket, room, urlData, msgServer, playingNow);
 
     //comandos executados quando uma mensagem chega ao servidor
     socketOnMessage(socket, room);

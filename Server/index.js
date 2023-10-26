@@ -4,6 +4,8 @@ const { Start_WebSocket } = require('./engine/websocket');
 //mapa das salas
 let rooms = {};
 
+let playingNow = { connected: 0 };
+
 //define o fuso horário para o padrão UTC0
 process.env.TZ = 'UTC';
 
@@ -13,10 +15,10 @@ process.on('uncaughtException', (error) => {
 });
 
 //define as páginas no express
-StartExpress_Pages(rooms);
+StartExpress_Pages(rooms, playingNow);
 
 //executa inicio a tudo referente aos websockets
-Start_WebSocket(rooms);
+Start_WebSocket(rooms, playingNow);
 
 //depois que tudo foi definido corretamente: execute as páginas express
 Listen_App();
