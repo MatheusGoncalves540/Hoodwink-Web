@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
 const { generateNewId, uuidv4 } = require('../lib/functions');
-const { Room } = require('./game/room_class');
+const { Room } = require('./game/room_class/room_class');
 const { validateCreatedRoom, ValidateEntry } = require('../lib/validations');
 const msgServer = require('../lib/languages/messages.json')['ptbr'];
 
@@ -21,20 +21,13 @@ function ExpressConfigs() {
 
 
 function StartExpress_Pages(rooms, playingNow) {
-    //Configuração do express
     ExpressConfigs();
-    //Lobby
     Lobby_Page(playingNow);
-    //Página que recebe as informações que vieram do lobby e cria a sala
-    CreatingRoom_Page(rooms);
-    //Página que recebe requisições de entrada por link
-    EnterByUrl_Page();
-    //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
-    Room_Page(rooms);
-    //Página de regras
-    Rules_Page();
-    //Página de erro ao carregar scripts da sala
-    errorOnLoadingScript();
+    CreatingRoom_Page(rooms); //Página que recebe as informações que vieram do lobby e cria a sala
+    EnterByUrl_Page(); //Página que recebe requisições de entrada por link
+    Room_Page(rooms); //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
+    Rules_Page(); //Página de regras
+    errorOnLoadingScript(); //Página de erro ao carregar scripts da sala
 };
 
 

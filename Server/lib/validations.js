@@ -103,7 +103,7 @@ function validateCreatedRoom(res, msgServer, roomData) {
 function allowedMessage(message, room) {
 
     //se o dono da mensagem for espectador
-    if (room.spectators.find(spectator => spectator.uuidPlayer === message['owner'])) return false;
+    if (room.spectators.includes(message['owner'])) return false;
 
     if (!message['content']) return false;
 

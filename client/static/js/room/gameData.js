@@ -20,7 +20,7 @@ let gameData = {
     moveTime: 0,
 
     tax: 0,
-    coinLimit: 20,
+    maxCoins: 0,
 
     cards: {},
 
@@ -36,92 +36,109 @@ let gameData = {
         '1': {
             nick: "",
             playerNum: 1,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '2': {
             nick: "",
             playerNum: 2,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '3': {
             nick: "",
             playerNum: 3,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '4': {
             nick: "",
             playerNum: 4,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '5': {
             nick: "",
             playerNum: 5,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '6': {
             nick: "",
             playerNum: 6,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '7': {
             nick: "",
             playerNum: 7,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '8': {
             nick: "",
             playerNum: 8,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '9': {
             nick: "",
             playerNum: 9,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         },
         '10': {
             nick: "",
             playerNum: 10,
-            num_cards: null,
+            playerCards: [],
             coins: null,
             invested: [],
             usedCards: {},
+            isAlive: false,
             connected: false
         }
     }
 }
+
+let localVariables = {
+    alreadyReceiptInfos: false,
+    itsMyTurnAndMyFirstMove: gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === "waitingFirstMove" ? true : false,
+    readyToSelect_aPlayer: false,
+    readyToSelect_aCard: false,
+};

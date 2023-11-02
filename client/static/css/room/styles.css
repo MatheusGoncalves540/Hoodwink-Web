@@ -2,11 +2,39 @@ span {
     border: 0px !important;
 }
 
+/* TODO corrigir margem */
+.inversearrow {
+    width: 50%;
+    height: 50%;
+    margin-left: 0%;
+}
+
+
+.arrow {
+    width: 50%;
+    height: 50%;
+    margin-left: 0%;
+}
+
+.inversearrow_div {
+    border: 0px !important;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.arrow_div {
+    border: 0px !important;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
 img {
     border: 0px !important;
 }
 
-#room-code, #tax, #turn, #timer, .player, #deck, #dead-deck, #coin-amount-area, #invest-amount-area {
+#room-code, #tax, #turn, #timer, .player, #deck, #dead-deck, #coin-amount-area, #invest-amount-area, #card-left, #card-right {
     display: flex;
     justify-content: center;
     align-items: center;

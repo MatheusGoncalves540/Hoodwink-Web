@@ -13,7 +13,7 @@ class Player {
         this.coins = newPlayer.coins;
         this.invested = [
         //  o comprimento deste array, é a quantidade de moedas investida
-        //  o número que estiver neste array, é a quantidade de turnos que a moeda permanecerá aqui
+        //  o número do elemento neste array, é a quantidade de turnos que a moeda permanecerá aqui
         ];
         this.possiblesMoves = {
             card: {
@@ -38,6 +38,24 @@ class Player {
         },
         this.passed = false;
     };
+
+    getPublicInfos() {
+        const publicInfos = {
+          nick: this.header.nickname,
+          playerNum: this.header.playerNum,
+          coins: this.coins,
+          playerCards: [
+            this.cards[0] != -1 ? true : false, //posição 0 no array: carta esquerda | true se estiver viva, false se estiver morta
+            this.cards[1] != -1 ? true : false //posição 0 no array: carta esquerda  | id de carta morta: -1
+          ],
+          invested: this.invested,
+          usedCards: this.usedCards,
+          isAlive: this.isAlive,
+          connected: this.header.socket !== null ? true : false
+        };
+      
+        return publicInfos;
+      };
     
 };
 

@@ -47,23 +47,8 @@ function nextBigger(array, givenNumber) {
   return nextBigger;
 };
 
-//recebe um objeto e faz com que os componentes dentro do "header" dele, sejam colocados na raiz do objeto
-function getPlayerPublicInfos(player) {
-  const publicInfos = {
-    nick: player.header.nickname,
-    playerNum: player.header.playerNum,
-    coins: player.coins,
-    num_cards: player.cards.length,
-    invested: player.invested,
-    usedCards: player.usedCards,
-    connected: player.header.socket !== null ? true : false
-  };
-
-  return publicInfos;
-};
-
 function getPlayerNickFromCurrentMove(currentMove) {
   return currentMove.player.header.nickname
 }
 
-module.exports = {generateNewId, uuidv4, shuffle, nextBigger, getPlayerPublicInfos, getPlayerNickFromCurrentMove};
+module.exports = {generateNewId, uuidv4, shuffle, nextBigger, getPlayerNickFromCurrentMove};

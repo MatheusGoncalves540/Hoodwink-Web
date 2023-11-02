@@ -18,7 +18,9 @@
 
         body {
             background-color: rgb(32, 32, 32);
+            scroll-behavior: smooth;
         }
+        
         #header {
             background: rgb(32, 32, 32);
             position: fixed;
@@ -43,7 +45,7 @@
             font-size: 20px;
             word-wrap: break-word;
         }
-        p, h1, h2, ul {
+        p, h1, h2, ul, a {
             font-family: 'EB Garamond', serif;
             color: rgb(240, 240, 240);
         }
@@ -67,6 +69,19 @@
 
     <div id="text" style="margin: 20%; margin-top: 0%; margin-bottom: 0%;">
         <hr> <br>
+        <p style="margin: 0px; margin-bottom: 15px;">&#8212; Por padrão, os jogadores começam com:</p>
+        <ul>
+            <li>2 cartas</li>
+            <ul>
+                <li>As cartas aqui, não são jogadas como em um jogo de baralho comum. Elas funcionam como as suas "vidas" no jogo.</li>
+                <li><a href="#HABILIDADES_CARTAS">Cada carta tem uma habilidade</a> diferente que pode ser usada <b>sem jogar a carta</b>, apenas usando a habilidade e continuando com a carta.</li>
+            </ul>
+            <li>2 moedas</li>
+            <ul>
+                <li>São utilizadas para realizar algumas ações básicas e habilidades de cartas.</li>
+            </ul>
+        </ul>
+        <hr> <br>
         <p style="margin: 0px; margin-bottom: 15px;">&#8212; Em cada turno, pode-se fazer 1 de 5 ações básicas, sendo elas:</p>
         <ul>
             <li>Passar o turno.</li>
@@ -89,7 +104,11 @@
         <ul>
             <li>Usar uma habilidade válida de uma carta.</li>
             <ul>
-                <li><b><u style="color: rgb(240, 240, 240);">Não é necessário ter a carta, para utilizar da habilidade dela.</u></b></li>
+                <li><b>Não é necessário ter a carta, para utilizar da habilidade dela.</b></li>
+                <ul>
+                    <li>Você pode mentir falando que tem alguma carta e usar a habilidade dela, sem realmente tê-la.</li>
+                    <li>Mas cuidado com as contestações, explicadas no próximo tópico, elas podem desmascarar você!</li>
+                </ul>
             </ul>
             
         </ul>
@@ -107,13 +126,14 @@
             </ul>
         </ul>
     <br> <hr> <br>
-        <p style="margin: 0px; margin-bottom: 15px;">&#8212; <u style="color: rgb(240, 240, 240);">Sempre que uma carta é utilizada, qualquer jogador ainda vivo pode realizar uma contestação.</u></p>
+        <p style="margin: 0px; margin-bottom: 15px;">&#8212; Sempre que uma carta é utilizada, qualquer jogador ainda vivo pode realizar uma contestação.</p>
         <ul>
             <li>Uma contestação da jogada do jogador 1, foi realizada pelo jogador 2:</li>
             <ul>
                 <li>Se o jogador 1 realmente tinha a carta que usou:</li>
                 <ul>
                     <li>O jogador 1, revela a carta usada para todos.</li>
+                    <li>A habilidade da carta que o jogador 1 usou, é realizada.</li>
                     <li>Em seguida, escolhe uma das cartas do jogador 2 para morrer.</li>
                     <li>Depois, o jogador 1, troca a carta revelada a todos, com outra do baralho.</li>
                     <ul>
@@ -124,6 +144,10 @@
                     Se o jogador 1 não tinha realmente a carta que usou:
                 </li>
                 <ul>
+                    <li>A habilidade da carta que o jogador 1 usou, não é realizada.</li>
+                    <ul>
+                        <li>As moedas gastas com a tentativa de uso da habilidade, não são reembolsadas ao jogador 1.</li>
+                    </ul>
                     <li>O jogador 2 escolhe uma das cartas do jogador 1 para morrer.</li>
                 </ul>
             </ul>
@@ -149,10 +173,10 @@
         <p style="margin: 10px; margin-left: 0px;">&#8212; Quando um jogador fica sem cartas, ele se torna um espectador, não podendo mais interagir na partida.</p>
     <br> <hr> <br>
         <p style="margin: 10px; margin-left: 0px;">&#8212; É o ganhador, o último a ter cartas vivas na mão.</p>
-    <br> <hr> <br>
+    <br> <hr > <br>
     </div>
 
-    <h2><b><u>Habilidade das cartas</u></b></h2>
+    <h2 id="HABILIDADES_CARTAS"><b><u>Habilidade das cartas</u></b></h2>
     <div id="text" style="margin: 20%; margin-top: 0%; margin-bottom: 0%;">
         <ul>
             <li><b>POLÍTICO</b>: Por 2 moedas, aumenta as taxas em 1.</li>
@@ -167,25 +191,25 @@
                 <li>A cada 3 turnos sem ser utilizado: o preço desta carta cai pela metade. (limitado à 2).</li>
             </ul>
 
-            <li><b>ASSASSINO</b>: Por 3 moedas, mate uma carta de outro jogador.</li>
+            <li><b>ASSASSINO</b>: Por 3 moedas (+ taxas), mate uma carta de outro jogador.</li>
             <ul>
                 <li>Pode ser impedido pela Guardiã.</li>
                 <li>Limite das taxas: Custo mínimo: 2.</li>
             </ul>
             
-            <li><b>COVEIRO</b>: Por 6 moedas, ressuscite uma carta aleatória do baralho morto para sua mão.</li>
+            <li><b>COVEIRO</b>: Por 6 moedas (+ taxas), ressuscite uma carta aleatória do baralho morto para sua mão.</li>
             <ul>
                 <li>Não pode ser usado caso você já possua o limite máximo de cartas.</li>
                 <li>Limite das taxas: Custo mínimo: 3.</li>
             </ul>
 
-            <li><b>CRUPIÊ</b>: Por 6 moedas, ressuscite uma nova carta aleatória do baralho para sua mão.</li>
+            <li><b>CRUPIÊ</b>: Por 6 moedas (+ taxas), ressuscite uma nova carta aleatória do baralho para sua mão.</li>
             <ul>
                 <li>Não pode ser usado caso você já possua o limite máximo de cartas.</li>
                 <li>Limite das taxas: Custo mínimo: 3.</li>
             </ul>
 
-            <li><b>TRAPACEIRO</b>: Retire 2 moedas de um adversário e receba metade desta quantia.</li>
+            <li><b>TRAPACEIRO</b>: Retire 2 moedas (+ taxas) de um adversário e receba metade desta quantia.</li>
             <ul>
                 <li>Pode ser impedido pela Egoísta, caso a quantia <u style="color: rgb(240, 240, 240);">recebida</u> exceda 1.</li>
                 <li>Caso a quantidade de moedas a serem recebidas for ímpar, o Trapaceiro ficará com a metade maior para ele.</li>
@@ -196,7 +220,7 @@
                 <li>Limite das taxas: Mínimo roubado: 2. Máximo roubado: 5.</li>
             </ul>
 
-            <li><b>CLARIVIDENTE</b>: Por 4 moedas, revele uma das cartas de um adversário.</li>
+            <li><b>CLARIVIDENTE</b>: Por 4 moedas (+ taxas), revele uma das cartas de um adversário.</li>
             <ul>
                 <li>Pode ser impedido pela Guardiã.</li>
                 <li>A carta pode ser revelada para todos os jogadores ou apenas para quem utilizou esta carta.</li>
@@ -204,39 +228,47 @@
                 <li>Limite das taxas: Custo mínimo: 2.</li>
             </ul>
 
-            <li><b>TRILIONÁRIO</b>: Receba 3 moedas.</li>
+            <li><b>TRILIONÁRIO</b>: Receba 3 moedas (+ taxas).</li>
             <ul>
-                <li>Pode ser impedido pela Egoísta, caso a quantia recebida exceda 1.</li>
+                <li>Pode ser impedido pela Egoísta.</li>
                 <li>Para cada vez que as taxas aumentarem: receba 1 moeda a mais.</li>
                 <ul>
                     <li>O contrário vale para o Rebelde.</li>
                 </ul>
-                <li>Limite das taxas: mínimo de moedas recebidas: 1.</li>
+                <li>Limite das taxas: mínimo de moedas recebidas: 2.</li>
             </ul>
 
-            <li><b>KAMIKAZE</b>: Quando esta carta morrer, mate uma carta de outro jogador.</li>
+            <li><b>KAMIKAZE</b>: Quando <b>essa</b> carta morrer, mate uma carta de outro jogador.</li>
             <ul>
                 <li>Você pode matar o Kamikaze de propósito no seu turno.</li>
                 <li>É impossível defender esse ataque.</li>
+                <li>Exemplo: </li>
+                <ul>
+                    <li>Se alguém matou sua carta da direita, só irá ser considerada uma ação verdadeira (caso alguém conteste, você tem a razão), caso a carta da direita (a carta morta) seja um Kamikaze.</li>
+                    <li>Caso contrario, será uma mentira e você estará propenso a perder uma contestação.</li>
+                </ul>
             </ul>
             
-            <li><b>GUARDIÃ</b>: Por 5 moedas, impeça um ataque contra uma de suas cartas.</li>
+            <li><b>GUARDIÃ</b>: Por 5 moedas (+ taxas), impeça um ataque contra uma de suas cartas.</li>
             <ul>
                 <li>Pode bloquear a revelação do Clarividente.</li>
                 <li>Se usada no seu turno, você protegerá uma de suas cartas contra o próximo ataque que ela receber.</li>
                 <ul>
                     <li>Proteger no seu turno custa 1 a menos caso você tenha apenas 1 carta viva.</li>
+                    <ul>
+                        <li>Custo mínimo nesse caso: 2.</li>
+                    </ul>
                     <li>Se uma das suas cartas já estiver protegida, ela deixará de proteger a antiga, para proteger a nova escolhida.</li>
                 </ul>
                 <li>Não pode bloquear Kamikaze e nem morte de carta por contestação.</li>
                 <li>Limite das taxas: Custo mínimo: 3.</li>
             </ul>
             
-            <li><b>EGOÍSTA</b>: Por 1 moeda, impeça um adversário de receber 2 ou mais moedas por qualquer meio. Ou por 6 moedas, impeça um adversário de receber 1 carta.</li>
+            <li><b>EGOÍSTA</b>: Por 1 moeda, impeça um adversário de receber 2 ou mais moedas por qualquer meio. Ou por 6 moedas (+ taxas), impeça um adversário de receber 1 carta.</li>
             <ul>
                 <li>Usada apenas fora de seu turno.</li>
-                <li>Pode impedir o investimento com o investidor - 1 moeda.</li>
-                <li>Pode impedir tanto o Crupiê quanto o Coveiro.</li>
+                <li>Pode impedir o investimento com o investidor: 1 moeda.</li>
+                <li>Pode impedir tanto o Crupiê quanto o Coveiro: 6 moedas (+ taxas).</li>
                 <li>O preço por impedir o recebimento de moedas não é afetado pelas taxas.</li>
                 <li>Limite das taxas: Custo mínimo: 3. Custo máximo: 9.</li>
             </ul>
@@ -251,7 +283,7 @@
                 <ul>
                     <li>Exemplo: se você tem 3 moedas investidas: receberá 1 moeda a primeira vez e 2 moedas na segunda, pois tinha uma pendencia de meia moeda não paga.</li>
                 </ul>
-                <li>Ele investe até no máximo 3 moedas de cada jogador.</li>
+                <li>Ele investe até no máximo 3 moedas (+ taxas) de cada jogador.</li>
                 <ul>
                     <li>Para cada vez que as taxas aumentarem: poderá investir mais 1 moeda.</li>
                     <li>Para cada vez que as taxas diminuírem: poderá investir 1 moeda a menos.</li>

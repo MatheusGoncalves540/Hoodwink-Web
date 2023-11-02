@@ -2,7 +2,6 @@
 //E na parte que exibe a mensagem de conectado, se player.waitReconnecting === true: Não exibe a mensagem, caso contrario, exibe normalmente.
 function socketOnCloseConnection(socket, room, rooms, playingNow) {
     socket.on('close', function () {
-        
             const disconnectedPlayer = room.players.find(player => player.header.socket === socket);
 
             if (!disconnectedPlayer) return;
@@ -33,7 +32,10 @@ function socketOnCloseConnection(socket, room, rooms, playingNow) {
                     payload.content.players[`${player_.header.playerNum}`] = {
                         nick: player_.header.nickname,
                         playerNum: player_.header.playerNum,
-                        num_cards: player_.cards.length,
+                        playerCards: [
+                            player_.cards[0] != -1 ? true : false, //posição 0 no array: carta esquerda | true se estiver viva, false se estiver morta
+                            player_.cards[1] != -1 ? true : false //posição 0 no array: carta esquerda  | id de carta morta: -1
+                        ],
                         coins: player_.coins,
                         invested: player_.invested,
                         usedCards: player_.usedCards,
@@ -48,8 +50,6 @@ function socketOnCloseConnection(socket, room, rooms, playingNow) {
 
             room.selfDestructionByNoPlayers(rooms);
             playingNow.connected --;
-            console.log(playingNow)
-            console.log('somebody disconnected');
     });
 };
 

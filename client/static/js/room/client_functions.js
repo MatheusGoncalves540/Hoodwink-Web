@@ -1,16 +1,16 @@
 function FirstReceipt(msg) {
-    if (msg.content.roomName) {
+    if ("roomName" in msg.content) {
         document.title = msg.content.roomName;
         if (gameData.turn === 0) window.alert("Compartilhe o link desta página com seus amigos. Ou envie à eles o id da sala!");
     };
-    if (msg.content.time) {
-	    startTimer(msg.content.time.startTime);
-    };
-    if (gameData.turn !== 0 && !document.getElementById('startGame-button').classList.contains('hidden')) {
-        document.getElementById('startGame-button').classList.add('hidden');
-        document.getElementById('atual-moment-text').classList.remove('hidden');
+    if("cards" in msg.content) {
+        Object.keys(msg.content.cards).forEach(cardId => {
+            document.getElementById(`card-${cardId}`).innerHTML = `${msg.content.cards[cardId].name}: <span id="card-${cardId}-price"></span>`
+        });
     };
 };
+
+//
 
 function updateTimer() {
     if (gameData.time.seconds < 10) {
@@ -30,6 +30,12 @@ function updateTimer() {
     };    
 };
 
+function identifyCardName(cardId) {
+    if (cardId == null || cardId == "right" || cardId == "left") return "";
+    if (cardId == -1) return "Carta morta";
+    return gameData.cards[cardId].name
+}
+
 //atualiza todas as informações da tela com base no "gameData"
 function updateScreenInfos(msg) {
     document.getElementById('room-code').innerHTML = gameData.turn !== 0 ? 'vez de: ' + gameData.currentTurnOwner : gameData.currentTurnOwner;
@@ -38,12 +44,20 @@ function updateScreenInfos(msg) {
     document.getElementById('turns').innerHTML = gameData.turn;
     document.getElementById('invest-amount').innerHTML = gameData.me.invested.length;
     document.getElementById('atual-moment-text').innerHTML = generateCurrentTurnText();
-    document.getElementById('card-left').innerHTML = gameData.me.cardsInHand[0];
-    document.getElementById('card-right').innerHTML = gameData.me.cardsInHand[1];
+    document.getElementById('card-left').innerHTML = identifyCardName(gameData.me.cardsInHand[0]); 
+    document.getElementById('card-right').innerHTML = identifyCardName(gameData.me.cardsInHand[1]);
     document.getElementById('dead-deck-amount').innerHTML = gameData.deadDeck;
     document.getElementById('deck-amount').innerHTML = gameData.aliveDeck;
-    updateConnectedPlayers(msg);
+    updatePlayers(msg);
     document.getElementById('startGame-button').innerHTML = gameData.players[2].connected === false ? 'Aguardando players...' : 'Iniciar';
+
+    if ("time" in msg.content) {
+	    startTimer(msg.content.time.startTime);
+    };
+    if (gameData.turn !== 0 && !document.getElementById('startGame-button').classList.contains('hidden')) {
+        document.getElementById('startGame-button').classList.add('hidden');
+        document.getElementById('atual-moment-text').classList.remove('hidden');
+    };
 
     updateCardsPrice();
     updateTimer();
@@ -78,23 +92,35 @@ function calculateCard1And2Prices(card) {
     return (card.fixPrice ** (card.doubled + 1));
 };
 
-function updateConnectedPlayers(msg) {
+function updatePlayers(msg) {
     Object.keys(gameData.players).forEach(playerNum => {
         if ('players' in msg.content) {
             if (playerNum in msg.content.players) {
-            document.getElementById(`player-${playerNum}`).innerHTML =
-            `${gameData.players[playerNum].playerNum} - ${gameData.players[playerNum].nick}, cartas: ${gameData.players[playerNum].num_cards}, moedas: ${gameData.players[playerNum].coins}
-            investido: ${gameData.players[playerNum].invested.length}`;
+                let player_cardsInHand;
+                if (gameData.players[playerNum].playerCards[0] && gameData.players[playerNum].playerCards[1]) {
+                    player_cardsInHand = "2 vivas";
+                } else if (gameData.players[playerNum].playerCards[0]) {
+                    player_cardsInHand = "apenas esquerda viva";
+                } else if (gameData.players[playerNum].playerCards[1]) {
+                    player_cardsInHand = "apenas direita viva";
+                } else {
+                    player_cardsInHand = "todas mortas";
+                };
 
+                document.getElementById(`player-${playerNum}`).innerHTML =
+                `${gameData.players[playerNum].playerNum} - ${gameData.players[playerNum].nick}, cartas: ${player_cardsInHand}, moedas: ${gameData.players[playerNum].coins}
+                investido: ${gameData.players[playerNum].invested.length}`;
+                //TODO tratar das cartas dos players, pois estão aparecendo como: true, true. e quero que apareça como tendo a carta esquerda e direita
             } else if (gameData.turn === 0) {
                 document.getElementById(`player-${playerNum}`).innerHTML = "";
                 gameData.players[playerNum] = {
                     nick: "",
                     playerNum: playerNum,
-                    num_cards: null,
+                    playerCards: [], 
                     coins: null,
                     invested: [],
                     usedCards: {},
+                    isAlive: false,
                     connected: false
                 };
             };
@@ -133,6 +159,9 @@ function generateCurrentTurnText() {
             
         case "card_1": 
             return `${gameData.currentTurnOwner} quer utilizar o Político. As taxas serão aumentadas em 1.`
+
+        case "card_2": 
+            return `${gameData.currentTurnOwner} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
 
         case "card_2": 
             return `${gameData.currentTurnOwner} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
@@ -206,7 +235,7 @@ function startTimer(startTime) {
     timeRunning = true;
 };
 
-//redireciona para a página de erro, caso algum script não for executado corretamente
 function errorOnLoadingScript() {
     window.location.replace(`${window.location.href}/LoadingError`);
 };
+

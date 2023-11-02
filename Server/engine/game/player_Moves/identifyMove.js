@@ -1,34 +1,31 @@
 const { verifyPossibleConterPlays } = require('./conterPlays.js');
-const { startGame } = require('./protocols/startGame');
-const { startGame_validation } = require('./validations/startGame');
-const { takeCoin_basic } = require('./protocols/takeCoin_basic');
-const { takeCoin_basic_validation } = require('./validations/takeCoin_basic');
-const { pass_basic_validation } = require('./validations/pass_basic');
-const { pass_basic } = require('./protocols/pass_basic');
-const { card_1_validation } = require('./validations/card_1');
-const { card_1 } = require('./protocols/card_1');
-const { card_2_validation } = require('./validations/card_2');
-const { card_2 } = require('./protocols/card_2');
+const {
+    startGame_validation,
+    takeCoin_basic_validation,
+    pass_basic_validation,
+    card_1_validation,
+    card_2_validation,
+} = require('./validations/allValidations.js');
+const {
+    startGame,
+    takeCoin_basic,
+    pass_basic,
+    card_1,
+    card_2,
+    pass
+} = require('./protocols/allProtocols.js');
 
+//
 function playerMove_protocol(playerMove, room) {
-    let validPlay = true;
+    let validMove = true;
     
     //se alguma jogada já foi realizada, verifica se a jogada nova recebida, é valida como contra jogada ou ação a se tomar em cima da jogada já ates realizada.
     if (room.alreadyPlayed) {
-        validPlay = false;
+        validMove = false;
 
         switch (playerMove.content.action) {
             case "pass":
-                //se ainda não tem o uuid do player neste array, então é adicionado.
-                if (room.playersWhoWantsToSkip.includes(playerMove.owner)) break;
-                room.playersWhoWantsToSkip.push(playerMove.owner);
-
-                //caso todos os players estejam neste array, então é executada imediatamente a função em aguardo
-                if (room.playersWhoWantsToSkip.length >= (room.players.length - 1)) {
-                    clearTimeout(room.playInTimeOut);
-                    room.playersWhoWantsToSkip.length = 0;
-                    room.moveFunction();
-                }
+                if (!pass(playerMove, room)) break;
             break;
         
             case "dispute":
@@ -37,12 +34,12 @@ function playerMove_protocol(playerMove, room) {
             break;
 
             default:
-                if (verifyPossibleConterPlays(playerMove, room)) validPlay = true; //TODO validar as possíveis cartas que podem ser usadas em cima de outras
+                if (verifyPossibleConterPlays(playerMove, room)) validMove = true; //TODO validar as possíveis cartas que podem ser usadas em cima de outras
             break;
         };
     };
 
-    if (validPlay) {
+    if (validMove) {
         switch (playerMove.content.action) {
         
         

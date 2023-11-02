@@ -13,25 +13,45 @@ body {
 }
 
 .container { 
-    display: grid;
-    height: 100%;
-    margin: 0;
-    grid-template-columns: repeat(14, 1fr);
-    grid-template-rows: repeat(10, 1fr);
-    gap: 0px 0px;
-    grid-auto-flow: row;
-    grid-template-areas: 
-        "player-1 player-1 . . deck . infos infos . dead-deck . timer player-10 player-10"
-        "player-2 player-2 . . deck . . . . dead-deck . . player-9 player-9"
-        "player-3 player-3 . . atual-moment atual-moment atual-moment atual-moment atual-moment atual-moment . . player-8 player-8"
-        "player-4 player-4 . . atual-moment atual-moment atual-moment atual-moment atual-moment atual-moment . . player-7 player-7"
-        "player-5 player-5 . . dispute . . . . pass . . player-6 player-6"
-        "chat chat chat . . . basic-actions basic-actions . . . cards cards cards"
-        "chat chat chat . card-left . basic-actions basic-actions . card-right . cards cards cards"
-        "chat chat chat . card-left . basic-actions basic-actions . card-right . cards cards cards"
-        "chat chat chat . . . basic-actions basic-actions . . . cards cards cards"
-        "chat chat chat . . . coin-amount invest-amount . . . cards cards cards"; 
+  display: grid;
+  height: 100%;
+  margin: 0;
+  grid-template-columns: repeat(14, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: 
+    "player-1 player-1 arrow-1 . deck . infos infos . dead-deck timer inversearrow-5 player-10 player-10"
+    "player-2 player-2 arrow-2 . deck . . . . dead-deck . inversearrow-4 player-9 player-9"
+    "player-3 player-3 arrow-3 . atual-moment atual-moment atual-moment atual-moment atual-moment atual-moment . inversearrow-3 player-8 player-8"
+    "player-4 player-4 arrow-4 . atual-moment atual-moment atual-moment atual-moment atual-moment atual-moment . inversearrow-2 player-7 player-7"
+    "player-5 player-5 arrow-5 . dispute . . . . pass . inversearrow-1 player-6 player-6"
+    "chat chat chat . . . basic-actions basic-actions . . . cards cards cards"
+    "chat chat chat . card-left . basic-actions basic-actions . card-right . cards cards cards"
+    "chat chat chat . card-left . basic-actions basic-actions . card-right . cards cards cards"
+    "chat chat chat . . . basic-actions basic-actions . . . cards cards cards"
+    "chat chat chat . . . coin-amount invest-amount . . . cards cards cards"; 
 }
+
+#arrow-1 { grid-area: arrow-1; }
+
+#arrow-2 { grid-area: arrow-2; }
+
+#arrow-3 { grid-area: arrow-3; }
+
+#arrow-4 { grid-area: arrow-4; }
+
+#arrow-5 { grid-area: arrow-5; }
+
+#inversearrow-1 { grid-area: inversearrow-1; }
+
+#inversearrow-2 { grid-area: inversearrow-2; }
+
+#inversearrow-3 { grid-area: inversearrow-3; }
+
+#inversearrow-4 { grid-area: inversearrow-4; }
+
+#inversearrow-5 { grid-area: inversearrow-5; }
 
 #player-1 { grid-area: player-1; }
 

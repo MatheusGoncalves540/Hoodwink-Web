@@ -46,7 +46,10 @@ function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
                     nick: player_.header.nickname,
                     playerNum: player_.header.playerNum,
                     coins: player_.coins,
-                    num_cards: player_.cards.length,
+                    playerCards: [
+                        player_.cards[0] != -1 ? true : false, //posição 0 no array: carta esquerda | true se estiver viva, false se estiver morta
+                        player_.cards[1] != -1 ? true : false //posição 0 no array: carta esquerda  | id de carta morta: -1
+                    ],
                     invested: player_.invested,
                     usedCards: player_.usedCards,
                     connected: player_.header.socket !== null ? true : false
@@ -73,7 +76,10 @@ function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
                         nick: player_.header.nickname,
                         playerNum: player_.header.playerNum,
                         coins: player_.coins,
-                        num_cards: player_.cards.length,
+                        playerCards: [
+                            player_.cards[0] != -1 ? true : false, //posição 0 no array: carta esquerda | true se estiver viva, false se estiver morta
+                            player_.cards[1] != -1 ? true : false //posição 0 no array: carta esquerda  | id de carta morta: -1
+                        ],
                         invested: player_.invested,
                         usedCards: player_.usedCards,
                         connected: player_.header.socket !== null ? true : false
@@ -91,9 +97,13 @@ function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
 
         room.BringGameInfos(socket);
         BringPastMessages(room, newPlayer.playeruuid);
+
+        if (room.timeOut_deleteRoom != undefined && !room.timeOut_deleteRoom._destroyed) {
+            console.warn("exclusão da sala: " + `${room.header.roomId}` + " cancelada");
+            clearTimeout(room.timeOut_deleteRoom);
+        };
+        
         playingNow.connected ++;
-        console.log(playingNow)
-        console.log('somebody connected');
 };
 
 module.exports = { socketOnNewConnection };

@@ -10,6 +10,8 @@ function card_2(playerMove, room) {
     // };
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
 
+    moveOwner.coins -= room.cards["2"].fixPrice ** (room.cards["2"].doubled + 1);
+
     //muda o currentMove
     room.currentMove = {
         moveType: "card_2",
@@ -22,12 +24,28 @@ function card_2(playerMove, room) {
     //tempo em segundos que será mostrado no "currentMove"
     const displayTime = room.header.displayTime_withPossibleCounterPlays;
 
+    const payloadToOwner = {
+        type: "gameData",
+        content: {
+            currentMove: currentMove_clients,
+            moveTimer: displayTime,
+            me: {
+                coins: moveOwner.coins
+            }
+        }
+    };
+    moveOwner.header.socket.send(JSON.stringify(payloadToOwner));
+    
     const payload = {
         type: "gameData",
         content: {
             currentMove: currentMove_clients,
-            moveTimer: displayTime
+            moveTimer: displayTime,
+            players: {}
         }
+    };
+    payload.content.players[`${moveOwner.header.playerNum}`] = {
+        coins: moveOwner.coins
     };
     room.sendInfoForAllPlayers(payload);
 

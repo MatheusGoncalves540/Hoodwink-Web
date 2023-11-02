@@ -1,55 +1,66 @@
 {
     "1": {
+        "name": "Político",
         "fixPrice": 2,
         "doubled": 0,
         "usedThisTurn": false,
         "roundsUntilCheaper": 3
     },
     "2": {
+        "name": "Rebelde",
         "fixPrice": 2,
         "doubled": 0,
         "usedThisTurn": false,
         "roundsUntilCheaper": 3
     },
     "3": {
+        "name": "Assassino",
         "price": 3,
         "taxMinimum": 2
     },
     "4": {
+        "name": "Trilionário",
         "amountReceived": 3,
         "taxMinimum": 1
     },
     "5": {
+        "name": "Trapaceiro",
         "amountWithdrawn": 2,
         "taxMinimum": 2,
         "taxMax": 5
     },
     "6": {
+        "name": "Coveiro",
         "price": 6,
         "taxMinimum": 3
     },
     "7": {
+        "name": "Crupiê",
         "price": 6,
         "taxMinimum": 3
     },
     "8": {
-
+        "name": "Kamikaze"
     },
     "9": {
+        "name": "Egoísta",
         "fixPrice": 1,
         "price": 6,
         "taxMinimum": 3,
         "taxMax": 5
     },
     "10": {
+        "name": "Clarividente",
         "price": 4,
         "taxMinimum": 2
     },
     "11": {
+        "name": "Guardiã",
         "price": 5,
         "taxMinimum": 3
     },
     "12": {
+        "name": "Investidor",
         "investPrice": 1,
         "investedMaxAmount": 3,
         "taxMinimum": 2,
