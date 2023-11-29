@@ -1,3 +1,5 @@
+
+
 function dispute(playerMove, room) {
     // playerMove = {
     //     type: "playerMove",
@@ -25,7 +27,7 @@ function dispute(playerMove, room) {
         disputedCard: disputedCardId
     };
 
-    let currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    let currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
     currentMove_clients.disputedPlayer = currentMove_clients.disputedPlayer.header.nickname;
     
@@ -51,7 +53,7 @@ function dispute(playerMove, room) {
                 disputedPlayer: disputedPlayer
             };
 
-            currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+            currentMove_clients = { ...room.currentMove };
             currentMove_clients.player = currentMove_clients.player.header.nickname;
             currentMove_clients.disputedPlayer = currentMove_clients.disputedPlayer.header.nickname;
             
@@ -72,7 +74,7 @@ function dispute(playerMove, room) {
                 disputedPlayer: disputedPlayer
             };
 
-            currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+            currentMove_clients = { ...room.currentMove };
             currentMove_clients.player = currentMove_clients.player.header.nickname;
             currentMove_clients.disputedPlayer = currentMove_clients.disputedPlayer.header.nickname;
 

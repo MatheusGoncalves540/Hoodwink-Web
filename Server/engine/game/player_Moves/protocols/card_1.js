@@ -1,3 +1,5 @@
+
+
 function card_1(playerMove, room) {
     // playerMove = {
     //     type: "playerMove",
@@ -16,7 +18,7 @@ function card_1(playerMove, room) {
         player: moveOwner
     };
 
-    const currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    const currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     //tempo em segundos que será mostrado no "currentMove"

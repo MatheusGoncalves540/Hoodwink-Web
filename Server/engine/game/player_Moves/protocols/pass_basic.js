@@ -1,3 +1,5 @@
+
+
 function pass_basic(playerMove, room) {
     // playerMove = {
     //     type: "playerMove",
@@ -19,7 +21,7 @@ function pass_basic(playerMove, room) {
         //tempo em segundos que será mostrado no "currentMove"
         const displayTime = room.header.displayTime;
 
-        const currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+        const currentMove_clients = { ...room.currentMove };
         currentMove_clients.player = currentMove_clients.player.header.nickname;
 
         const payload = {

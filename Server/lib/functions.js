@@ -47,5 +47,26 @@ function nextBigger(array, givenNumber) {
   return nextBigger;
 };
 
+//deepCopy
+function deepCopy(objeto) {
+  if (objeto === null || typeof objeto !== 'object') {
+    return objeto;
+  }
 
-module.exports = {generateNewId, uuidv4, shuffle, nextBigger};
+  if (objeto instanceof Array) {
+    const copiaArray = [];
+    for (let i = 0; i < objeto.length; i++) {
+      copiaArray[i] = deepCopy(objeto[i]);
+    }
+    return copiaArray;
+  }
+
+  const copiaObjeto = {};
+  for (let chave in objeto) {
+    copiaObjeto[chave] = deepCopy(objeto[chave]);
+  }
+  return copiaObjeto;
+}
+
+
+module.exports = {generateNewId, uuidv4, shuffle, nextBigger, deepCopy};

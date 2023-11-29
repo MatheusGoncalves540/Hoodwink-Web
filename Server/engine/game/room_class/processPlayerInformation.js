@@ -4,10 +4,10 @@ function BringGameInfos(socket, room) {
   let currentMove_clients = {};
 
   if (Object.keys(room.currentMove).length !== 0) {
-    currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
     if ("disputedPlayer" in currentMove_clients) currentMove_clients.disputedPlayer = currentMove_clients.disputedPlayer.header.nickname;
-  }
+  };
 
   let payload = {
     type: "gameData",
