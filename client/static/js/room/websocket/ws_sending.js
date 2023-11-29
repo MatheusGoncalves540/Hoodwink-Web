@@ -137,3 +137,19 @@ function sendMessage() {
     messageInput.value = ""; // Limpa a caixa de texto após enviar
   };
 };
+
+// Envia o payload da carta escolhida pra ser removida
+function selectedCardPayload(div){
+    card_index = parseInt(div.innerText)-1
+    const payload = {
+        type: "playerMove",
+        owner: playeruuid,
+        content: {
+            action: "responseToDoesNotHasTheCard",
+            disputedPlayer: gameData.currentMove.disputedPlayer, 
+            card: card_index
+            }
+    };
+    ws.send(JSON.stringify(payload))
+    document.getElementsByClassName("popup")[0].remove()
+}

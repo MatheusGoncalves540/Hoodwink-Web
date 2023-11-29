@@ -48,3 +48,32 @@ span, img, .arrow_div, .inversearrow_div, .uparrow_div {
 .disconnectedPlayer {
     opacity: 0.5;
 }
+
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.342);
+    height: 100%;
+    width: 100%;
+    gap: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.popup div {
+    height: 250px;
+    width: 200px;
+    margin-left: 40px;
+    margin-right: 40px;
+    background-color: white;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

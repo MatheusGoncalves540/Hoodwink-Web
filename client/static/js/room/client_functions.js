@@ -75,14 +75,28 @@ function updateArrows() {
 function disputeSituationsProtocols() {
     if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard") {
         //TODO
-        if (gameData.currentMove.player === gameData.me.nick) localVariables.readyToSelect_aPlayer = findPlayerNumPerNick(gameData.currentMove.disputedPlayer);
+        if (gameData.currentMove.player === gameData.me.nick) selectPopup() 
     };
     if (gameData.currentMove.moveType === "dispute_HasTheCard") {
         //TODO 
-        if (gameData.currentMove.disputedPlayer === gameData.me.nick) localVariables.readyToSelect_aPlayer = findPlayerNumPerNick(gameData.currentMove.player);
+        if (gameData.currentMove.disputedPlayer === gameData.me.nick) selectPopup() 
 
     };
 };
+
+// Função pra abrir um popup pro jogador selecionar
+function selectPopup() {
+  const fatherDiv = document.createElement("div");
+  fatherDiv.classList.add("popup");
+
+  for (let i = 0; i < 2; i++) {
+    let div = document.createElement("div");
+    div.innerText = i + 1;
+    div.addEventListener("click",()=>{selectedCardPayload(div)});
+    fatherDiv.appendChild(div)
+  }
+  document.body.appendChild(fatherDiv)
+}
 
 //
 
