@@ -57,19 +57,19 @@ class Player {
     return publicInfos;
   };
 
-  // Função pra rodar cada vez que uma carta morrer pra ver se o player vai de base
+  // Função pra rodar cada vez que uma carta morrer pra ver se o player morreu
   isDead(){
     const initialValue = 0;
     const sumOfCards =  this.cards.reduce((accumulator, currentValue) => accumulator + currentValue,initialValue,);
 
     if (sumOfCards===-2){
-      this.isAlive = false
-      return true
+      this.isAlive = false;
+      return true;
     } else {
-      return false
-    }
+      return false;
+    };
 
-  }
+  };
 
 };
 

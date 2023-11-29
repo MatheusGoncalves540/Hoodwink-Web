@@ -27,7 +27,7 @@ function dispute(playerMove, room) {
         disputedCard: disputedCardId
     };
 
-    let currentMove_clients = { ...room.currentMove };
+    const currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
     currentMove_clients.disputedPlayer = currentMove_clients.disputedPlayer.header.nickname;
     
