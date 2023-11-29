@@ -1,5 +1,5 @@
-function verifyPossibleConterPlays(playerMove, room) {
+function verifyPossibleCardsConterPlays(playerMove, room) {
 
 };
 
-module.exports = { verifyPossibleConterPlays };
+module.exports = { verifyPossibleCardsConterPlays };

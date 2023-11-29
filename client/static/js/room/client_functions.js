@@ -1,3 +1,36 @@
+//atualiza todas as informações da tela com base no "gameData"
+function updateScreenInfos(msg) {
+    localVariables.readyToSelect_aPlayer = false;
+    localVariables.readyToSelect_aCard = false;
+    if ("time" in msg.content) {
+	    startTimer(msg.content.time.startTime);
+    };
+    if (gameData.turn !== 0 && !document.getElementById('startGame-button').classList.contains('hidden')) {
+        document.getElementById('startGame-button').classList.add('hidden');
+        document.getElementById('atual-moment-text').classList.remove('hidden');
+    };
+    document.getElementById('room-code').innerHTML = gameData.turn !== 0 ? 'vez de: ' + gameData.currentTurnOwner : gameData.currentTurnOwner;
+    document.getElementById('coin-amount').innerHTML = gameData.me.coins;
+    document.getElementById('tax-amount').innerHTML = gameData.tax;
+    document.getElementById('turns').innerHTML = gameData.turn;
+    document.getElementById('invest-amount').innerHTML = gameData.me.invested.length;
+    document.getElementById('atual-moment-text').innerHTML = generateCurrentTurnText();
+    document.getElementById('card-left').innerHTML = identifyCardName(gameData.me.cardsInHand[0]); 
+    document.getElementById('card-right').innerHTML = identifyCardName(gameData.me.cardsInHand[1]);
+    document.getElementById('dead-deck-amount').innerHTML = gameData.deadDeck;
+    document.getElementById('deck-amount').innerHTML = gameData.aliveDeck;
+    updatePlayers(msg);
+    document.getElementById('startGame-button').innerHTML = gameData.players[2].connected === false ? 'Aguardando players...' : 'Iniciar';    
+
+    
+    disputeSituationsProtocols();
+    updateCardsPrice();
+    updateTimer();
+    updateArrows()
+    updateToggleButtons();
+};
+
+//função do primeiro recebimento de informações
 function FirstReceipt(msg) {
     if ("roomName" in msg.content) {
         document.title = msg.content.roomName;
@@ -10,6 +43,58 @@ function FirstReceipt(msg) {
     };
 };
 
+//
+
+function updateArrows() {
+    if (localVariables.readyToSelect_aPlayer !== true && localVariables.readyToSelect_aPlayer !== false) {
+        if (localVariables.readyToSelect_aPlayer < 6) {
+            document.getElementById(`arrow-${localVariables.readyToSelect_aPlayer}`).classList.remove("hidden");
+        } else {
+            document.getElementById(`inversearrow-${(localVariables.readyToSelect_aPlayer - 5)}`).classList.remove("hidden");
+        }
+    };
+    if (localVariables.readyToSelect_aPlayer) {
+        document.querySelectorAll('.inversearrow').forEach((arrow) => {
+            arrow.classList.remove("hidden");
+        });
+        document.querySelectorAll('.arrow').forEach((arrow) => {
+            arrow.classList.remove("hidden");
+        });
+    } else {
+        document.querySelectorAll('.inversearrow').forEach((arrow) => {
+            arrow.classList.add("hidden");
+        });
+        document.querySelectorAll('.arrow').forEach((arrow) => {
+            arrow.classList.add("hidden");
+        });
+    }
+};
+
+//
+
+function disputeSituationsProtocols() {
+    if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard") {
+        //TODO
+        if (gameData.currentMove.player === gameData.me.nick) localVariables.readyToSelect_aPlayer = findPlayerNumPerNick(gameData.currentMove.disputedPlayer);
+    };
+    if (gameData.currentMove.moveType === "dispute_HasTheCard") {
+        //TODO 
+        if (gameData.currentMove.disputedPlayer === gameData.me.nick) localVariables.readyToSelect_aPlayer = findPlayerNumPerNick(gameData.currentMove.player);
+
+    };
+};
+
+//
+
+
+function findPlayerNumPerNick(searchNick) {
+    for (const key in players) {
+      if (players[key].nick === searchNick) {
+        return parseInt(key);
+      };
+    };
+    return null;
+};
 //
 
 function updateTimer() {
@@ -36,61 +121,52 @@ function identifyCardName(cardId) {
     return gameData.cards[cardId].name
 }
 
-//atualiza todas as informações da tela com base no "gameData"
-function updateScreenInfos(msg) {
-    document.getElementById('room-code').innerHTML = gameData.turn !== 0 ? 'vez de: ' + gameData.currentTurnOwner : gameData.currentTurnOwner;
-    document.getElementById('coin-amount').innerHTML = gameData.me.coins;
-    document.getElementById('tax-amount').innerHTML = gameData.tax;
-    document.getElementById('turns').innerHTML = gameData.turn;
-    document.getElementById('invest-amount').innerHTML = gameData.me.invested.length;
-    document.getElementById('atual-moment-text').innerHTML = generateCurrentTurnText();
-    document.getElementById('card-left').innerHTML = identifyCardName(gameData.me.cardsInHand[0]); 
-    document.getElementById('card-right').innerHTML = identifyCardName(gameData.me.cardsInHand[1]);
-    document.getElementById('dead-deck-amount').innerHTML = gameData.deadDeck;
-    document.getElementById('deck-amount').innerHTML = gameData.aliveDeck;
-    updatePlayers(msg);
-    document.getElementById('startGame-button').innerHTML = gameData.players[2].connected === false ? 'Aguardando players...' : 'Iniciar';
-
-    if ("time" in msg.content) {
-	    startTimer(msg.content.time.startTime);
-    };
-    if (gameData.turn !== 0 && !document.getElementById('startGame-button').classList.contains('hidden')) {
-        document.getElementById('startGame-button').classList.add('hidden');
-        document.getElementById('atual-moment-text').classList.remove('hidden');
-    };
-
-    updateCardsPrice();
-    updateTimer();
-    updateToggleButtons();
-};
-
 function updateCardsPrice() {
     Object.keys(gameData.cards).forEach(cardId => {
-        if (cardId == 1 || cardId == 2) {
-            document.getElementById(`card-${cardId}-price`).innerHTML = `${calculateCard1And2Prices(gameData.cards[`${cardId}`])}`;
-            return
-        };
-        if ('price' in gameData.cards[`${cardId}`]) {
-            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].price}`;
-        }
-        else if ('fixPrice' in gameData.cards[`${cardId}`]) {
-            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].fixPrice}`;
-        };
-        if ('investPrice' in gameData.cards[`${cardId}`]) {
-            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].investPrice}`;
-        };
-        if ('amountWithdrawn' in gameData.cards[`${cardId}`]) {
-            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].amountWithdrawn}`;
-        };
-        if ('amountReceived' in gameData.cards[`${cardId}`]) {
-            document.getElementById(`card-${cardId}-price`).innerHTML = `${gameData.cards[`${cardId}`].amountReceived}`;
-        };
+        const cardPrice = calculatePriceCardsPlusTax(gameData.cards[`${cardId}`]);
+        if (cardPrice != undefined) document.getElementById(`card-${cardId}-price`).innerHTML = cardPrice;
     });
 };
 
-function calculateCard1And2Prices(card) {
-    return (card.fixPrice ** (card.doubled + 1));
+function calculatePriceCardsPlusTax(card) {
+    let estimatedPrice;
+    
+    if ("amountReceived" in card) {
+        estimatedPrice = card.amountReceived + gameData.tax;
+
+    } else if ("amountWithdrawn" in card) {
+        estimatedPrice = card.amountWithdrawn + gameData.tax;
+
+    } else if ("investedMaxAmount" in card) {
+        estimatedPrice = card.investedMaxAmount + gameData.tax;
+
+    } else if ("price" in card) {
+        estimatedPrice = card.price + gameData.tax;
+    };
+    
+    if (gameData.tax < 0 && "taxMinimum" in card) {
+        if (estimatedPrice < card.taxMinimum) {
+            return card.taxMinimum;
+        } else {
+            return estimatedPrice;
+        };
+    };
+    if (gameData.tax > 0 && "taxMax" in card) {
+        if (estimatedPrice > card.taxMax) {
+            return card.taxMax;
+        } else {
+            return estimatedPrice;
+        };
+    };
+
+    if ("doubled" in card) {
+        return (card.fixPrice ** (card.doubled + 1));
+    };
+
+    return estimatedPrice;
 };
+
+
 
 function updatePlayers(msg) {
     Object.keys(gameData.players).forEach(playerNum => {
@@ -143,6 +219,8 @@ function updatePlayers(msg) {
     };
 };
 
+//
+
 //gera o texto da jogada atual, com base no que foi recebido do servidor
 function generateCurrentTurnText() {
     switch (gameData.currentMove.moveType) {
@@ -151,27 +229,31 @@ function generateCurrentTurnText() {
             return `aguardando jogada de: ${gameData.currentTurnOwner}`
             
         case "takeCoin_basic":
-            if (gameData.currentMove.amount > 1) return `${gameData.currentTurnOwner} pegou ${gameData.currentMove.amount} moedas`
-            return `${gameData.currentTurnOwner} pegou ${gameData.currentMove.amount} moeda`
+            return `${gameData.currentMove.player} pegou 1 moeda`
 
         case "pass_basic":
-            return `${gameData.currentTurnOwner} passou a vez...`
-            
+            return `${gameData.currentMove.player} passou a vez...`
+
+        case "dispute":
+            return `${gameData.currentMove.player} contestou o(a) ${gameData.cards[gameData.currentMove.disputedCard].name} de ${gameData.currentMove.disputedPlayer}` //TODO terminar a função de contestação
+        
+        case "dispute_doesNotHasTheCard": //TODO
+            return `${gameData.currentMove.disputedPlayer} NÃO tinha a carta. Aguardando ${gameData.currentMove.player} matar um carta de ${gameData.currentMove.disputedPlayer}.`
+
+        case "dispute_HasTheCard": //TODO
+            return `${gameData.currentMove.disputedPlayer} TINHA a carta. Aguardando ${gameData.currentMove.disputedPlayer} matar um carta de ${gameData.currentMove.player}.`
+
         case "card_1": 
-            return `${gameData.currentTurnOwner} quer utilizar o Político. As taxas serão aumentadas em 1.`
+            return `${gameData.currentMove.player} quer utilizar o Político. As taxas serão aumentadas em 1.`
 
         case "card_2": 
-            return `${gameData.currentTurnOwner} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
-
-        case "card_2": 
-            return `${gameData.currentTurnOwner} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
+            return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
 
         default://TODO continuar a adicionar as jogadas
 
         break;
     };
 };
-
 
 //recupera as notas do localStorage
 document.getElementById("notes").value = localStorage.getItem("notes");
@@ -215,6 +297,7 @@ function addMessage(messageText) {
     chatMessages.scrollTop = chatMessages.scrollHeight; // Mantém a barra de rolagem na parte inferior
 };
 
+//timer
 let timeRunning = false;
 function startTimer(startTime) {
     if (!startTime) return;

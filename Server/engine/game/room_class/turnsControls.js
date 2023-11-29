@@ -1,5 +1,4 @@
 const { nextBigger } = require('../../../lib/functions');
-const { getPlayerNickFromCurrentMove } = require('../../../lib/functions');
 
 function passTurnToNextPlayer(moveOwner, room) {
     const playersNumbers = [];
@@ -18,8 +17,8 @@ function passTurnToNextPlayer(moveOwner, room) {
     //caso o próximo a jogar, for o player com a menor posição, então é um novo turno
     if (nextPlayer === Math.min(...playersNumbers)) room.newTurn();
 
-    const currentMove_clients = room.currentMove;
-    currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);
+    const currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     const payload = {
       type: "gameData",

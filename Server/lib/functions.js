@@ -47,8 +47,5 @@ function nextBigger(array, givenNumber) {
   return nextBigger;
 };
 
-function getPlayerNickFromCurrentMove(currentMove) {
-  return currentMove.player.header.nickname
-}
 
-module.exports = {generateNewId, uuidv4, shuffle, nextBigger, getPlayerNickFromCurrentMove};
+module.exports = {generateNewId, uuidv4, shuffle, nextBigger};

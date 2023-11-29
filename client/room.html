@@ -54,7 +54,7 @@
         </div>
 
         <!-- players -->  
-        <div id="player-1" class="player">player 1</div> <!-- TODO pesquisar como transformar essas divs em check box pra seleção de interação com os players e cartas -->
+        <div id="player-1" class="player">player 1</div> <!-- TODO pesquisar como transformar essas div em check box pra seleção de interação com os players e cartas -->
         <div id="player-2" class="player">player 2</div>
         <div id="player-3" class="player">player 3</div>
         <div id="player-4" class="player">player 4</div>
@@ -65,17 +65,20 @@
         <div id="player-9" class="player">player 9</div>
         <div id="player-10" class="player">player 10</div>
 
-        <!-- TODO inverse_arrow e arrow -->
-        <div class="arrow_div" id="arrow-1"> <img src="/images/room/arrow.svg" class="arrow" width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-2"> <img src="/images/room/arrow.svg" class="arrow" width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-3"> <img src="/images/room/arrow.svg" class="arrow" width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-4"> <img src="/images/room/arrow.svg" class="arrow" width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-5"> <img src="/images/room/arrow.svg" class="arrow" width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-1"> <img src="/images/room/inverse_arrow.svg" class="inversearrow" width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-2"> <img src="/images/room/inverse_arrow.svg" class="inversearrow" width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-3"> <img src="/images/room/inverse_arrow.svg" class="inversearrow" width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-4"> <img src="/images/room/inverse_arrow.svg" class="inversearrow" width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-5"> <img src="/images/room/inverse_arrow.svg" class="inversearrow" width="20px" height="20px"> </div>
+        <!-- TODO setas -->
+        <div class="arrow_div" id="arrow-1"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
+        <div class="arrow_div" id="arrow-2"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
+        <div class="arrow_div" id="arrow-3"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
+        <div class="arrow_div" id="arrow-4"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
+        <div class="arrow_div" id="arrow-5"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
+        <div class="inversearrow_div" id="inversearrow-1"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
+        <div class="inversearrow_div" id="inversearrow-2"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
+        <div class="inversearrow_div" id="inversearrow-3"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
+        <div class="inversearrow_div" id="inversearrow-4"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
+        <div class="inversearrow_div" id="inversearrow-5"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
+
+        <div class="uparrow_div" id="uparrow-1"> <img src="/images/room/black_arrow.svg" class="uparrow " width="20px" height="20px"> </div>
+        <div class="uparrow_div" id="uparrow-2"> <img src="/images/room/black_arrow.svg" class="uparrow " width="20px" height="20px"> </div>
 
         <!-- informações -->
         <div class="infos">
@@ -91,13 +94,13 @@
         <div id="invest-amount-area">Investidos: <span id="invest-amount"></span></div>
 
         <div id="timer">
-            <img src="/images/room/clock.svg" alt="game time" width="20px" height="20px">
+            <img src="/images/room/black_clock.svg" alt="game time" width="20px" height="20px">
             <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
         </div>
 
         <!-- ações básicas -->
         <div class="basic-actions">
-            <button id="Buy" class="disabeable" onclick="takeCoin_basic(1)" disabled>Pegar +1 moeda</button> <!-- botão -->
+            <button id="Buy" class="disabeable" onclick="takeCoin_basic()" disabled>Pegar +1 moeda</button> <!-- botão -->
             <button id="kill" class="disabeable" disabled>Matar com as próprias mãos</button> <!-- botão -->
             <button id="switch" class="disabeable" disabled>Trocar cartas</button> <!-- botão -->
         </div>
@@ -112,15 +115,15 @@
         <div id="dead-deck"><span id="dead-deck-amount"></span></div>
         <div id="deck"><span id="deck-amount"></span></div>
 
-        <button id="dispute" class="disabeable" onclick="" disabled>Contestar</button> <!-- botão -->
+        <button id="dispute" class="disabeable" onclick="dispute()" disabled>Contestar</button> <!-- botão -->
         <button id="pass" class="disabeable" onclick="(gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === 'waitingFirstMove') ? pass_basic() : pass()" disabled>Passar</button> <!-- botão -->
 
     </div>
-    <script src="/js/room/client_functions.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/gameData.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>
+    <script src="/js/room/client_functions.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/websocket/ws_connction.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/websocket/ws_onRecive.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/websocket/ws_sending.js" onerror="errorOnLoadingScript()"></script>
-    <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>
 </body>
 </html>

@@ -1,5 +1,4 @@
 const { shuffle } = require('../../../../lib/functions');
-const { getPlayerNickFromCurrentMove } = require('../../../../lib/functions');
 
 function startGame(room) {
     if (room.turn !== 0) return;
@@ -22,8 +21,8 @@ function startGame(room) {
         };
     });
 
-    const currentMove_clients = room.currentMove;
-    currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);
+    const currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     //escolhe as cartas pros players
     room.players.forEach(player => {

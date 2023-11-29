@@ -1,28 +1,24 @@
-const { getPlayerNickFromCurrentMove } = require('../../../../lib/functions');
-
 function takeCoin_basic(playerMove, room) {
     // playerMove = {
     //     type: "playerMove",
     //     owner: playeruuid,
     //     content: {
-    //       action: "takeCoin_basic",
-    //       amount: amount
+    //       action: "takeCoin_basic"
     //     }
     // };
 
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
     
-    moveOwner.coins += playerMove.content.amount;
+    moveOwner.coins += 1;
 
     //muda o currentMove
     room.currentMove = {
         moveType: "takeCoin_basic",
-        player: moveOwner,
-        amount: playerMove.content.amount
+        player: moveOwner
     };
 
-    const currentMove_clients = room.currentMove;
-    currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);
+    const currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     //tempo em segundos que será mostrado no "currentMove"
     const displayTime = room.header.displayTime;

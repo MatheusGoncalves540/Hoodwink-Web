@@ -1,4 +1,3 @@
-const cardsData = require('../cardsDefaultData.json');
 const {
   passTurnToNextPlayer,
   newTurn
@@ -24,9 +23,10 @@ class Room {
       maxPlayer: maxPlayer,
       roomPass: roomPass,
       startTime: undefined,
-      startCoins: 8,
-      maxCoins: 20,
+      startCoins: 100, //TODO remover modo de debug
+      maxCoins: 200,
       displayTime_withPossibleCounterPlays: 8,
+      displayTime_highRelevance: 4,
       displayTime: 2
     };
 
@@ -56,11 +56,12 @@ class Room {
       },
     ];
 
-    this.cards = cardsData;
+    //é necessário aqui usar o JSON.parse(JSON.stringify()), para criar uma cópia das normas padrões das cartas, sempre que uma ova sala for criada
+    this.cards = JSON.parse(JSON.stringify(require('../cardsDefaultData.json')));
   };
 
   addNewPlayerOnRoom(newPlayer) {
-    addNewPlayerOnRoom(newPlayer, this)
+    addNewPlayerOnRoom(newPlayer, this);
   };
   
   //retorna os segundos, minutos e horas passadas desde o inicio da partida e o "startTime"

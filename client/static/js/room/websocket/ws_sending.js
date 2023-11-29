@@ -13,7 +13,7 @@ function startGame() {
 };
 
 //ação básica de pegar moeda
-function takeCoin_basic(amount) {
+function takeCoin_basic() {
   if (gameData.turn === 0) return;
   if (gameData.currentTurnOwner !== gameData.me.nick) return;
   if (gameData.me.coins >= gameData.maxCoins) return;
@@ -22,7 +22,6 @@ function takeCoin_basic(amount) {
     owner: playeruuid,
     content: {
       action: "takeCoin_basic",
-      amount: amount
     }
   };
   
@@ -42,7 +41,7 @@ function pass_basic() {
   };
   
   ws.send(JSON.stringify(payload));
-}; //TODO adicionar variante do "pass_basic", só o "pass", que é enviado quando voce quer ignorar/não contestar a jogada de alguém, e não passar seu turno
+};
 
 function pass() {
   if (
@@ -61,9 +60,29 @@ function pass() {
     button.disabled = true;
   });
   ws.send(JSON.stringify(payload));
-}
+};
 
-//TODO fazer a ação de contestação
+//TODO ação de contestação
+function dispute() {
+  if (
+    (gameData.turn == 0) ||
+    (gameData.currentMove.player === gameData.me.nick) ||
+    (!gameData.currentMove.moveType.includes("card_")))
+  return;
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "dispute"
+    }
+  };
+  document.querySelectorAll('.disabeable').forEach((button) => {
+    button.disabled = true;
+  });
+    
+  ws.send(JSON.stringify(payload));
+};
 
 //usar a carta 1
 function card_1() {

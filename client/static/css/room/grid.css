@@ -29,7 +29,7 @@ body {
     "chat chat chat . . . basic-actions basic-actions . . . cards cards cards"
     "chat chat chat . card-left . basic-actions basic-actions . card-right . cards cards cards"
     "chat chat chat . card-left . basic-actions basic-actions . card-right . cards cards cards"
-    "chat chat chat . . . basic-actions basic-actions . . . cards cards cards"
+    "chat chat chat . uparrow-1 . basic-actions basic-actions . uparrow-2 . cards cards cards"
     "chat chat chat . . . coin-amount invest-amount . . . cards cards cards"; 
 }
 
@@ -52,6 +52,10 @@ body {
 #inversearrow-4 { grid-area: inversearrow-4; }
 
 #inversearrow-5 { grid-area: inversearrow-5; }
+
+#uparrow-1 { grid-area: uparrow-1; }
+
+#uparrow-2 { grid-area: uparrow-2; }
 
 #player-1 { grid-area: player-1; }
 

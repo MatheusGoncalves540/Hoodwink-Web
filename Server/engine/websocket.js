@@ -6,7 +6,7 @@ const { socketOnCloseConnection } = require('./websockets_connection/disconnecti
 const { socketOnMessage } = require('./game/receivedFromClient');
 
 //servidor websocket
-const server = new WebSocket.Server({ port: 8080 }, () => { console.log("online em 8080... -Websocket") });
+const server = new WebSocket.Server({ port: 8080 }, () => { console.log("online na porta: 8080 (Websocket)") });
 
 
 function Start_WebSocket(rooms, playingNow) {

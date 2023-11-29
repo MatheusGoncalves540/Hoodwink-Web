@@ -1,4 +1,12 @@
 function pass(playerMove, room) {
+    // playerMove = {
+    //     type: "playerMove",
+    //     owner: playeruuid,
+    //     content: {
+    //       action: "pass"
+    //     }
+    // };
+
     //se ainda não tem o uuid do player neste array, então é adicionado.
     if (room.playersWhoWantsToSkip.includes(playerMove.owner)) return false;
     room.playersWhoWantsToSkip.push(playerMove.owner);

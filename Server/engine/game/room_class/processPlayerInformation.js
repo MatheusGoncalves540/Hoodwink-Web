@@ -1,37 +1,44 @@
 function BringGameInfos(socket, room) {
-    const connectedPlayer = room.players.find(player => player.header.playeruuid === socket.context.playeruuid);
-    const time = room.elapsedTime();
+  const connectedPlayer = room.players.find(player => player.header.playeruuid === socket.context.playeruuid);
+  const time = room.elapsedTime();
+  let currentMove_clients = {};
 
-    const payload = {
-      type: "gameData",
-      content: {
-        roomName: room.header.roomName,
-        turn: room.turn,
-        time: time,
-        tax: room.tax,
-        maxCoins: room.header.maxCoins,
-        currentTurnOwner: room.currentTurnOwner !== undefined ? room.currentTurnOwner.header.nickname : room.currentTurnOwner,
-        currentMove: room.currentMove,
-        aliveDeck: room.aliveDeck.length,
-        deadDeck: room.deadDeck.length,
-        cards: room.cards,
+  if (Object.keys(room.currentMove).length !== 0) {
+    currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    currentMove_clients.player = currentMove_clients.player.header.nickname;
+    if ("disputedPlayer" in currentMove_clients) currentMove_clients.disputedPlayer = currentMove_clients.disputedPlayer.header.nickname;
+  }
 
-        me: {
-          coins: connectedPlayer.coins,
-          cardsInHand: [connectedPlayer.cards[0],connectedPlayer.cards[1]],
-          invested: connectedPlayer.invested,
-          playerNum: connectedPlayer.header.playerNum
-        },
+  let payload = {
+    type: "gameData",
+    content: {
+      roomName: room.header.roomName,
+      turn: room.turn,
+      time: time,
+      tax: room.tax,
+      maxCoins: room.header.maxCoins,
+      currentTurnOwner: room.currentTurnOwner !== undefined ? room.currentTurnOwner.header.nickname : room.currentTurnOwner,
+      currentMove: currentMove_clients,
+      aliveDeck: room.aliveDeck.length,
+      deadDeck: room.deadDeck.length,
+      cards: room.cards,
 
-        players: {}
-      }
-    };
+      me: {
+        coins: connectedPlayer.coins,
+        cardsInHand: [connectedPlayer.cards[0], connectedPlayer.cards[1]],
+        invested: connectedPlayer.invested,
+        playerNum: connectedPlayer.header.playerNum
+      },
 
-    room.players.forEach(player => {
-      payload.content.players[`${player.header.playerNum}`] = player.getPublicInfos();
-    });
+      players: {}
+    }
+  };
 
-    socket.send(JSON.stringify(payload));
+  room.players.forEach(player => {
+    payload.content.players[`${player.header.playerNum}`] = player.getPublicInfos();
+  });
+
+  socket.send(JSON.stringify(payload));
 };
 
 //
@@ -51,11 +58,11 @@ function recordMessageInChat(message, elapsedTime, messageOwnerNick, room) {
 
 function sendInfoForAllPlayers(payload, room) {
   payload = JSON.stringify(payload);
-    
+
   room.players.forEach(player => {
     try {
       player.header.socket.send(payload);
-    } catch {};
+    } catch { };
   });
 };
 

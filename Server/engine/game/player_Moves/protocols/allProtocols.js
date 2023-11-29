@@ -4,6 +4,9 @@ const { pass_basic } = require('./pass_basic');
 const { card_1 } = require('./card_1');
 const { card_2 } = require('./card_2');
 const { pass } = require('./pass');
+const { dispute } = require('./dispute');
+const { dispute_doesNotHasTheCard } = require('./dispute_doesNotHasTheCard');
+const { dispute_HasTheCard } = require('./dispute_HasTheCard');
 
 module.exports = {
     startGame,
@@ -12,4 +15,7 @@ module.exports = {
     card_1,
     card_2,
     pass,
+    dispute,
+    dispute_doesNotHasTheCard,
+    dispute_HasTheCard
 };

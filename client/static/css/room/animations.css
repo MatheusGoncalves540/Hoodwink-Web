@@ -22,10 +22,26 @@
     }
 }
 
+@keyframes move_uparrow {
+    0% {
+        margin-top: 0%;
+    }
+    50% {
+        margin-top: 10%;
+    }
+    100% {
+        margin-top: 0%;
+    }
+}
+
 .arrow {
     animation: move_arrow 1s ease infinite;
 }
 
 .inversearrow {
     animation: move_inversearrow 1s ease infinite;
+}
+
+.uparrow {
+    animation: move_uparrow 1s ease infinite;
 }

@@ -124,7 +124,7 @@ function errorOnLoadingScript() {
 function Listen_App(){
     app.listen(PORT, function (err) {
     if (err) console.log(err);
-    console.log("online na porta: ", PORT);
+    console.log("online na porta:", PORT);
     });
 };
 

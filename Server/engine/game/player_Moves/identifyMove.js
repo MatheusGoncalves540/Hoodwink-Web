@@ -1,4 +1,4 @@
-const { verifyPossibleConterPlays } = require('./conterPlays.js');
+const { verifyPossibleCardsConterPlays } = require('./conterPlays.js');
 const {
     startGame_validation,
     takeCoin_basic_validation,
@@ -12,34 +12,46 @@ const {
     pass_basic,
     card_1,
     card_2,
-    pass
+    pass,
+    dispute,
+    dispute_HasTheCard,
+    dispute_doesNotHasTheCard
 } = require('./protocols/allProtocols.js');
 
 //
 function playerMove_protocol(playerMove, room) {
-    let validMove = true;
+    let counterPlayMove = false;
     
     //se alguma jogada já foi realizada, verifica se a jogada nova recebida, é valida como contra jogada ou ação a se tomar em cima da jogada já ates realizada.
     if (room.alreadyPlayed) {
-        validMove = false;
+        counterPlayMove = true;
 
         switch (playerMove.content.action) {
             case "pass":
                 if (!pass(playerMove, room)) break;
             break;
         
-            case "dispute":
-                //TODO adicionar contestação nas jogadas
+            case "dispute": //TODO adicionar contestação nas jogadas
+                if (!dispute(playerMove, room)) break;
+            break;
+
+            case "dispute_HasTheCard": //TODO adicionar contestação nas jogadas
+                if (!dispute_HasTheCard(playerMove, room)) break;
+                room.playersWhoWantsToSkip.length = 0;
+            break;
+            
+            case "dispute_doesNotHasTheCard": //TODO adicionar contestação nas jogadas
+                if (!dispute_doesNotHasTheCard(playerMove, room)) break;
                 room.playersWhoWantsToSkip.length = 0;
             break;
 
             default:
-                if (verifyPossibleConterPlays(playerMove, room)) validMove = true; //TODO validar as possíveis cartas que podem ser usadas em cima de outras
+                if (!verifyPossibleCardsConterPlays(playerMove, room)); //TODO validar as possíveis cartas que podem ser usadas em cima de outras
             break;
         };
     };
 
-    if (validMove) {
+    if (!counterPlayMove) {
         switch (playerMove.content.action) {
         
         

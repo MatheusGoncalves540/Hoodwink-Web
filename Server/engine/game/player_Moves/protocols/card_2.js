@@ -1,5 +1,3 @@
-const { getPlayerNickFromCurrentMove } = require('../../../../lib/functions');
-
 function card_2(playerMove, room) {
     // playerMove = {
     //     type: "playerMove",
@@ -18,8 +16,8 @@ function card_2(playerMove, room) {
         player: moveOwner
     };
 
-    const currentMove_clients = room.currentMove;
-    currentMove_clients.player = getPlayerNickFromCurrentMove(currentMove_clients);
+    const currentMove_clients = JSON.parse(JSON.stringify(room.currentMove));
+    currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     //tempo em segundos que será mostrado no "currentMove"
     const displayTime = room.header.displayTime_withPossibleCounterPlays;
