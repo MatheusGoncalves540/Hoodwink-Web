@@ -43,12 +43,20 @@ function updateScreenInfos(msg) {
   updateTimer();
   updateArrows();
   updateToggleButtons();
+  VerifyGameOver();
 
   if ("moveTimer" in msg.content) {
     decrementMoveTimer();
   } else {
     gameData.moveTimer = 0;
     decrementMoveTimer();
+  }
+}
+
+//função que verifica se teve um ganhador
+function VerifyGameOver() {
+  if (gameData.currentMove.moveType === "gameWinner") {
+    winnerPopup(gameData.currentMove.player);
   }
 }
 

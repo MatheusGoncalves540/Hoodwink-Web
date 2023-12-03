@@ -1,4 +1,4 @@
-const { verifyDeadPlayerProtocol } = require('./deadPlayer');
+const { verifyDeadPlayerProtocol } = require('../../gameProtocols/deadPlayer');
 
 function dispute_hasTheCard(playerMove, room) {
     //TODO fazer com que a habilidade da carta seja realizada caso ele tinha a carta

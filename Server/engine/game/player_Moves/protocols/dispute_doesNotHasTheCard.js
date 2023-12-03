@@ -1,4 +1,4 @@
-const { verifyDeadPlayerProtocol } = require('./deadPlayer');
+const { verifyDeadPlayerProtocol } = require('../../gameProtocols/deadPlayer');
 
 function dispute_doesNotHasTheCard(playerMove, room) {
     // const payload = {

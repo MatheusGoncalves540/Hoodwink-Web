@@ -1,10 +1,13 @@
 const { nextBigger } = require('../../../lib/functions');
+const { gameWinner } = require('../gameProtocols/gameOver');
 
 function passTurnToNextPlayer(moveOwner, room) {
-    const playersNumbers = [];
+    let playersNumbers = [];
     room.players.forEach(player => {
       if (player.isAlive && player.header.socket !== null) playersNumbers.push(player.header.playerNum);
     });
+
+    if (playersNumbers.length <= 1) gameWinner(playersNumbers[0], room);
 
     const nextPlayer = nextBigger(playersNumbers, moveOwner.header.playerNum);
     room.currentTurnOwner = room.players.find(player => player.header.playerNum === nextPlayer);
