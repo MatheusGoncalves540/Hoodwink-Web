@@ -145,7 +145,7 @@ function selectedCardPayload(div){
         type: "playerMove",
         owner: playeruuid,
         content: {
-            action: "responseToDoesNotHasTheCard",
+            action: "dispute_doesNotHasTheCard",
             disputedPlayer: gameData.currentMove.disputedPlayer, 
             card: card_index
             }

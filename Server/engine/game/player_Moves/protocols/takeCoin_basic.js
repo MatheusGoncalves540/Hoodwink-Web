@@ -51,7 +51,7 @@ function takeCoin_basic(playerMove, room) {
     room.sendInfoForAllPlayers(payload);
 
     setTimeout(() => {
-        room.passTurnToNextPlayer(moveOwner);
+        room.passTurnToNextPlayer(room.currentTurnOwner);
     }, displayTime*1000);
 };
 

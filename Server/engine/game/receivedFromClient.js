@@ -10,7 +10,8 @@ function socketOnMessage(socket, room) {
         if (!result) return;
 
         //verifica se a requisição veio de um player vivo
-        if(room.players.find(player => player.isAlive === false)) return;
+        const moveOwner = room.players.find(player => player.header.playeruuid === result.owner);
+        if(moveOwner.isAlive === false) return;
 
         switch (result.type) {
             case "msg_chat":

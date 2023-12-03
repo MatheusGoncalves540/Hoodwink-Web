@@ -1,10 +1,10 @@
 class Player {
   constructor (newPlayer, room) {
     this.header = {
-        nickname: newPlayer.nickname,
-        playeruuid: newPlayer.playeruuid,
-        socket: newPlayer.socket,
-        playerNum: (room.players.length) + 1
+      nickname: newPlayer.nickname,
+      playeruuid: newPlayer.playeruuid,
+      socket: newPlayer.socket,
+      playerNum: (room.players.length) + 1
     };
     this.cards = [];
     this.isAlive = true;
@@ -60,9 +60,9 @@ class Player {
   // Função pra rodar cada vez que uma carta morrer pra ver se o player morreu
   isDead(){
     const initialValue = 0;
-    const sumOfCards =  this.cards.reduce((accumulator, currentValue) => accumulator + currentValue,initialValue,);
+    const sumOfCards = this.cards.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue);
 
-    if (sumOfCards===-2){
+    if (sumOfCards === -2){
       this.isAlive = false;
       return true;
     } else {

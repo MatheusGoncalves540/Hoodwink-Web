@@ -239,33 +239,46 @@ function updatePlayers(msg) {
 function generateCurrentTurnText() {
     switch (gameData.currentMove.moveType) {
         case "waitingFirstMove":
-            if (gameData.me.nick == gameData.currentTurnOwner) return "aguardando sua jogada..."
-            return `aguardando jogada de: ${gameData.currentTurnOwner}`
+            if (gameData.me.nick == gameData.currentTurnOwner) return "aguardando sua jogada...";
+            return `aguardando jogada de: ${gameData.currentTurnOwner}`;
             
         case "takeCoin_basic":
-            return `${gameData.currentMove.player} pegou 1 moeda`
+            return `${gameData.currentMove.player} pegou 1 moeda`;
 
         case "pass_basic":
-            return `${gameData.currentMove.player} passou a vez...`
+            return `${gameData.currentMove.player} passou a vez...`;
 
         case "dispute":
-            return `${gameData.currentMove.player} contestou o(a) ${gameData.cards[gameData.currentMove.disputedCard].name} de ${gameData.currentMove.disputedPlayer}` //TODO terminar a função de contestação
+            return `${gameData.currentMove.player} contestou o(a) ${gameData.cards[gameData.currentMove.disputedCard].name} de ${gameData.currentMove.disputedPlayer}`; //TODO terminar a função de contestação
         
         case "dispute_doesNotHasTheCard": //TODO
-            return `${gameData.currentMove.disputedPlayer} NÃO tinha a carta. Aguardando ${gameData.currentMove.player} matar um carta de ${gameData.currentMove.disputedPlayer}.`
+            return `${gameData.currentMove.disputedPlayer} NÃO tinha a carta. Aguardando ${gameData.currentMove.player} matar um carta de ${gameData.currentMove.disputedPlayer}.`;
 
         case "dispute_HasTheCard": //TODO
-            return `${gameData.currentMove.disputedPlayer} TINHA a carta. Aguardando ${gameData.currentMove.disputedPlayer} matar um carta de ${gameData.currentMove.player}.`
+            return `${gameData.currentMove.disputedPlayer} TINHA a carta. Aguardando ${gameData.currentMove.disputedPlayer} matar um carta de ${gameData.currentMove.player}.`;
+
+        case "responseToDoesNotHasTheCard":
+            const choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
+            return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.disputedPlayer}. Será um Kamikaze?...`;
+
+        case "deadPlayer":
+            return `${gameData.currentMove.player} foi eliminado!`;
 
         case "card_1": 
-            return `${gameData.currentMove.player} quer utilizar o Político. As taxas serão aumentadas em 1.`
+            return `${gameData.currentMove.player} quer utilizar o Político. As taxas serão aumentadas em 1.`;
 
         case "card_2": 
-            return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`
+            return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`;
 
         default://TODO continuar a adicionar as jogadas
 
         break;
+        room.currentMove = {
+            moveType: 'responseToDoesNotHasTheCard',
+            player: moveOwner,
+            disputedPlayer: disputedPlayer,
+            card: playerMove.content.card
+        };
     };
 };
 
