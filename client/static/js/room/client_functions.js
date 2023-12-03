@@ -113,7 +113,7 @@ function disputeSituationsProtocols() {
     //TODO
     if (gameData.currentMove.player === gameData.me.nick) selectPopup();
   }
-  if (gameData.currentMove.moveType === "dispute_HasTheCard") {
+  if (gameData.currentMove.moveType === "dispute_hasTheCard") {
     //TODO
     if (gameData.currentMove.disputedPlayer === gameData.me.nick) selectPopup();
   }
@@ -128,7 +128,15 @@ function selectPopup() {
     let div = document.createElement("div");
     div.innerText = i + 1;
     div.addEventListener("click", () => {
-      selectedCardPayload(div);
+      let attackedPlayer;
+      if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard") {
+        attackedPlayer = gameData.currentMove.disputedPlayer
+      } else if (gameData.currentMove.moveType === "dispute_hasTheCard") {
+        attackedPlayer = gameData.currentMove.player//TODO
+      } else {
+        attackedPlayer = gameData.currentMove.attackedPlayer
+      };
+      selectedCardPayload(div, attackedPlayer);
     });
     fatherDiv.appendChild(div);
   }
@@ -329,6 +337,7 @@ function updatePlayers(msg) {
 
 //gera o texto da jogada atual, com base no que foi recebido do servidor
 function generateCurrentTurnText() {
+  let choosedCard;
   switch (gameData.currentMove.moveType) {
     case "waitingFirstMove":
       if (gameData.me.nick == gameData.currentTurnOwner) return "aguardando sua jogada...";
@@ -346,12 +355,16 @@ function generateCurrentTurnText() {
     case "dispute_doesNotHasTheCard": //TODO
       return `${gameData.currentMove.disputedPlayer} NÃO tinha a carta. Aguardando ${gameData.currentMove.player} matar um carta de ${gameData.currentMove.disputedPlayer}.`;
 
-    case "dispute_HasTheCard": //TODO
+    case "dispute_hasTheCard": //TODO
       return `${gameData.currentMove.disputedPlayer} TINHA a carta. Aguardando ${gameData.currentMove.disputedPlayer} matar um carta de ${gameData.currentMove.player}.`;
 
     case "responseToDoesNotHasTheCard":
-      const choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
+      choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
       return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.disputedPlayer}. Será um Kamikaze?...`;
+
+    case "responseToHasTheCard":
+      choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
+      return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.playerWhoDisputed}. Será um Kamikaze?...`;
 
     case "deadPlayer":
       return `${gameData.currentMove.player} foi eliminado!`;

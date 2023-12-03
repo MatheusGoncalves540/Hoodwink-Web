@@ -48,7 +48,7 @@ function dispute(playerMove, room) {
     if (disputedPlayer_hasTheDisputedCard) {
         actionTaken = () => {
             room.currentMove = {
-                moveType: 'dispute_HasTheCard',
+                moveType: 'dispute_hasTheCard',
                 player: moveOwner,
                 disputedPlayer: disputedPlayer
             };
@@ -61,7 +61,7 @@ function dispute(playerMove, room) {
                 type: "gameData",
                 content: {
                     currentMove: currentMove_clients,
-                    moveTimer: room.header.displayTime_withPossibleCounterPlays
+                    moveTimer: room.header.displayTime_withPossibleCounterPlays //TODO escolha automática aleatória depois desse tempo
                 }
             };
             room.sendInfoForAllPlayers(payload2);
@@ -82,7 +82,7 @@ function dispute(playerMove, room) {
                 type: "gameData",
                 content: {
                     currentMove: currentMove_clients,
-                    moveTimer: room.header.displayTime_withPossibleCounterPlays
+                    moveTimer: room.header.displayTime_withPossibleCounterPlays //TODO escolha automática aleatória depois desse tempo
                 }
             };
             room.sendInfoForAllPlayers(payload2);

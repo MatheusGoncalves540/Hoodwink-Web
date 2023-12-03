@@ -14,7 +14,7 @@ const {
     card_2,
     pass,
     dispute,
-    dispute_HasTheCard,
+    dispute_hasTheCard,
     dispute_doesNotHasTheCard
 } = require('./protocols/allProtocols.js');
 
@@ -35,8 +35,8 @@ function playerMove_protocol(playerMove, room) {
                 if (!dispute(playerMove, room)) break;
             break;
 
-            case "dispute_HasTheCard": //TODO adicionar contestação nas jogadas
-                if (!dispute_HasTheCard(playerMove, room)) break;
+            case "dispute_hasTheCard": //TODO adicionar contestação nas jogadas
+                if (!dispute_hasTheCard(playerMove, room)) break;
                 room.playersWhoWantsToSkip.length = 0;
             break;
             

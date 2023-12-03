@@ -26,7 +26,7 @@
             <div id="chat-tab" class="tab">
                 <div id="chat-messages"></div>
                 <div id="input-chat-area">
-                    <input placeholder="Máximo 50 caracteres..." id="input-chat" onkeydown="if (event.key === 'Enter') { sendMessage(); }">
+                    <input maxlength="50" placeholder="Máximo 50 caracteres..." id="input-chat" onkeydown="if (event.key === 'Enter') { sendMessage(); }">
                     <button id="input-chat-btn" onclick="sendMessage()">Enviar</button>
                 </div>
             </div>          

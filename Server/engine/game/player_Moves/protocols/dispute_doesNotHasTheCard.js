@@ -6,14 +6,14 @@ function dispute_doesNotHasTheCard(playerMove, room) {
     //     owner: playeruuid,
     //     content: {
     //       action: "dispute_doesNotHasTheCard",
-    //       disputedPlayer: disputedPlayer,
+    //       attackedPlayer: disputedPlayer,
     //       card: //0 ou 1
     //     }
     // };
     if (playerMove.owner !== room.currentMove.player.header.playeruuid) return false;
 
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
-    const disputedPlayer = room.players.find(player => player.header.nickname === playerMove.content.disputedPlayer);
+    const disputedPlayer = room.players.find(player => player.header.nickname === playerMove.content.attackedPlayer);
 
     const displayTime = room.header.displayTime_withPossibleCounterPlays;
 

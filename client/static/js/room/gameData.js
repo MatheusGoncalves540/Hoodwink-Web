@@ -29,7 +29,8 @@ let gameData = {
         coins: 0,
         invested: [],
         cardsInHand: ['left','right'],
-        playerNum: undefined
+        playerNum: undefined,
+        isAlive: true
     },
 
     players: {
