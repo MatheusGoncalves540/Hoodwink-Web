@@ -1,79 +1,157 @@
-span, img, .arrow_div, .inversearrow_div, .uparrow_div {
-    border: 0px !important;
+span,
+img,
+.arrow_div,
+.inversearrow_div,
+.uparrow_div {
+  border: 0px !important;
 }
 
-.uparrow { 
-    transform: rotate(90deg);
-    width: 50%;
-    height: 50%;
+.uparrow {
+  transform: rotate(90deg);
+  width: 50%;
+  height: 50%;
 }
 
 .inversearrow {
-    transform: rotate(180deg);
-    width: 50%;
-    height: 50%;
-    margin-left: 0%;
+  transform: rotate(180deg);
+  width: 50%;
+  height: 50%;
+  margin-left: 0%;
 }
 
 .arrow {
-    width: 50%;
-    height: 50%;
-    margin-left: 0%;
+  width: 50%;
+  height: 50%;
+  margin-left: 0%;
 }
 
 .inversearrow_div {
-    display: flex;
-    justify-content: right;
-    align-items: center;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
 
 .arrow_div {
-    display: flex;
-    justify-content: left;
-    align-items: center;
+  display: flex;
+  justify-content: left;
+  align-items: center;
 }
 
 .uparrow_div {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
 }
 
-#room-code, #tax, #turn, #timer, .player, #deck, #dead-deck, #coin-amount-area, #invest-amount-area, #card-left, #card-right {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#room-code,
+#tax,
+#turn,
+#timer,
+.player,
+#deck,
+#dead-deck,
+#coin-amount-area,
+#invest-amount-area,
+#card-left,
+#card-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .disconnectedPlayer {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .popup {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.342);
-    height: 100%;
-    width: 100%;
-    gap: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex-wrap: wrap;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.342);
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-wrap: wrap;
 }
 
 .popup div {
-    height: 250px;
-    width: 200px;
-    margin-left: 40px;
-    margin-right: 40px;
-    background-color: white;
-    border: 1px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 250px;
+  width: 200px;
+  margin-left: 40px;
+  margin-right: 40px;
+  background-color: white;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Estilos pra tela de vencedor */
+.winnerPopup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.63);
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.infoBox {
+  background-color: white;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 20px;
+  padding: 50px;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.24);
+  height: 300px;
+}
+
+.centralizeInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.playerInfos h1 {
+  font-size: 68px;
+  margin: 0;
+}
+
+.playerInfos h2 {
+  font-size: 34px;
+  margin: 0;
+}
+
+.buttonBox {
+  width: 500px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.buttonBox button {
+  height: 50px;
+  font-size: 18px;
+  border-radius: 10px;
+}
+/* Fim estilos da tela de vencedor */
