@@ -66,7 +66,7 @@ function dispute_doesNotHasTheCard(playerMove, room) {
 
         //
 
-        verifyDeadPlayerProtocol();
+        verifyDeadPlayerProtocol(disputedPlayer, room);
 
     }, displayTime * 1000);
 };

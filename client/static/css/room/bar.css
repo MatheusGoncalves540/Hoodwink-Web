@@ -5,5 +5,5 @@
 #bar {
     height: 20px;
     width: 100%;
-    background-image: repeating-linear-gradient(         to left,         #D4145A ,         #FBB03B     )
+    background: black;
 }

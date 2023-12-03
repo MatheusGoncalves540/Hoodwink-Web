@@ -139,6 +139,8 @@ let gameData = {
 let localVariables = {
     alreadyReceiptInfos: false,
     itsMyTurnAndMyFirstMove: gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === "waitingFirstMove" ? true : false,
-    readyToSelect_aPlayer: false,
-    readyToSelect_aCard: false,
+    set_timeOutTick: undefined,
+    timeOutTick: undefined,
+    moveTimerProgress: 0,
+    moveTimerDecrementTick: 0,
 };
