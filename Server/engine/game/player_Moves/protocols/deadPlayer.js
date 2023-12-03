@@ -1,4 +1,4 @@
-function deadPlayerProtocol(disputedPlayer, room) { 
+function verifyDeadPlayerProtocol(disputedPlayer, room) { 
     if (disputedPlayer.isDead()) {
         room.currentMove = {
             moveType: 'deadPlayer',
@@ -16,7 +16,7 @@ function deadPlayerProtocol(disputedPlayer, room) {
             }
         };
         room.sendInfoForAllPlayers(payload3);
-        
+
         //
         setTimeout(()=>{
             room.passTurnToNextPlayer(room.currentTurnOwner);
@@ -27,4 +27,4 @@ function deadPlayerProtocol(disputedPlayer, room) {
     }; 
 }; 
 
-module.exports = { deadPlayerProtocol };
+module.exports = { verifyDeadPlayerProtocol };

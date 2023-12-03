@@ -108,6 +108,9 @@
 
         <div id="atual-moment">
             <p id="atual-moment-text" class="hidden">Iniciando...</p>
+            <div id="bar-div">
+                <div id="bar"></div>
+            </div>
             <button id="startGame-button" class="disabeable" onclick="startGame();" disabled>Iniciar</button> <!-- botão -->
         </div>
 
@@ -119,6 +122,7 @@
         <button id="pass" class="disabeable" onclick="(gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === 'waitingFirstMove') ? pass_basic() : pass()" disabled>Passar</button> <!-- botão -->
 
     </div>
+    <script src="/js/room/bar.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/gameData.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/client_functions.js" onerror="errorOnLoadingScript()"></script>

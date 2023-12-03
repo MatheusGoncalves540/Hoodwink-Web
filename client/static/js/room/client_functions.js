@@ -37,6 +37,7 @@ function updateScreenInfos(msg) {
       ? "Aguardando players..."
       : "Iniciar";
 
+  if ("moveTimer" in msg.content) decrement();
   disputeSituationsProtocols();
   updateCardsPrice();
   updateTimer();

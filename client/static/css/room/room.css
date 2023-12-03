@@ -8,6 +8,7 @@
 
 @import "./styles.css";
 
+@import "./bar.css";
 /* mostrar areas*/
 .container * {
   border: 1px solid black;

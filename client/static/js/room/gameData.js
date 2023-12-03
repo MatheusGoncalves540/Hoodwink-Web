@@ -17,7 +17,7 @@ let gameData = {
 
     currentTurnOwner: `sala: ${document.title.split(':')[1]}`,
     currentMove: {},
-    moveTime: 0,
+    moveTimer: 0,
 
     tax: 0,
     maxCoins: 0,

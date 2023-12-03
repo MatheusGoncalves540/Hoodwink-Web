@@ -1,5 +1,6 @@
+const { verifyDeadPlayerProtocol } = require('./deadPlayer');
+
 function dispute_doesNotHasTheCard(playerMove, room) {
-    //TODO
     // const payload = {
     //     type: "playerMove",
     //     owner: playeruuid,
@@ -65,7 +66,7 @@ function dispute_doesNotHasTheCard(playerMove, room) {
 
         //
 
-        deadPlayerProtocol();
+        verifyDeadPlayerProtocol();
 
     }, displayTime * 1000);
 };

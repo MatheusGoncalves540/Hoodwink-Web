@@ -1,0 +1,9 @@
+#bar-div {
+    height: 20px;
+}
+
+#bar {
+    height: 20px;
+    width: 100%;
+    background-image: repeating-linear-gradient(         to left,         #D4145A ,         #FBB03B     )
+}
