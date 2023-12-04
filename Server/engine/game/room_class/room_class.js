@@ -1,6 +1,7 @@
 const {
   passTurnToNextPlayer,
-  newTurn
+  newTurn,
+  restartRoom,
 } = require('./turnsControls');
 
 const {
@@ -13,24 +14,18 @@ const {
 const {
   selfDestructionByNoPlayers,
   addNewPlayerOnRoom
-} = require('./addAndRemovePlayers')
+} = require('./addAndRemovePlayers');
+
+const { 
+  defaultChat
+} = require('./defaultRoomConfig');
 
 class Room {
-  constructor(idNewRoom, roomName, maxPlayer, roomPass) {
-    this.header = {
-      roomId: idNewRoom,
-      roomName: roomName,
-      maxPlayer: maxPlayer,
-      roomPass: roomPass,
-      startTime: undefined,
-      startCoins: 100, //TODO remover modo de debug
-      maxCoins: 200,
-      displayTime_withPossibleCounterPlays: 8,
-      displayTime_highRelevance: 4,
-      displayTime: 2
-    };
+  constructor(header, chat = defaultChat()) {
+    this.header = header;
 
     this.timeOut_deleteRoom;
+    this.gameOver = false,
 
     this.alreadyPlayed = false;
     this.turn = 0;
@@ -48,17 +43,16 @@ class Room {
     this.players = [];
     this.spectators = []; //ideia futura, aqui serão guardados apenas o uuid do espectador, nada mais
 
-    this.chat = [{ //estrutura de mensagem do chat
-        time: [0, 0, 0],
-        owner: "Servidor",
-        ownerNick: "Servidor",
-        content: "Sala criada!",
-      },
-    ];
+    this.chat = chat;
+  
 
-    //é necessário aqui usar o JSON.parse(JSON.stringify()), para criar uma cópia das normas padrões das cartas, sempre que uma ova sala for criada
+    //é necessário aqui usar o JSON.parse(JSON.stringify()), para criar uma cópia das normas padrões das cartas, sempre que uma nova sala for criada
     this.cards = JSON.parse(JSON.stringify(require('../cardsDefaultData.json')));
   };
+
+  restart() {
+    restartRoom(this);
+  }
 
   addNewPlayerOnRoom(newPlayer) {
     addNewPlayerOnRoom(newPlayer, this);

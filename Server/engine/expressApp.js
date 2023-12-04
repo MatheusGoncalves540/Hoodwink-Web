@@ -5,6 +5,7 @@ const path = require('path');
 const { generateNewId, uuidv4 } = require('../lib/functions');
 const { Room } = require('./game/room_class/room_class');
 const { validateCreatedRoom, ValidateEntry } = require('../lib/validations');
+const { defaultHeader } = require('./game/room_class/defaultRoomConfig');
 const msgServer = require('../lib/languages/messages.json')['ptbr'];
 
 //porta principal
@@ -55,13 +56,13 @@ function CreatingRoom_Page(rooms) {
         //gera um id para a sala
         const idNewRoom = generateNewId();
       
+        const newRoomHeader = defaultHeader(idNewRoom, newRoomData.roomName, newRoomData.maxPlayer, newRoomData.roomPass
+            ); //TODO fazer com que as informações aq sejam mais amplamente configuráveis.
+
         //adiciona a sala no mapa de salas em memória
         try {
             rooms[idNewRoom] = new Room (
-                idNewRoom,
-                newRoomData.roomName,
-                newRoomData.maxPlayer,
-                newRoomData.roomPass
+                newRoomHeader
             );
         } catch (error) {
             console.error(error)
@@ -73,7 +74,7 @@ function CreatingRoom_Page(rooms) {
           nickname: newRoomData.nickname
         });
       
-        console.log(rooms[idNewRoom]);
+        console.log("a sala: " + idNewRoom + " foi criada.");
     });
 };
 

@@ -1,4 +1,5 @@
 function gameWinner(WinnerPlayerNumber, room) {
+    room.gameOver = true;
     const winner = room.players.find(player => player.header.playerNum == WinnerPlayerNumber);
 
     room.currentMove = {

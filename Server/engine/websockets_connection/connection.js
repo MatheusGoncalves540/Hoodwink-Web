@@ -99,7 +99,7 @@ function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
         BringPastMessages(room, newPlayer.playeruuid);
 
         if (room.timeOut_deleteRoom != undefined && !room.timeOut_deleteRoom._destroyed) {
-            console.warn("exclusão da sala: " + `${room.header.roomId}` + " cancelada");
+            console.log("exclusão da sala: " + `${room.header.roomId}` + " cancelada");
             clearTimeout(room.timeOut_deleteRoom);
         };
         

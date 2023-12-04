@@ -185,7 +185,7 @@ function winnerPopup(winner, winnerText = "É o vencedor!") {
       });
     } else {
       button.addEventListener("click", () => {
-        console.log("Desconectar Selecionado");
+        window.location.replace(window.location.href.split('/room/')[0]);
       });
     }
     buttonBox.appendChild(button);

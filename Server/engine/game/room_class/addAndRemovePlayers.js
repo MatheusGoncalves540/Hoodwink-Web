@@ -7,14 +7,19 @@ function selfDestructionByNoPlayers(rooms, room) {
 
     if (connectedPlayers.length <= 0) {
         const timeWithoutPlayers = 1800; //30 min
-  
-        room.timeOut_deleteRoom = setTimeout(() => {
+
+        if (room.gameOver) {
             if (connectedPlayers.length <= 0) {
                 delete rooms[room.header.roomId];
+                console.warn("a sala: " + `${room.header.roomId}` + " foi excluída.");
             };
-        }, timeWithoutPlayers * 1000);
-
-        console.warn("a sala: " + `${room.header.roomId}` + " será excluída em " + `${(timeWithoutPlayers / 60)}` + " minutos");
+        } else {
+            room.timeOut_deleteRoom = setTimeout(() => {
+                console.warn("a sala: " + `${room.header.roomId}` + " foi excluída.");
+            }, timeWithoutPlayers * 1000);
+    
+            console.log("a sala: " + `${room.header.roomId}` + " será excluída em " + `${(timeWithoutPlayers / 60)}` + " minutos");
+        };
     };
 };
 

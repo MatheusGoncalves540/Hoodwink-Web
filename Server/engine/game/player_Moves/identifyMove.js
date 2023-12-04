@@ -20,6 +20,10 @@ const {
 
 //
 function playerMove_protocol(playerMove, room) {
+
+
+    if (room.gameOver) return;
+
     let counterPlayMove = false;
     
     //se alguma jogada já foi realizada, verifica se a jogada nova recebida, é valida como contra jogada ou ação a se tomar em cima da jogada já ates realizada.
@@ -52,10 +56,7 @@ function playerMove_protocol(playerMove, room) {
     };
 
     if (!counterPlayMove) {
-        switch (playerMove.content.action) {
-        
-        
-        
+        switch (playerMove.content.action) {        
             case "startGame":
                 if (!startGame_validation(playerMove, room)) break;
                 room.alreadyPlayed = true;
