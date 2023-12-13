@@ -29,6 +29,7 @@ function StartExpress_Pages(rooms, playingNow) {
     EnterByUrl_Page(); //Página que recebe requisições de entrada por link
     Room_Page(rooms); //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
     Rules_Page(); //Página de regras
+    Uuid4Api(); //api para geração de uuid v4
     errorOnLoadingScript(); //Página de erro ao carregar scripts da sala
 };
 
@@ -144,12 +145,16 @@ function Room_Page(rooms) {
         if (!entryData.room) return res.status(404).json({erro:"sala não encontrada"})
         if (ValidateEntry(res, msgServer, entryData, 'express') === false) return;
     
-        const playeruuid = uuidv4();
-    
         // Envie o arquivo room.html com os valores personalizados como variáveis
-        res.render(path.join(__dirname, '..', '..', 'client', 'room.html'), { playeruuid: playeruuid, nickname: entryData.nickname, roomPass: entryData.roomPass });
+        res.render(path.join(__dirname, '..', '..', 'client', 'room.html'), { nickname: entryData.nickname, roomPass: entryData.roomPass });
     });
 };
+
+function Uuid4Api() {
+    app.get("/uuid", (req, res) => {
+        res.status(200).json({uuid:uuidv4()});
+    })
+} 
 
 //Página de regras
 function Rules_Page() {

@@ -11,10 +11,12 @@ function dispute_hasTheCard(playerMove, room) {
     //       card: //0 ou 1
     //     }
     // };
-    if (playerMove.owner !== room.currentMove.disputedPlayer.header.playeruuid) return false;
-
     const disputedPlayer = room.players.find(player => player.header.playeruuid === playerMove.owner);
     const playerWhoDisputed = room.players.find(player => player.header.nickname === playerMove.content.attackedPlayer);
+
+    //validações
+    if (playerMove.owner !== room.currentMove.disputedPlayer.header.playeruuid) return false;
+    if (playerWhoDisputed.cards[playerMove.content.card] == -1) return false;
 
     const displayTime = room.header.displayTime_withPossibleCounterPlays;
 

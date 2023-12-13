@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/axios_lib.js" onerror="errorOnLoadingScript()"></script>
     <script>
         // Recupere os valores passados pelo servidor
-        const uuidPlayer = "<%= playeruuid %>";
         const nickname = "<%= nickname %>";
         const roomPass = "<%= roomPass %>";
+
+        let uuidPlayer;
+        axios.get('/uuid').then(response => {uuidPlayer = response.data.uuid});
+
         document.title = 'Connecting at room: ' + ((window.location.href).split('/room/')[1]);
         if (!uuidPlayer || !nickname) errorOnLoadingScript();
     </script>
@@ -122,7 +126,7 @@
         <button id="pass" class="disabeable" onclick="(gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === 'waitingFirstMove') ? pass_basic() : pass()" disabled>Passar</button> <!-- botão -->
 
     </div>
-    <script src="/js/axios_lib.js" onerror="errorOnLoadingScript()"></script>
+
     <script src="/js/room/bar.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/gameData.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>
