@@ -9,9 +9,9 @@ document.getElementById('createRoomForm').addEventListener('submit', function(ev
     })
     .then(function (response) {
         
-        const roomId = response.data.room.header.roomId;
+        const roomId = response.data.roomId;
         const nickname = response.data.nickname;
-        const roomPass = response.data.room.header.roomPass;
+        const roomPass = response.data.roomPass;
         
         // Fazer o redirecionamento usando POST
         const form = document.createElement('form');

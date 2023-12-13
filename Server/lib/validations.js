@@ -53,6 +53,8 @@ function ValidateAlreadyPlayerInRoom(room, playeruuid) {
 
 //Valida se com os dados passados, é permitida a entrada
 function ValidateEntry(res, msgServer, entryData, socketOrExpress) {
+    if (!socketOrExpress || !entryData.room || !entryData.room.header) return msgServer.errors.invldData.room;
+
     if (socketOrExpress === "express") {
         if (!validateRoomPass(entryData.room, entryData.roomPass)) return res.status(401).json({ erro: msgServer.errors.invldData.roomPass });
 

@@ -181,7 +181,7 @@ function winnerPopup(winner, winnerText = "É o vencedor!") {
     button.innerText = options[i];
     if (i == 0) {
       button.addEventListener("click", () => {
-        console.log("Jogar novamente Selecionado");
+        replayButton()
       });
     } else {
       button.addEventListener("click", () => {
@@ -196,6 +196,13 @@ function winnerPopup(winner, winnerText = "É o vencedor!") {
   infoBox.appendChild(buttonBox);
   mainBox.appendChild(infoBox);
   document.body.appendChild(mainBox);
+}
+
+//
+
+function replayButton() {
+  axios.post(`/room/${idRoom}/restarting-room`, {
+  });
 }
 
 //

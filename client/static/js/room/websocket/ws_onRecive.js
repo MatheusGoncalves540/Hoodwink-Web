@@ -29,6 +29,29 @@ ws.onmessage = function(msg) {
                 document.getElementById("game").style.visibility = "visible";
             };
         break;
+
+        case 'restartRoom':
+            const idNewRoom = msg.content.idNewRoom
+            // Fazer o redirecionamento usando POST
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = `/room/${idNewRoom}`;
+            
+            const inputNickname = document.createElement('input');
+            inputNickname.type = 'hidden';
+            inputNickname.name = 'nickname';
+            inputNickname.value = nickname;
+            form.appendChild(inputNickname);
+            
+            const inputRoomPass = document.createElement('input');
+            inputRoomPass.type = 'hidden';
+            inputRoomPass.name = 'roomPass';
+            inputRoomPass.value = roomPass;
+            form.appendChild(inputRoomPass);
+
+            document.body.appendChild(form);
+            form.submit();
+        break;
     
         default:
         break;

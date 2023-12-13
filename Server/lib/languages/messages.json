@@ -5,7 +5,8 @@
                 "nick": "Nickname inválido!",
                 "roomName": "nome de sala inválido!",
                 "roomPass": "Senha inválida!",
-                "generic": "informações inválidas!"
+                "generic": "informações inválidas!",
+                "room": "Sala não existente!"
             },
             "invldEntry": {
                 "fullRoom": "A sala está cheia!",

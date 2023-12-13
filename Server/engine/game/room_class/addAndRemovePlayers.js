@@ -8,7 +8,7 @@ function selfDestructionByNoPlayers(rooms, room) {
     if (connectedPlayers.length <= 0) {
         const timeWithoutPlayers = 1800; //30 min
 
-        if (room.gameOver) {
+        if (room.gameOver || room.turn === 0) {
             if (connectedPlayers.length <= 0) {
                 delete rooms[room.header.roomId];
                 console.warn("a sala: " + `${room.header.roomId}` + " foi excluída.");

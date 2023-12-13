@@ -25,6 +25,7 @@ function StartExpress_Pages(rooms, playingNow) {
     ExpressConfigs();
     Lobby_Page(playingNow);
     CreatingRoom_Page(rooms); //Página que recebe as informações que vieram do lobby e cria a sala
+    RestartRoom(rooms)//Página que conecta todos os jogadores de uma sala, à outra nova
     EnterByUrl_Page(); //Página que recebe requisições de entrada por link
     Room_Page(rooms); //Página da sala, que recebe as informações vindas da "CreatingRoom_Page" e tenta conectar no websocket da sala especificada, se as informações forem validas
     Rules_Page(); //Página de regras
@@ -48,7 +49,12 @@ function CreatingRoom_Page(rooms) {
             nickname: req.body['nickname'],
             roomName: req.body['roomName'],
             maxPlayer: req.body['maxPlayer'],
-            roomPass: req.body['roomPass']
+            roomPass: req.body['roomPass'],
+            startCoins: req.body['startCoins'],
+            maxCoins: req.body['maxCoins'],
+            displayTime_withPossibleCounterPlays: req.body['displayTime_withPossibleCounterPlays'],
+            displayTime_highRelevance: req.body['displayTime_highRelevance'],
+            displayTime: req.body['displayTime']
         };
       
         if (validateCreatedRoom(res, msgServer, newRoomData) !== true) return;
@@ -56,8 +62,10 @@ function CreatingRoom_Page(rooms) {
         //gera um id para a sala
         const idNewRoom = generateNewId();
       
-        const newRoomHeader = defaultHeader(idNewRoom, newRoomData.roomName, newRoomData.maxPlayer, newRoomData.roomPass
-            ); //TODO fazer com que as informações aq sejam mais amplamente configuráveis.
+        const newRoomHeader = defaultHeader(idNewRoom, newRoomData.roomName, newRoomData.maxPlayer, newRoomData.roomPass,
+            newRoomData.startCoins, newRoomData.maxCoins, newRoomData.displayTime_withPossibleCounterPlays,
+            newRoomData.displayTime_highRelevance, newRoomData.displayTime
+        ); //TODO fazer com que as informações aq sejam mais amplamente configuráveis.
 
         //adiciona a sala no mapa de salas em memória
         try {
@@ -70,13 +78,50 @@ function CreatingRoom_Page(rooms) {
       
         //envie a resposta com o ID da sala que acabou de criar
         res.json({
-          room: rooms[idNewRoom],
+          roomId: rooms[idNewRoom].header.roomId,
+          roomPass: rooms[idNewRoom].header.roomPass,
           nickname: newRoomData.nickname
         });
       
         console.log("a sala: " + idNewRoom + " foi criada.");
+        
     });
 };
+
+//ao receber um post aqui, tentará criar uma nova sala e conectar todos os jogadores que estavam na anterior à ela
+function RestartRoom(rooms) {
+    app.post("/room/:id/restarting-room", (req, res) => {
+        const oldRoom = rooms[req.params['id']];
+        const idNewRoom = generateNewId();
+        
+        if (!oldRoom.gameOver) return res.send('Jogo ainda não concluído');
+
+        const oldRoomHeader = {...oldRoom.header};
+        oldRoomHeader.roomId = idNewRoom;
+        //adiciona a sala no mapa de salas em memória
+        try {
+            rooms[idNewRoom] = new Room (
+                oldRoomHeader,
+                oldRoom.chat
+            );
+        } catch (error) {
+            console.error(error);
+        };
+        //
+
+        const payload = {
+            type: "restartRoom",
+            content: {
+                idNewRoom: idNewRoom
+            }
+        };
+
+        console.log("a sala: " + idNewRoom + " foi criada.");
+
+        oldRoom.sendInfoForAllPlayers(payload);
+    })
+}
+
 
 function EnterByUrl_Page() {
     app.get("/room/:id", (req, res) => {
@@ -97,7 +142,7 @@ function Room_Page(rooms) {
     
         //valida os dados e libera a entrada
         if (!entryData.room) return res.status(404).json({erro:"sala não encontrada"})
-        if (ValidateEntry(res, msgServer, entryData, 'express') !== true) return;
+        if (ValidateEntry(res, msgServer, entryData, 'express') === false) return;
     
         const playeruuid = uuidv4();
     

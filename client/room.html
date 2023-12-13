@@ -122,6 +122,7 @@
         <button id="pass" class="disabeable" onclick="(gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === 'waitingFirstMove') ? pass_basic() : pass()" disabled>Passar</button> <!-- botão -->
 
     </div>
+    <script src="/js/axios_lib.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/bar.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/gameData.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>
