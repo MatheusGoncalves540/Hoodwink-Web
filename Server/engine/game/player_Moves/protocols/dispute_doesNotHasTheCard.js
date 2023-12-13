@@ -10,10 +10,12 @@ function dispute_doesNotHasTheCard(playerMove, room) {
     //       card: //0 ou 1
     //     }
     // };
-    if (playerMove.owner !== room.currentMove.player.header.playeruuid) return false;
-
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
     const disputedPlayer = room.players.find(player => player.header.nickname === playerMove.content.attackedPlayer);
+
+    //validações
+    if (playerMove.owner !== room.currentMove.player.header.playeruuid) return false;
+    if (disputedPlayer.cards[playerMove.content.card] == -1) return false;
 
     const displayTime = room.header.displayTime_withPossibleCounterPlays;
 
@@ -66,7 +68,14 @@ function dispute_doesNotHasTheCard(playerMove, room) {
 
         //
 
-        verifyDeadPlayerProtocol(disputedPlayer, room);
+        verifyDeadPlayerProtocol(disputedPlayer, room).then(() => {
+            if (room.moveFunction_counterPlay) {
+                room.moveFunction();
+            } else { //TODO verificar funcionalidade
+                room.passTurnToNextPlayer(room.currentTurnOwner);
+            };
+            
+        });   
 
     }, displayTime * 1000);
 };

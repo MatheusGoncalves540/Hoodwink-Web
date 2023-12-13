@@ -389,6 +389,9 @@ function generateCurrentTurnText() {
 
     case "card_2": 
       return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`;
+
+    case "card_3": 
+      return `${gameData.currentMove.player} quer utilizar o Trilionário para receber PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPLDAPSLDPASDLASPDLPASDLASPDLASPDLASPDLAPDL.`;
     
     default:
       break;

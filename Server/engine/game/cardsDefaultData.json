@@ -47,7 +47,7 @@
         "fixPrice": 1,
         "price": 6,
         "taxMinimum": 3,
-        "taxMax": 5
+        "taxMax": 9
     },
     "10": {
         "name": "Clarividente",

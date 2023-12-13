@@ -2,39 +2,42 @@ const { nextBigger } = require('../../../lib/functions');
 const { gameWinner } = require('../gameProtocols/gameOver');
 
 function passTurnToNextPlayer(moveOwner, room) {
-    let playersNumbers = [];
-    room.players.forEach(player => {
-      if (player.isAlive && player.header.socket !== null) playersNumbers.push(player.header.playerNum);
-    });
+  room.moveFunction_counterPlay = undefined;
+  room.moveFunction = undefined;
 
-    if (playersNumbers.length <= 1) return gameWinner(playersNumbers[0], room);
+  let playersNumbers = [];
+  room.players.forEach(player => {
+    if (player.isAlive && player.header.socket !== null) playersNumbers.push(player.header.playerNum);
+  });
 
-    const nextPlayer = nextBigger(playersNumbers, moveOwner.header.playerNum);
-    room.currentTurnOwner = room.players.find(player => player.header.playerNum === nextPlayer);
+  if (playersNumbers.length <= 1) return gameWinner(playersNumbers[0], room);
 
-    room.currentMove = {
-      moveType: "waitingFirstMove",
-      player: room.currentTurnOwner
-    };
+  const nextPlayer = nextBigger(playersNumbers, moveOwner.header.playerNum);
+  room.currentTurnOwner = room.players.find(player => player.header.playerNum === nextPlayer);
 
-    //caso o próximo a jogar, for o player com a menor posição, então é um novo turno
-    if (nextPlayer === Math.min(...playersNumbers)) room.newTurn();
+  room.currentMove = {
+    moveType: "waitingFirstMove",
+    player: room.currentTurnOwner
+  };
 
-    const currentMove_clients = { ...room.currentMove };
-    currentMove_clients.player = currentMove_clients.player.header.nickname;
+  //caso o próximo a jogar, for o player com a menor posição, então é um novo turno
+  if (nextPlayer === Math.min(...playersNumbers)) room.newTurn();
 
-    const payload = {
-      type: "gameData",
-      content: {
-        turn: room.turn,
-        currentMove: currentMove_clients,
-        currentTurnOwner: room.currentTurnOwner.getPublicInfos().nick,
-        moveTimer: room.header.timeToThink,
-      }
-    };
+  const currentMove_clients = { ...room.currentMove };
+  currentMove_clients.player = currentMove_clients.player.header.nickname;
 
-    room.sendInfoForAllPlayers(payload);
-    room.alreadyPlayed = false;
+  const payload = {
+    type: "gameData",
+    content: {
+      turn: room.turn,
+      currentMove: currentMove_clients,
+      currentTurnOwner: room.currentTurnOwner.getPublicInfos().nick,
+      moveTimer: room.header.timeToThink,
+    }
+  };
+
+  room.sendInfoForAllPlayers(payload);
+  room.alreadyPlayed = false;
 };
 
 //

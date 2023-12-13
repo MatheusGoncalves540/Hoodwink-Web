@@ -69,7 +69,13 @@ function dispute_hasTheCard(playerMove, room) {
 
         //
 
-        verifyDeadPlayerProtocol(playerWhoDisputed, room);
+        verifyDeadPlayerProtocol(playerWhoDisputed, room).then(() => {
+            if (room.moveFunction_counterPlay) {
+                room.moveFunction_counterPlay();
+            } else { //TODO verificar funcionalidade
+                room.moveFunction();
+            };
+        });        
 
     }, displayTime * 1000);
 };

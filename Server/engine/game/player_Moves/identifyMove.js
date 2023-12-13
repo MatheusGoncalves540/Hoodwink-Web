@@ -5,6 +5,7 @@ const {
     pass_basic_validation,
     card_1_validation,
     card_2_validation,
+    card_4_validation,
 } = require('./validations/allValidations.js');
 const {
     startGame,
@@ -12,6 +13,7 @@ const {
     pass_basic,
     card_1,
     card_2,
+    card_4,
     pass,
     dispute,
     dispute_hasTheCard,
@@ -35,16 +37,16 @@ function playerMove_protocol(playerMove, room) {
                 if (!pass(playerMove, room)) break;
             break;
         
-            case "dispute": //TODO adicionar contestação nas jogadas
+            case "dispute":
                 if (!dispute(playerMove, room)) break;
             break;
 
-            case "dispute_hasTheCard": //TODO adicionar contestação nas jogadas
+            case "dispute_hasTheCard":
                 if (!dispute_hasTheCard(playerMove, room)) break;
                 room.playersWhoWantsToSkip.length = 0;
             break;
             
-            case "dispute_doesNotHasTheCard": //TODO adicionar contestação nas jogadas
+            case "dispute_doesNotHasTheCard":
                 if (!dispute_doesNotHasTheCard(playerMove, room)) break;
                 room.playersWhoWantsToSkip.length = 0;
             break;
@@ -95,6 +97,15 @@ function playerMove_protocol(playerMove, room) {
                 room.alreadyPlayed = true;
     
                 card_2(playerMove, room);
+    
+                //room.revalidateAllPlayersPossiblesMoves();
+            break;
+    
+            case "card_4":
+                if (!card_4_validation(playerMove, room)) break;
+                room.alreadyPlayed = true;
+    
+                card_4(playerMove, room);
     
                 //room.revalidateAllPlayersPossiblesMoves();
             break;

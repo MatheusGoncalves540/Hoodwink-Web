@@ -124,6 +124,25 @@ function card_2() {
   ws.send(JSON.stringify(payload));
 };
 
+//usar a carta 4
+function card_4() {
+  if (
+    (gameData.turn === 0) ||
+    (gameData.currentTurnOwner !== gameData.me.nick) ||
+    (gameData.me.coins >= gameData.maxCoins)) 
+  return;
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "card_4"
+    }
+  };
+  
+  ws.send(JSON.stringify(payload));
+};
+
 //envia a mensagem de chat para o servidor redistribui-lá
 function sendMessage() {
   if (!gameData.me.isAlive) return;
