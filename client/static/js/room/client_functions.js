@@ -358,6 +358,12 @@ function generateCurrentTurnText() {
       if (gameData.me.nick == gameData.currentTurnOwner) return "aguardando sua jogada...";
       return `aguardando jogada de: ${gameData.currentTurnOwner}`;
         
+    case "increasedTax":
+      return `As taxas foram aumentadas!`;
+        
+    case "decreasedTax":
+      return `As taxas foram diminuídas!`;
+        
     case "takeCoin_basic":
       return `${gameData.currentMove.player} pegou 1 moeda`;
 

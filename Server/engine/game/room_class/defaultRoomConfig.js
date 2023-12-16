@@ -1,5 +1,5 @@
 function defaultHeader(idNewRoom, roomName, maxPlayer, roomPass,
-    startCoins=100, maxCoins=200, displayTime_withPossibleCounterPlays=1, displayTime_highRelevance=1,
+    startCoins=100, maxCoins=200, displayTime_withPossibleCounterPlays=2, displayTime_highRelevance=1,
     displayTime=1) {
     return {
       roomId: idNewRoom,

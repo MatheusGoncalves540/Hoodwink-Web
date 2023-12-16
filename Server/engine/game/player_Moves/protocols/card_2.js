@@ -66,9 +66,12 @@ function card_2(playerMove, room) {
                 }
             }
         };
-        room.sendInfoForAllPlayers(payload);
-        room.playersWhoWantsToSkip.length = 0;
-        room.passTurnToNextPlayer(room.currentTurnOwner);
+
+        room.alertModifyTax('decreased').then(() => {
+            room.sendInfoForAllPlayers(payload);
+            room.playersWhoWantsToSkip.length = 0;
+            room.passTurnToNextPlayer(room.currentTurnOwner);
+        });
     };
 
     //se ninguém contestar até o displayTime acabar: a ação se concretiza.

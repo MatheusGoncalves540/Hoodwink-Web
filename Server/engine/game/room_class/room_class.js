@@ -1,8 +1,8 @@
 const {
   passTurnToNextPlayer,
   newTurn,
-  restartRoom,
-} = require('./turnsControls');
+  alertModifyTax
+} = require('./turnsAndTaxControls');
 
 const {
   BringGameInfos,
@@ -81,8 +81,21 @@ class Room {
     BringGameInfos(socket, this);
   };
 
-  newTurn() {
-    newTurn(this);
+  async newTurn() {
+    return new Promise(resolve => {
+      newTurn(this).then(() => {
+        resolve()
+      });
+    });
+  };
+
+  //é chamada para avisar os jogadores quando as taxas forem alteradas 
+  async alertModifyTax(modifier) {
+    return new Promise(resolve => {
+      alertModifyTax(this, modifier).then(() => {
+        resolve();
+      });
+    })
   };
 
   passTurnToNextPlayer(moveOwner) {
