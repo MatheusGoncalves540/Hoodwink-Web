@@ -361,6 +361,9 @@ function generateCurrentTurnText() {
     case "increasedTax":
       return `As taxas foram aumentadas!`;
         
+    case "gameWinner":
+      return `${gameData.currentMove.player} é o vencedor!`;
+        
     case "decreasedTax":
       return `As taxas foram diminuídas!`;
         
@@ -396,8 +399,8 @@ function generateCurrentTurnText() {
     case "card_2": 
       return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`;
 
-    case "card_3": 
-      return `${gameData.currentMove.player} quer utilizar o Trilionário para receber PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPLDAPSLDPASDLASPDLPASDLASPDLASPDLASPDLAPDL.`;
+    case "card_4": 
+      return `${gameData.currentMove.player} quer utilizar o Trilionário para receber ${calculatePriceCardsPlusTax(gameData.cards['4'])} moedas.`;
     
     default:
       break;
