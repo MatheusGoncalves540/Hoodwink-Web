@@ -11,6 +11,7 @@ function updateToggleButtons() {
         toggleDispute_button() ? document.getElementById('dispute').disabled = false : document.getElementById('dispute').disabled = true;
         toggleCard_1_button() ? document.getElementById('card-1').disabled = false : document.getElementById('card-1').disabled = true;
         toggleCard_2_button() ? document.getElementById('card-2').disabled = false : document.getElementById('card-2').disabled = true;
+        toggleCard_3_button() ? document.getElementById('card-3').disabled = false : document.getElementById('card-3').disabled = true;
         toggleCard_4_button() ? document.getElementById('card-4').disabled = false : document.getElementById('card-4').disabled = true;
     };
 };
@@ -72,10 +73,19 @@ function toggleCard_2_button() {
     return false;
 };
 
+function toggleCard_3_button() {
+    if (
+        (localVariables.itsMyTurnAndMyFirstMove) &&
+        (gameData.me.coins >= calculatePriceCardsPlusTax(gameData.cards["3"]))
+    ) return true;
+
+    return false;
+};
+
 function toggleCard_4_button() {
     if (
         localVariables.itsMyTurnAndMyFirstMove &&
-        gameData.me.coins < gameData.maxCoins
+        gameData.me.coins + gameData.cards['4'].amountReceived <= gameData.maxCoins
     ) return true;
 
     return false;

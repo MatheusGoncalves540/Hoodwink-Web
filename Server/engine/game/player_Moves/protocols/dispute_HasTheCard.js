@@ -59,7 +59,7 @@ function dispute_hasTheCard(playerMove, room) {
         const payload2 = {
             type: "gameData",
             content: {
-                deadDeck: room.deadDeck,
+                deadDeck: room.deadDeck.length,
                 players: {}
             }
         };

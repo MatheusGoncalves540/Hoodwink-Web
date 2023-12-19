@@ -116,43 +116,60 @@ function updateArrows() {
 
 //
 
-function disputeSituationsProtocols() {
-  if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard") {
-    //TODO
-    if (gameData.currentMove.player === gameData.me.nick) selectPopup();
-  }
-  if (gameData.currentMove.moveType === "dispute_hasTheCard") {
-    //TODO
-    if (gameData.currentMove.disputedPlayer === gameData.me.nick) selectPopup();
-  }
-}
+async function disputeSituationsProtocols() {
+  if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard" && gameData.currentMove.player === gameData.me.nick) {
+    const disputedPlayer = Object.values(gameData.players).find(player => player.nick === gameData.currentMove.disputedPlayer);
+    const cardsRemaining = [];
+    if (disputedPlayer.playerCards[0] === true) cardsRemaining.push('esquerda');
+    if (disputedPlayer.playerCards[1] === true) cardsRemaining.push('direita');
+
+    let selectedCard = 0;
+    if (cardsRemaining.length != 1) selectedCard = await selectPopup(cardsRemaining);
+
+    if (cardsRemaining[selectedCard] == 'direita') sendResultOfDisputeCard(disputedPlayer.nick, 1);
+    if (cardsRemaining[selectedCard] == 'esquerda') sendResultOfDisputeCard(disputedPlayer.nick, 0);
+  };
+
+  if (gameData.currentMove.moveType === "dispute_hasTheCard" && gameData.currentMove.disputedPlayer === gameData.me.nick) {
+    const playerWhoDisputed = Object.values(gameData.players).find(player => player.nick === gameData.currentMove.player);
+    const cardsRemaining = [];
+    if (playerWhoDisputed.playerCards[0] === true) cardsRemaining.push('esquerda');
+    if (playerWhoDisputed.playerCards[1] === true) cardsRemaining.push('direita');
+    
+    let selectedCard = 0;
+    if (cardsRemaining.length != 1) selectedCard = await selectPopup(cardsRemaining);
+
+    if (cardsRemaining[selectedCard] == 'direita') sendResultOfDisputeCard(playerWhoDisputed.nick, 1);
+    if (cardsRemaining[selectedCard] == 'esquerda') sendResultOfDisputeCard(playerWhoDisputed.nick, 0);
+  };
+};
 
 // Função pra abrir um popup pro jogador selecionar
-function selectPopup() {
-  const fatherDiv = document.createElement("div");
-  fatherDiv.classList.add("popup");
+async function selectPopup(options) {
+  return new Promise(resolve => {
+      const fatherDiv = document.createElement("div");
+      fatherDiv.classList.add("popup");
+    
+      for (let i = 0; i < options.length; i++) {
+    
+        let div = document.createElement("div");
+        div.id = i;
+        div.innerHTML = options[i];
+    
+        div.addEventListener("click", () => {
+          resolve(parseInt(div.id));
+        });
 
-  for (let i = 0; i < 2; i++) {
-    let div = document.createElement("div");
-    div.innerText = i + 1;
-    div.addEventListener("click", () => {
-      let attackedPlayer;
-      if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard") {
-        attackedPlayer = gameData.currentMove.disputedPlayer
-      } else if (gameData.currentMove.moveType === "dispute_hasTheCard") {
-        attackedPlayer = gameData.currentMove.player//TODO
-      } else {
-        attackedPlayer = gameData.currentMove.attackedPlayer
-      };
-      selectedCardPayload(div, attackedPlayer);
-    });
-    fatherDiv.appendChild(div);
-  }
-  document.body.appendChild(fatherDiv);
-}
+        fatherDiv.appendChild(div);
+      }
+      document.body.appendChild(fatherDiv);
+  });
+};
 
 // Função pra exibir o jogador vencedor e dois botões
 function winnerPopup(winner, winnerText = "É o vencedor!") {
+  if (document.getElementsByClassName('winnerPopup')[0]) return; //Se já existir um "winnerPopup", então não continue
+
   // Criando a Main Box pra comportar os elementos
   const mainBox = document.createElement("div");
   mainBox.classList.add("winnerPopup");

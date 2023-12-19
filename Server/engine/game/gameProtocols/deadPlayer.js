@@ -13,7 +13,7 @@ async function verifyDeadPlayerProtocol(player, room) {
                 type: "gameData",
                 content: {
                     currentMove: currentMove_clients,
-                    displayTime: room.header.displayTime_highRelevance
+                    moveTimer: room.header.displayTime_highRelevance
                 }
             };
             room.sendInfoForAllPlayers(payload);

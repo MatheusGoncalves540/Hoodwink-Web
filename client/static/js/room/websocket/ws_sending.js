@@ -89,7 +89,7 @@ function card_1() {
   if (
     (gameData.turn === 0) ||
     (gameData.currentTurnOwner !== gameData.me.nick) ||
-    (gameData.me.coins < (gameData.cards["1"].fixPrice ** (gameData.cards["1"].doubled + 1))) ||
+    (gameData.me.coins < calculatePriceCardsPlusTax(gameData.cards["1"])) ||
     (gameData.tax > 5))
   return;
 
@@ -109,7 +109,7 @@ function card_2() {
   if (
     (gameData.turn === 0) ||
     (gameData.currentTurnOwner !== gameData.me.nick) ||
-    (gameData.me.coins < (gameData.cards["2"].fixPrice ** (gameData.cards["2"].doubled + 1))) ||
+    (gameData.me.coins < calculatePriceCardsPlusTax(gameData.cards["2"])) ||
     (gameData.tax < -5))
   return;
 
@@ -124,12 +124,38 @@ function card_2() {
   ws.send(JSON.stringify(payload));
 };
 
+//usar a carta 3
+function card_3() {
+  if (
+    (gameData.turn === 0) ||
+    (gameData.currentTurnOwner !== gameData.me.nick) ||
+    (gameData.me.coins < calculatePriceCardsPlusTax(gameData.cards["3"])))
+  return;
+
+  attackedPlayer ; //TODO
+  targetCard ;
+
+
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "card_3",
+      attackedPlayer: attackedPlayer,
+      targetCard: targetCard
+    }
+  };
+  
+  ws.send(JSON.stringify(payload));
+};
+
 //usar a carta 4
 function card_4() {
   if (
     (gameData.turn === 0) ||
     (gameData.currentTurnOwner !== gameData.me.nick) ||
-    (gameData.me.coins >= gameData.maxCoins)) 
+    (gameData.me.coins + gameData.cards['4'].amountReceived > gameData.maxCoins)) 
   return;
 
   const payload = {
@@ -159,9 +185,8 @@ function sendMessage() {
   };
 };
 
-// Envia o payload da carta escolhida pra ser removida
-function selectedCardPayload(div, attackedPlayer){
-  card_index = parseInt(div.innerText)-1
+// Envia a carta escolhida para o servidor
+function sendResultOfDisputeCard(attackedPlayer, card_index) {
   const payload = {
     type: "playerMove",
     owner: playeruuid,
@@ -171,6 +196,7 @@ function selectedCardPayload(div, attackedPlayer){
       card: card_index
     }
   };
-  ws.send(JSON.stringify(payload))
-  document.getElementsByClassName("popup")[0].remove()
+  
+  ws.send(JSON.stringify(payload));
+  document.getElementsByClassName("popup")[0].remove();
 }
