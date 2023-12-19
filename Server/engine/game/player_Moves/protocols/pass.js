@@ -12,7 +12,7 @@ function pass(playerMove, room) {
     room.playersWhoWantsToSkip.push(playerMove.owner);
 
     //caso todos os players estejam neste array, então é executada imediatamente a função em aguardo
-    if (room.playersWhoWantsToSkip.length >= (room.players.length - 1)) {
+    if (room.playersWhoWantsToSkip.length >= (room.players.length - room.players.filter(player => player.isAlive == true && player.header.socket !== null).length) - 1) {
         clearTimeout(room.playInTimeOut);
         room.playersWhoWantsToSkip.length = 0;
         room.moveFunction();
