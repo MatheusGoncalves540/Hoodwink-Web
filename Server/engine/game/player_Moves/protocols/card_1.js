@@ -10,7 +10,7 @@ function card_1(playerMove, room) {
     // };
     const moveOwner = room.players.find(player => player.header.playeruuid === playerMove.owner);
 
-    moveOwner.coins -= room.cards["1"].fixPrice ** (room.cards["1"].doubled + 1);
+    moveOwner.coins -= room.calculateCardPrice(room.cards["1"]);
 
     //muda o currentMove
     room.currentMove = {

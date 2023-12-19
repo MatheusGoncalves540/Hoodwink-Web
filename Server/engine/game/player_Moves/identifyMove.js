@@ -5,6 +5,7 @@ const {
     pass_basic_validation,
     card_1_validation,
     card_2_validation,
+    card_3_validation,
     card_4_validation,
 } = require('./validations/allValidations.js');
 const {
@@ -13,6 +14,7 @@ const {
     pass_basic,
     card_1,
     card_2,
+    card_3,
     card_4,
     pass,
     dispute,
@@ -97,6 +99,15 @@ function playerMove_protocol(playerMove, room) {
                 room.alreadyPlayed = true;
     
                 card_2(playerMove, room);
+    
+                //room.revalidateAllPlayersPossiblesMoves();
+            break;
+    
+            case "card_3":
+                if (!card_3_validation(playerMove, room)) break;
+                room.alreadyPlayed = true;
+    
+                card_3(playerMove, room);
     
                 //room.revalidateAllPlayersPossiblesMoves();
             break;

@@ -1,46 +1,6 @@
 span,
-img,
-.arrow_div,
-.inversearrow_div,
-.uparrow_div {
+img {
   border: 0px !important;
-}
-
-.uparrow {
-  transform: rotate(90deg);
-  width: 50%;
-  height: 50%;
-}
-
-.inversearrow {
-  transform: rotate(180deg);
-  width: 50%;
-  height: 50%;
-  margin-left: 0%;
-}
-
-.arrow {
-  width: 50%;
-  height: 50%;
-  margin-left: 0%;
-}
-
-.inversearrow_div {
-  display: flex;
-  justify-content: right;
-  align-items: center;
-}
-
-.arrow_div {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-}
-
-.uparrow_div {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
 }
 
 #room-code,

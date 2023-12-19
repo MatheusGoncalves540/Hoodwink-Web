@@ -13,7 +13,7 @@
         axios.get('/uuid').then(response => {uuidPlayer = response.data.uuid});
 
         document.title = 'Connecting at room: ' + ((window.location.href).split('/room/')[1]);
-        if (!uuidPlayer || !nickname) errorOnLoadingScript();
+        if (!nickname) errorOnLoadingScript();
     </script>
     <link rel="stylesheet" type="text/css" href="/css/room/room.css" />
 </head>
@@ -69,21 +69,6 @@
         <div id="player-9" class="player">player 9</div>
         <div id="player-10" class="player">player 10</div>
 
-        <!-- TODO setas -->
-        <div class="arrow_div" id="arrow-1"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-2"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-3"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-4"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
-        <div class="arrow_div" id="arrow-5"> <img src="/images/room/black_arrow.svg" class="arrow " width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-1"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-2"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-3"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-4"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
-        <div class="inversearrow_div" id="inversearrow-5"> <img src="/images/room/black_arrow.svg" class="inversearrow " width="20px" height="20px"> </div>
-
-        <div class="uparrow_div" id="uparrow-1"> <img src="/images/room/black_arrow.svg" class="uparrow " width="20px" height="20px"> </div>
-        <div class="uparrow_div" id="uparrow-2"> <img src="/images/room/black_arrow.svg" class="uparrow " width="20px" height="20px"> </div>
-
         <!-- informações -->
         <div class="infos">
           <div id="room-code"></div>
@@ -126,7 +111,6 @@
         <button id="pass" class="disabeable" onclick="(gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === 'waitingFirstMove') ? pass_basic() : pass()" disabled>Passar</button> <!-- botão -->
 
     </div>
-
     <script src="/js/room/bar.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/gameData.js" onerror="errorOnLoadingScript()"></script>
     <script src="/js/room/toggleButtons.js" onerror="errorOnLoadingScript()"></script>

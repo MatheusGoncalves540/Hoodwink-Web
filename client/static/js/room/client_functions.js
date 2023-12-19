@@ -41,7 +41,6 @@ function updateScreenInfos(msg) {
   disputeSituationsProtocols();
   updateCardsPrice();
   updateTimer();
-  updateArrows();
   updateToggleButtons();
   VerifyGameOver();
 
@@ -80,42 +79,6 @@ function FirstReceipt(msg) {
 
 //
 
-function updateArrows() {
-  if (
-    localVariables.readyToSelect_aPlayer !== true &&
-    localVariables.readyToSelect_aPlayer !== false
-  ) {
-    if (localVariables.readyToSelect_aPlayer < 6) {
-      document
-        .getElementById(`arrow-${localVariables.readyToSelect_aPlayer}`)
-        .classList.remove("hidden");
-    } else {
-      document
-        .getElementById(
-          `inversearrow-${localVariables.readyToSelect_aPlayer - 5}`
-        )
-        .classList.remove("hidden");
-    }
-  }
-  if (localVariables.readyToSelect_aPlayer) {
-    document.querySelectorAll(".inversearrow").forEach((arrow) => {
-      arrow.classList.remove("hidden");
-    });
-    document.querySelectorAll(".arrow").forEach((arrow) => {
-      arrow.classList.remove("hidden");
-    });
-  } else {
-    document.querySelectorAll(".inversearrow").forEach((arrow) => {
-      arrow.classList.add("hidden");
-    });
-    document.querySelectorAll(".arrow").forEach((arrow) => {
-      arrow.classList.add("hidden");
-    });
-  }
-}
-
-//
-
 async function disputeSituationsProtocols() {
   if (gameData.currentMove.moveType === "dispute_doesNotHasTheCard" && gameData.currentMove.player === gameData.me.nick) {
     const disputedPlayer = Object.values(gameData.players).find(player => player.nick === gameData.currentMove.disputedPlayer);
@@ -126,8 +89,7 @@ async function disputeSituationsProtocols() {
     let selectedCard = 0;
     if (cardsRemaining.length != 1) selectedCard = await selectPopup(cardsRemaining);
 
-    if (cardsRemaining[selectedCard] == 'direita') sendResultOfDisputeCard(disputedPlayer.nick, 1);
-    if (cardsRemaining[selectedCard] == 'esquerda') sendResultOfDisputeCard(disputedPlayer.nick, 0);
+    cardsRemaining[selectedCard] == 'direita' ? sendResultOfDisputeCard(disputedPlayer.nick, 1) : sendResultOfDisputeCard(disputedPlayer.nick, 0);
   };
 
   if (gameData.currentMove.moveType === "dispute_hasTheCard" && gameData.currentMove.disputedPlayer === gameData.me.nick) {
@@ -139,8 +101,7 @@ async function disputeSituationsProtocols() {
     let selectedCard = 0;
     if (cardsRemaining.length != 1) selectedCard = await selectPopup(cardsRemaining);
 
-    if (cardsRemaining[selectedCard] == 'direita') sendResultOfDisputeCard(playerWhoDisputed.nick, 1);
-    if (cardsRemaining[selectedCard] == 'esquerda') sendResultOfDisputeCard(playerWhoDisputed.nick, 0);
+    cardsRemaining[selectedCard] == 'direita' ? sendResultOfDisputeCard(playerWhoDisputed.nick, 1) : sendResultOfDisputeCard(playerWhoDisputed.nick, 0);
   };
 };
 
@@ -415,6 +376,14 @@ function generateCurrentTurnText() {
 
     case "card_2": 
       return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`;
+
+    case "card_3": 
+      choosedCard = gameData.currentMove.targetCard === 0 ? "esquerda" : "direita"; 
+      return `${gameData.currentMove.player} quer utilizar o Assassino para matar a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}`;
+    
+    case "responseToCard_3": 
+      choosedCard = gameData.currentMove.targetCard === 0 ? "esquerda" : "direita"; 
+      return `${gameData.currentMove.player} matou a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}. Será um Kamikaze?...`;
 
     case "card_4": 
       return `${gameData.currentMove.player} quer utilizar o Trilionário para receber ${calculatePriceCardsPlusTax(gameData.cards['4'])} moedas.`;

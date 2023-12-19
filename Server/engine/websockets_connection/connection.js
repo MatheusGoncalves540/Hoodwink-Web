@@ -52,6 +52,7 @@ function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
                     ],
                     invested: player_.invested,
                     usedCards: player_.usedCards,
+                    isAlive: player_.isAlive,
                     connected: player_.header.socket !== null ? true : false
                 }
             });
@@ -82,6 +83,7 @@ function socketOnNewConnection(socket, room, urlData, msgServer, playingNow) {
                         ],
                         invested: player_.invested,
                         usedCards: player_.usedCards,
+                        isAlive: player_.isAlive,
                         connected: player_.header.socket !== null ? true : false
                     }
                 });

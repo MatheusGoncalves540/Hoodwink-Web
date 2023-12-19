@@ -41,9 +41,17 @@ function dispute_doesNotHasTheCard(playerMove, room) {
 
     //
 
-    setTimeout(()=> {
-        room.deadDeck.push(disputedPlayer.cards[playerMove.content.card]);
-        disputedPlayer.cards[playerMove.content.card] = -1;
+    room.playInTimeOut = setTimeout(()=> {
+        let killedCardIndex;
+        if (disputedPlayer.cards[playerMove.content.card] == -1) {
+            if (playerMove.content.card == 0) killedCardIndex = 1;
+            if (playerMove.content.card == 1) killedCardIndex = 0;
+        } else {
+            killedCardIndex = playerMove.content.card;
+        };
+
+        room.deadDeck.push(disputedPlayer.cards[killedCardIndex]);
+        disputedPlayer.cards[killedCardIndex] = -1;
         
         const payloadToDisputedPlayer = {
             type: "gameData",

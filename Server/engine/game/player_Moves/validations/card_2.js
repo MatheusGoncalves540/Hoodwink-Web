@@ -1,4 +1,4 @@
-function card_2_validation(playerMove) {
+function card_2_validation(playerMove, room) {
     
     return true;
 };

@@ -125,29 +125,43 @@ function card_2() {
 };
 
 //usar a carta 3
-function card_3() {
+async function card_3() {
   if (
     (gameData.turn === 0) ||
     (gameData.currentTurnOwner !== gameData.me.nick) ||
     (gameData.me.coins < calculatePriceCardsPlusTax(gameData.cards["3"])))
   return;
 
-  attackedPlayer ; //TODO
-  targetCard ;
+  let alivePlayers = Object.values(gameData.players)
+  .filter(player => player.isAlive === true && player.nick !== gameData.me.nick)
+  .map(player => player.nick);
 
+  let attackedPlayerIndex = await selectPopup(alivePlayers);
+  const attackedPlayer = Object.values(gameData.players).find(player => player.nick === alivePlayers[attackedPlayerIndex]);
 
+  const cardsRemaining = [];
+  if (attackedPlayer.playerCards[0] === true) cardsRemaining.push('esquerda');
+  if (attackedPlayer.playerCards[1] === true) cardsRemaining.push('direita');
+
+  document.getElementsByClassName("popup")[0].remove();
+  let selectedCard = 0;
+  if (cardsRemaining.length != 1) selectedCard = await selectPopup(cardsRemaining);
+
+  let targetCard = 0;
+  if (cardsRemaining[selectedCard] == 'direita') targetCard = 1;
 
   const payload = {
     type: "playerMove",
-    owner: playeruuid,
+    owner: gameData.me.playeruuid,
     content: {
       action: "card_3",
-      attackedPlayer: attackedPlayer,
+      attackedPlayer: attackedPlayer.nick,
       targetCard: targetCard
     }
   };
   
   ws.send(JSON.stringify(payload));
+  document.getElementsByClassName("popup")[0].remove();
 };
 
 //usar a carta 4

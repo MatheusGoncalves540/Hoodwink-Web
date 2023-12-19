@@ -42,9 +42,17 @@ function dispute_hasTheCard(playerMove, room) {
 
     //
 
-    setTimeout(()=> {
-        room.deadDeck.push(playerWhoDisputed.cards[playerMove.content.card]);
-        playerWhoDisputed.cards[playerMove.content.card] = -1;
+    room.playInTimeOut = setTimeout(()=> {
+        let killedCardIndex;
+        if (playerWhoDisputed.cards[playerMove.content.card] == -1) {
+            if (playerMove.content.card == 0) killedCardIndex = 1;
+            if (playerMove.content.card == 1) killedCardIndex = 0;
+        } else {
+            killedCardIndex = playerMove.content.card;
+        };
+
+        room.deadDeck.push(playerWhoDisputed.cards[killedCardIndex]);
+        playerWhoDisputed.cards[killedCardIndex] = -1;
         
         const payloadToPlayerWhoDisputed = {
             type: "gameData",
@@ -55,7 +63,7 @@ function dispute_hasTheCard(playerMove, room) {
             }
         };
         playerWhoDisputed.header.socket.send(JSON.stringify(payloadToPlayerWhoDisputed));
-        //
+        
         const payload2 = {
             type: "gameData",
             content: {

@@ -13,9 +13,11 @@ async function verifyDeadPlayerProtocol(player, room) {
                 type: "gameData",
                 content: {
                     currentMove: currentMove_clients,
-                    moveTimer: room.header.displayTime_highRelevance
+                    moveTimer: room.header.displayTime_highRelevance,
+                    players: {}
                 }
             };
+            payload.content.players[`${player.header.playerNum}`] = player.getPublicInfos();
             room.sendInfoForAllPlayers(payload);
             //
     

@@ -30,7 +30,8 @@ let gameData = {
         invested: [],
         cardsInHand: ['left','right'],
         playerNum: undefined,
-        isAlive: true
+        isAlive: true,
+        playeruuid: undefined
     },
 
     players: {

@@ -107,12 +107,41 @@ class Room {
     selfDestructionByNoPlayers(rooms, this);
   };
 
-  // revalidateAllPlayersPossiblesMoves() {
-  //   this.players.forEach(player => {
-      
-  //   });
-  // }
+  calculateCardPrice(card) {
+    let estimatedPrice;
 
+    if ("amountReceived" in card) {
+      estimatedPrice = card.amountReceived + this.tax;
+    } else if ("amountWithdrawn" in card) {
+      estimatedPrice = card.amountWithdrawn + this.tax;
+    } else if ("investedMaxAmount" in card) {
+      estimatedPrice = card.investedMaxAmount + this.tax;
+    } else if ("price" in card) {
+      estimatedPrice = card.price + this.tax;
+    };
+
+    if (this.tax < 0 && "taxMinimum" in card) {
+      if (estimatedPrice < card.taxMinimum) {
+        return card.taxMinimum;
+      } else {
+        return estimatedPrice;
+      };
+    };
+
+    if (this.tax > 0 && "taxMax" in card) {
+      if (estimatedPrice > card.taxMax) {
+        return card.taxMax;
+      } else {
+        return estimatedPrice;
+      };
+    };
+
+    if ("doubled" in card) {
+      return card.fixPrice ** (card.doubled + 1);
+    };
+
+    return estimatedPrice;
+    };
 };
 
 module.exports = { Room };
