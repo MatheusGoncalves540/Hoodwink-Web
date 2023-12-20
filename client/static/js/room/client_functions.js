@@ -4,14 +4,16 @@ function updateScreenInfos(msg) {
   localVariables.readyToSelect_aCard = false;
   if ("time" in msg.content) {
     startTimer(msg.content.time.startTime);
-  }
+  };
   if (
     gameData.turn !== 0 &&
-    !document.getElementById("startGame-button").classList.contains("hidden")
+    (!document.getElementById("startGame-button").classList.contains("hidden") ||
+     document.getElementById("bar-div").classList.contains("hidden"))
   ) {
     document.getElementById("startGame-button").classList.add("hidden");
     document.getElementById("atual-moment-text").classList.remove("hidden");
-  }
+    document.getElementById("bar-div").classList.remove("hidden");
+  };
   document.getElementById("room-code").innerHTML =
     gameData.turn !== 0
       ? "vez de: " + gameData.currentTurnOwner
@@ -49,15 +51,15 @@ function updateScreenInfos(msg) {
   } else {
     gameData.moveTimer = 0;
     decrementMoveTimer();
-  }
-}
+  };
+};
 
 //função que verifica se teve um ganhador
 function VerifyGameOver() {
   if (gameData.currentMove.moveType === "gameWinner") {
     winnerPopup(gameData.currentMove.player);
-  }
-}
+  };
+};
 
 //função do primeiro recebimento de informações
 function FirstReceipt(msg) {
@@ -67,15 +69,15 @@ function FirstReceipt(msg) {
       window.alert(
         "Compartilhe o link desta página com seus amigos. Ou envie à eles o id da sala!"
       );
-  }
+  };
   if ("cards" in msg.content) {
     Object.keys(msg.content.cards).forEach((cardId) => {
       document.getElementById(
         `card-${cardId}`
       ).innerHTML = `${msg.content.cards[cardId].name}: <span id="card-${cardId}-price"></span>`;
     });
-  }
-}
+  };
+};
 
 //
 
@@ -378,11 +380,11 @@ function generateCurrentTurnText() {
       return `${gameData.currentMove.player} quer utilizar o Rebelde. As taxas serão diminuídas em 1.`;
 
     case "card_3": 
-      choosedCard = gameData.currentMove.targetCard === 0 ? "esquerda" : "direita"; 
+      choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
       return `${gameData.currentMove.player} quer utilizar o Assassino para matar a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}`;
     
     case "responseToCard_3": 
-      choosedCard = gameData.currentMove.targetCard === 0 ? "esquerda" : "direita"; 
+      choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
       return `${gameData.currentMove.player} matou a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}. Será um Kamikaze?...`;
 
     case "card_4": 

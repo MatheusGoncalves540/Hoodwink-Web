@@ -147,8 +147,8 @@ async function card_3() {
   let selectedCard = 0;
   if (cardsRemaining.length != 1) selectedCard = await selectPopup(cardsRemaining);
 
-  let targetCard = 0;
-  if (cardsRemaining[selectedCard] == 'direita') targetCard = 1;
+  let card = 0;
+  if (cardsRemaining[selectedCard] == 'direita') card = 1;
 
   const payload = {
     type: "playerMove",
@@ -156,7 +156,7 @@ async function card_3() {
     content: {
       action: "card_3",
       attackedPlayer: attackedPlayer.nick,
-      targetCard: targetCard
+      card: card
     }
   };
   

@@ -7,7 +7,7 @@ function card_3 (playerMove, room) {
     //     content: {
     //       action: "card_3"
     //       attackedPlayer: attackedPlayer,
-    //       targetCard: targetCard //0 ou 1
+    //       card: card //0 ou 1
     //     }
     // };
 
@@ -22,7 +22,7 @@ function card_3 (playerMove, room) {
         moveType: "card_3",
         player: moveOwner,
         attackedPlayer: attackedPlayer,
-        targetCard: playerMove.content.targetCard
+        card: playerMove.content.card
     };
 
     let currentMove_clients = { ...room.currentMove };
@@ -61,7 +61,7 @@ function card_3 (playerMove, room) {
             moveType: "responseToCard_3",
             player: moveOwner,
             attackedPlayer: attackedPlayer,
-            targetCard: playerMove.content.targetCard
+            card: playerMove.content.card
         };
 
         let currentMove_clients = { ...room.currentMove };
@@ -81,11 +81,11 @@ function card_3 (playerMove, room) {
 
         room.moveFunction = () => {
             let killedCardIndex;
-            if (attackedPlayer.cards[playerMove.content.targetCard] == -1) {
-                if (playerMove.content.targetCard == 0) killedCardIndex = 1;
-                if (playerMove.content.targetCard == 1) killedCardIndex = 0;
+            if (attackedPlayer.cards[playerMove.content.card] == -1) {
+                if (playerMove.content.card == 0) killedCardIndex = 1;
+                if (playerMove.content.card == 1) killedCardIndex = 0;
             } else {
-                killedCardIndex = playerMove.content.targetCard;
+                killedCardIndex = playerMove.content.card;
             };
 
             room.deadDeck.push(attackedPlayer.cards[killedCardIndex]);
