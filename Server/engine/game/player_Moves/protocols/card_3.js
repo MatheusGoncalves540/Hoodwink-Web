@@ -56,9 +56,9 @@ function card_3 (playerMove, room) {
 
     //
     
-    room.moveFunction = () => {
+    room.moves.functions.push([() => {
         room.currentMove = {
-            moveType: "responseToCard_3",
+            moveType: "kamikazeResponseToCard_3",
             player: moveOwner,
             attackedPlayer: attackedPlayer,
             card: playerMove.content.card
@@ -77,9 +77,10 @@ function card_3 (playerMove, room) {
         };
         room.sendInfoForAllPlayers(payload);
 
-        //
+        //remove ele mesmo, para não ser executado novamente
+        room.moves.functions.pop();
 
-        room.moveFunction = () => {
+        room.moves.functions.push([() => {
             let killedCardIndex;
             if (attackedPlayer.cards[playerMove.content.card] == -1) {
                 if (playerMove.content.card == 0) killedCardIndex = 1;
@@ -117,13 +118,13 @@ function card_3 (playerMove, room) {
             verifyDeadPlayerProtocol(attackedPlayer, room).then(() => {
                 room.passTurnToNextPlayer(room.currentTurnOwner);
             });
-        };
+        }, true]);
 
-        room.playInTimeOut = setTimeout(room.moveFunction, displayTime * 1000);
-    };
+        room.playInTimeOut = setTimeout(room.moves.functions[room.moves.functions.length-1][0], displayTime * 1000);
+    }, true]);
 
     //se ninguém contestar até o displayTime acabar: a ação se concretiza.
-    room.playInTimeOut = setTimeout(room.moveFunction, displayTime * 1000);
+    room.playInTimeOut = setTimeout(room.moves.functions[room.moves.functions.length-1][0], displayTime * 1000);
 };
 
 module.exports = { card_3 };

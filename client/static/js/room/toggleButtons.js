@@ -13,6 +13,7 @@ function updateToggleButtons() {
         toggleCard_2_button() ? document.getElementById('card-2').disabled = false : document.getElementById('card-2').disabled = true;
         toggleCard_3_button() ? document.getElementById('card-3').disabled = false : document.getElementById('card-3').disabled = true;
         toggleCard_4_button() ? document.getElementById('card-4').disabled = false : document.getElementById('card-4').disabled = true;
+        toggleCard_8_button() ? document.getElementById('card-8').disabled = false : document.getElementById('card-8').disabled = true;
     };
 };
 
@@ -86,6 +87,18 @@ function toggleCard_4_button() {
     if (
         localVariables.itsMyTurnAndMyFirstMove &&
         gameData.me.coins + gameData.cards['4'].amountReceived <= gameData.maxCoins
+    ) return true;
+
+    return false;
+};
+
+function toggleCard_8_button() {
+    if (
+        (gameData.turn != 0 &&
+        gameData.currentMove.moveType.includes('kamikazeResponse') &&
+        gameData.currentMove.attackedPlayer == gameData.me.nick) ||
+        (localVariables.itsMyTurnAndMyFirstMove &&
+        !gameData.me.cardsInHand.includes(-1))
     ) return true;
 
     return false;

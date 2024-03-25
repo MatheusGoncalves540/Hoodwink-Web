@@ -2,8 +2,7 @@ const { nextBigger } = require('../../../lib/functions');
 const { gameWinner } = require('../gameProtocols/gameOver');
 
 function passTurnToNextPlayer(moveOwner, room) {
-  room.moveFunction_counterPlay = undefined;
-  room.moveFunction = undefined;
+  room.moves.functions.length = 0;
 
   let playersNumbers = [];
   room.players.forEach(player => {

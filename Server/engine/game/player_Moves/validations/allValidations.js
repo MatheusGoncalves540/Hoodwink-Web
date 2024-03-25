@@ -5,6 +5,7 @@ const { card_1_validation } = require('./card_1');
 const { card_2_validation } = require('./card_2');
 const { card_3_validation } = require('./card_3');
 const { card_4_validation } = require('./card_4');
+const { card_8_validation } = require('./card_8');
 
 module.exports = {
     startGame_validation,
@@ -14,4 +15,5 @@ module.exports = {
     card_2_validation,
     card_3_validation,
     card_4_validation,
+    card_8_validation
 };

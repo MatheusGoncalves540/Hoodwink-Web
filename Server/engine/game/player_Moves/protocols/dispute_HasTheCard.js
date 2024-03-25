@@ -1,7 +1,6 @@
 const { verifyDeadPlayerProtocol } = require('../../gameProtocols/deadPlayer');
 
 function dispute_hasTheCard(playerMove, room) {
-    //TODO fazer com que a habilidade da carta seja realizada caso ele tinha a carta
     // const payload = {
     //     type: "playerMove",
     //     owner: playeruuid, <-- disputedPlayer
@@ -12,24 +11,24 @@ function dispute_hasTheCard(playerMove, room) {
     //     }
     // };
     const disputedPlayer = room.players.find(player => player.header.playeruuid === playerMove.owner);
-    const playerWhoDisputed = room.players.find(player => player.header.nickname === playerMove.content.attackedPlayer);
+    const attackedPlayer = room.players.find(player => player.header.nickname === playerMove.content.attackedPlayer);
 
     //validações
     if (playerMove.owner !== room.currentMove.disputedPlayer.header.playeruuid) return false;
-    if (playerWhoDisputed.cards[playerMove.content.card] == -1) return false;
+    if (attackedPlayer.cards[playerMove.content.card] == -1) return false;
 
     const displayTime = room.header.displayTime_withPossibleCounterPlays;
 
     room.currentMove = {
-        moveType: 'responseToHasTheCard',
+        moveType: 'kamikazeResponseToHasTheCard',
         player: disputedPlayer,
-        playerWhoDisputed: playerWhoDisputed,
+        attackedPlayer: attackedPlayer,
         card: playerMove.content.card
     };
 
     let currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
-    currentMove_clients.playerWhoDisputed = currentMove_clients.playerWhoDisputed.header.nickname;
+    currentMove_clients.attackedPlayer = currentMove_clients.attackedPlayer.header.nickname;
     
     const payload = {
         type: "gameData",
@@ -42,27 +41,27 @@ function dispute_hasTheCard(playerMove, room) {
 
     //
 
-    room.playInTimeOut = setTimeout(()=> {
+    room.playInTimeOut = setTimeout(async ()=> {
         let killedCardIndex;
-        if (playerWhoDisputed.cards[playerMove.content.card] == -1) {
+        if (attackedPlayer.cards[playerMove.content.card] == -1) {
             if (playerMove.content.card == 0) killedCardIndex = 1;
             if (playerMove.content.card == 1) killedCardIndex = 0;
         } else {
             killedCardIndex = playerMove.content.card;
         };
 
-        room.deadDeck.push(playerWhoDisputed.cards[killedCardIndex]);
-        playerWhoDisputed.cards[killedCardIndex] = -1;
+        room.deadDeck.push(attackedPlayer.cards[killedCardIndex]);
+        attackedPlayer.cards[killedCardIndex] = -1;
         
         const payloadToPlayerWhoDisputed = {
             type: "gameData",
             content: {
                 me: {
-                    cardsInHand: playerWhoDisputed.cards
+                    cardsInHand: attackedPlayer.cards
                 }
             }
         };
-        playerWhoDisputed.header.socket.send(JSON.stringify(payloadToPlayerWhoDisputed));
+        attackedPlayer.header.socket.send(JSON.stringify(payloadToPlayerWhoDisputed));
         
         const payload2 = {
             type: "gameData",
@@ -71,20 +70,27 @@ function dispute_hasTheCard(playerMove, room) {
                 players: {}
             }
         };
-        payload2.content.players[`${playerWhoDisputed.header.playerNum}`] = playerWhoDisputed.getPublicInfos();
+        payload2.content.players[`${attackedPlayer.header.playerNum}`] = attackedPlayer.getPublicInfos();
 
         room.sendInfoForAllPlayers(payload2);
 
         //
 
-        verifyDeadPlayerProtocol(playerWhoDisputed, room).then(() => {
-            if (room.moveFunction_counterPlay) {
-                room.moveFunction_counterPlay();
-            } else { //TODO verificar funcionalidade
-                room.moveFunction();
-            };
-        });        
+        await verifyDeadPlayerProtocol(attackedPlayer, room);
 
+        const functionsAmountRemaining_toVerify = room.moves.functions.length;
+        const verified = 0;
+        
+        while (verified != functionsAmountRemaining_toVerify) {
+            if (room.moves.functions[verified][1]) {
+                room.moves.functions[verified][0]();
+                functionsAmountRemaining_toVerify = 0;
+            } else {
+                functionsAmountRemaining_toVerify --;
+                verified ++;
+            };
+        };
+        if (verified == functionsAmountRemaining_toVerify) room.passTurnToNextPlayer(room.currentTurnOwner);
     }, displayTime * 1000);
 };
 

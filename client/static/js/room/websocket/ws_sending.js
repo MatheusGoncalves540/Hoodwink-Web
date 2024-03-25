@@ -183,6 +183,49 @@ function card_4() {
   ws.send(JSON.stringify(payload));
 };
 
+//usar a carta 8
+async function card_8() {
+  if (
+    (gameData.turn === 0))
+  return;
+
+  let sacrificedCard;
+  if (gameData.currentTurnOwner === gameData.me.nick && gameData.currentMove.moveType === "waitingFirstMove") {
+    let options = Object.values(Object.fromEntries(
+    Object.entries(gameData.cards)
+    .filter(([key]) => gameData.me.cardsInHand.includes(Number(key)))))
+    .map(subObject => subObject.name).reverse();
+  
+    const selectedCardName = options[await selectPopup(options)];
+    const selectedCardId = Object.keys(gameData.cards).find(key => gameData.cards[key].name === selectedCardName);
+    sacrificedCard = gameData.me.cardsInHand.find(card => card == selectedCardId);
+  } else {
+    sacrificedCard = gameData.currentMove.card;
+  };
+  document.getElementsByClassName("popup")[0].remove();
+
+  let alivePlayers = Object.values(gameData.players)
+  .filter(player => player.isAlive === true && player.nick !== gameData.me.nick)
+  .map(player => player.nick);
+
+  let attackedPlayerIndex = await selectPopup(alivePlayers);
+  const attackedPlayer = Object.values(gameData.players).find(player => player.nick === alivePlayers[attackedPlayerIndex]);
+
+  const payload = {
+    type: "playerMove",
+    owner: playeruuid,
+    content: {
+      action: "card_8",
+      attackedPlayer: attackedPlayer.nick,
+      card: card,
+      sacrificedCard: sacrificedCard
+    }
+  };
+  
+  ws.send(JSON.stringify(payload));
+  document.getElementsByClassName("popup")[0].remove();
+};
+
 //envia a mensagem de chat para o servidor redistribui-lá
 function sendMessage() {
   if (!gameData.me.isAlive) return;

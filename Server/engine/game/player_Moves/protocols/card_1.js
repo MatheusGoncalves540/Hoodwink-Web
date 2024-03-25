@@ -18,7 +18,7 @@ function card_1(playerMove, room) {
         player: moveOwner
     };
 
-    const currentMove_clients = { ...room.currentMove };
+    let currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     //tempo em segundos que será mostrado no "currentMove"
@@ -50,7 +50,7 @@ function card_1(playerMove, room) {
     room.sendInfoForAllPlayers(payload);
 
 
-    room.moveFunction = () => {
+    room.moves.functions.push([() => {
         room.tax ++;
         
         if (room.cards["1"].doubled < 2) room.cards["1"].doubled ++;
@@ -72,10 +72,10 @@ function card_1(playerMove, room) {
             room.playersWhoWantsToSkip.length = 0;
             room.passTurnToNextPlayer(room.currentTurnOwner);
         });
-    };
+    }, true]);
 
     //se ninguém contestar até o displayTime acabar: a ação se concretiza.
-    room.playInTimeOut = setTimeout(room.moveFunction, displayTime * 1000);
+    room.playInTimeOut = setTimeout(room.moves.functions[room.moves.functions.length-1][0], displayTime * 1000);
 };
 
 module.exports = { card_1 };

@@ -5,6 +5,7 @@ const { card_1 } = require('./card_1');
 const { card_2 } = require('./card_2');
 const { card_3 } = require('./card_3');
 const { card_4 } = require('./card_4');
+const { card_8 } = require('./card_8');
 const { pass } = require('./pass');
 const { dispute } = require('./dispute');
 const { dispute_doesNotHasTheCard } = require('./dispute_doesNotHasTheCard');
@@ -18,6 +19,7 @@ module.exports = {
     card_2,
     card_3,
     card_4,
+    card_8,
     pass,
     dispute,
     dispute_doesNotHasTheCard,

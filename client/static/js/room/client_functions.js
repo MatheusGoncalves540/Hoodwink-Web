@@ -354,21 +354,21 @@ function generateCurrentTurnText() {
       return `${gameData.currentMove.player} passou a vez...`;
 
     case "dispute":
-      return `${gameData.currentMove.player} contestou o(a) ${gameData.cards[gameData.currentMove.disputedCard].name} de ${gameData.currentMove.disputedPlayer}`; //TODO terminar a função de contestação
+      return `${gameData.currentMove.player} contestou o(a) ${gameData.cards[gameData.currentMove.disputedCard].name} de ${gameData.currentMove.disputedPlayer}`;
     
-    case "dispute_doesNotHasTheCard": //TODO
+    case "dispute_doesNotHasTheCard":
       return `${gameData.currentMove.disputedPlayer} NÃO tinha a carta. Aguardando ${gameData.currentMove.player} matar um carta de ${gameData.currentMove.disputedPlayer}.`;
 
-    case "dispute_hasTheCard": //TODO
+    case "dispute_hasTheCard":
       return `${gameData.currentMove.disputedPlayer} TINHA a carta. Aguardando ${gameData.currentMove.disputedPlayer} matar um carta de ${gameData.currentMove.player}.`;
 
-    case "responseToDoesNotHasTheCard":
+    case "kamikazeResponseToDoesNotHasTheCard":
       choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
-      return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.disputedPlayer}. Será um Kamikaze?...`;
+      return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}. Será um Kamikaze?...`;
 
-    case "responseToHasTheCard":
+    case "kamikazeResponseToHasTheCard":
       choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
-      return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.playerWhoDisputed}. Será um Kamikaze?...`;
+      return `${gameData.currentMove.player} escolheu a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}. Será um Kamikaze?...`;
 
     case "deadPlayer":
       return `${gameData.currentMove.player} foi eliminado!`;
@@ -383,7 +383,7 @@ function generateCurrentTurnText() {
       choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
       return `${gameData.currentMove.player} quer utilizar o Assassino para matar a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}`;
     
-    case "responseToCard_3": 
+    case "kamikazeResponseToCard_3": 
       choosedCard = gameData.currentMove.card === 0 ? "esquerda" : "direita"; 
       return `${gameData.currentMove.player} matou a carta da ${choosedCard} de ${gameData.currentMove.attackedPlayer}. Será um Kamikaze?...`;
 
@@ -456,8 +456,4 @@ function startTimer(startTime) {
     updateTimer();
   }, 1000);
   timeRunning = true;
-}
-
-function errorOnLoadingScript() {
-  window.location.replace(`${window.location.href}/LoadingError`);
 }

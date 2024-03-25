@@ -7,7 +7,7 @@ let rooms = {};
 let playingNow = { connected: 0 };
 
 //define o fuso horário para o padrão UTC0
-process.env.TZ = 'UTC';
+process.env.TZ = 'America/Sao_Paulo';
 
 //não parar o processo caso ocorra um erro
 process.on('uncaughtException', (error) => {

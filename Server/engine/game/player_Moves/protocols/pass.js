@@ -15,7 +15,7 @@ function pass(playerMove, room) {
     if (room.playersWhoWantsToSkip.length >= (room.players.length - room.players.filter(player => player.isAlive == true && player.header.socket !== null).length) - 1) {
         clearTimeout(room.playInTimeOut);
         room.playersWhoWantsToSkip.length = 0;
-        room.moveFunction();
+        room.moves.functions();
     };
 };
 

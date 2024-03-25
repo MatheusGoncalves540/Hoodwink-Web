@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>function errorOnLoadingScript() {window.location.replace(`${window.location.href}/LoadingError`);};</script>
     <script src="/js/axios_lib.js" onerror="errorOnLoadingScript()"></script>
     <script>
         // Recupere os valores passados pelo servidor
@@ -58,7 +59,7 @@
         </div>
 
         <!-- players -->  
-        <div id="player-1" class="player">player 1</div> <!-- TODO pesquisar como transformar essas div em check box pra seleção de interação com os players e cartas -->
+        <div id="player-1" class="player">player 1</div>
         <div id="player-2" class="player">player 2</div>
         <div id="player-3" class="player">player 3</div>
         <div id="player-4" class="player">player 4</div>

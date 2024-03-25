@@ -15,7 +15,7 @@ function card_4(playerMove, room) {
         player: moveOwner
     };
 
-    const currentMove_clients = { ...room.currentMove };
+    let currentMove_clients = { ...room.currentMove };
     currentMove_clients.player = currentMove_clients.player.header.nickname;
 
     //tempo em segundos que será mostrado no "currentMove"
@@ -33,7 +33,7 @@ function card_4(playerMove, room) {
 
     //
 
-    room.moveFunction = () => {
+    room.moves.functions.push([() => {
         if ((room.cards['4'].amountReceived + room.tax) < room.cards['4'].taxMinimum) {
             moveOwner.coins += room.cards['4'].taxMinimum;
         } else {
@@ -67,9 +67,9 @@ function card_4(playerMove, room) {
         
         room.sendInfoForAllPlayers(payload2);
         room.passTurnToNextPlayer(room.currentTurnOwner);
-    };
+    }, true]);
 
-    room.playInTimeOut = setTimeout(room.moveFunction, displayTime * 1000);
+    room.playInTimeOut = setTimeout(room.moves.functions[room.moves.functions.length-1][0], displayTime * 1000);
 };
 
 module.exports = { card_4 };

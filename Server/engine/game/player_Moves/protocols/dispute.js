@@ -20,6 +20,12 @@ function dispute(playerMove, room) {
 
     const displayTime = room.header.displayTime_highRelevance;
 
+    const disputedPlayer_hasTheDisputedCard = disputedPlayer.cards.includes(parseInt(`${disputedCardId}`));
+
+    if (!disputedPlayer_hasTheDisputedCard) {
+        room.moves.functions[room.moves.functions.length-1][1] = false;
+    };
+
     room.currentMove = {
         moveType: 'dispute',
         player: moveOwner,
@@ -41,8 +47,6 @@ function dispute(playerMove, room) {
     room.sendInfoForAllPlayers(payload1);
 
     // segunda parte
-    const disputedPlayer_hasTheDisputedCard = disputedPlayer.cards.includes(parseInt(`${disputedCardId}`));
-
     let actionTaken;
 
     if (disputedPlayer_hasTheDisputedCard) {

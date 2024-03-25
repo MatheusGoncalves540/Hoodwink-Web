@@ -34,10 +34,10 @@ class Room {
     this.currentMove = {};
     
     this.playInTimeOut;
-    this.moveFunction;
 
-    this.playInTimeOut_counterPlay;
-    this.moveFunction_counterPlay;
+    this.moves = {
+      functions: []
+    };
 
     this.playersWhoWantsToSkip = [];
     
