@@ -9,7 +9,7 @@ interface RegisterBody {
 }
 
 @Controller()
-export class LoginController {
+export class RegisterController {
   constructor(private readonly LoginService: RegisterService) {}
 
   @Post("/register")
