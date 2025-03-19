@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common'
-import { LoginController } from './controller/loginController'
-import { LoginService } from './services/loginService'
+import { Module } from "@nestjs/common";
+import { LoginController } from "./controller/registerController";
+import { RegisterService } from "./services/registerService";
 
 @Module({
   imports: [],
   controllers: [LoginController],
-  providers: [LoginService],
+  providers: [RegisterService],
 })
-export class HoodwinkModule { }
+export class HoodwinkModule {}
