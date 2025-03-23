@@ -1,6 +1,7 @@
 import { Controller, Post, Body } from "@nestjs/common";
 import { RegisterService } from "../services/registerService";
 import { RegisterValidations } from "src/validations/registerValidations";
+import { AuthService } from "src/services/authService";
 
 interface RegisterBody {
   nickname: string;
@@ -10,10 +11,13 @@ interface RegisterBody {
 
 @Controller()
 export class RegisterController {
-  constructor(private readonly RegisterService: RegisterService) {}
+  constructor(
+    private readonly RegisterService: RegisterService,
+    private readonly AuthService: AuthService
+  ) {}
 
   @Post("/register")
-  register(@Body() body: RegisterBody): string {
+  async register(@Body() body: RegisterBody): Promise<string> {
     const nickname = body.nickname;
     const email = body.email;
     const password = body.password;
@@ -26,6 +30,8 @@ export class RegisterController {
       return "Informações inválidas";
     }
 
-    return this.RegisterService.getHello();
+    const hashedPassword = await this.AuthService.hashPassword(password)
+    const newUser = { nickname, email, password:hashedPassword };
+    return this.RegisterService.registerUser(newUser);
   }
 }

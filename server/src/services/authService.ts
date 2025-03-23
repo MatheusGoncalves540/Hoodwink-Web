@@ -30,6 +30,16 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
 
+  async hashPassword(password: string): Promise<string> {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 5);
+      return hashedPassword;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Erro ao registrar Usuário");
+    }
+  }
+
   validateToken(token: string): any {
     try {
       return jwt.verify(token, this.JWT_SECRET);
