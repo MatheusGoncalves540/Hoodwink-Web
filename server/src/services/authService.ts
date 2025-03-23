@@ -17,6 +17,7 @@ export class AuthService {
         id: user.id,
         nickname: user.nickname,
       };
+
       return jwt.sign(payload, this.JWT_SECRET, {
         expiresIn: this.JWT_EXPIRATION,
       });
