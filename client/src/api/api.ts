@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const apiServer = axios.create({
-  baseURL: process.env.REACT_APP_URL || "http://localhost:2409",
+  baseURL: process.env.REACT_APP_BACKEND_URL || "http://localhost:2409",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "http://localhost:2409",
   },
   withCredentials: true,
 });
