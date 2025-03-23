@@ -1,11 +1,9 @@
 import { Module } from "@nestjs/common";
-import { RegisterController } from "./controller/registerController";
-import { RegisterService } from "./services/registerService";
-import { UsersModule } from "./database/connection";
-
+import { DatabaseModule } from "./modules/database";
+import { RegisterModule } from "./modules/register";
 @Module({
-  imports: [UsersModule],
-  controllers: [RegisterController],
-  providers: [RegisterService],
+  imports: [DatabaseModule, RegisterModule],
+  controllers: [],
+  providers: [],
 })
-export class HoodwinkModule {}
+export class HoodwinkModule { }

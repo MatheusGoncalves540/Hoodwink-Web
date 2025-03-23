@@ -16,4 +16,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
   ],
 })
-export class UsersModule {}
+export class DatabaseModule { }
