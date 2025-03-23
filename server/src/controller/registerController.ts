@@ -10,7 +10,7 @@ interface RegisterBody {
 
 @Controller()
 export class RegisterController {
-  constructor(private readonly LoginService: RegisterService) {}
+  constructor(private readonly RegisterService: RegisterService) {}
 
   @Post("/register")
   register(@Body() body: RegisterBody): string {
@@ -26,6 +26,6 @@ export class RegisterController {
       return "Informações inválidas";
     }
 
-    return this.LoginService.getHello();
+    return this.RegisterService.getHello();
   }
 }

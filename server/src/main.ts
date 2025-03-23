@@ -1,3 +1,5 @@
+import { config } from 'dotenv';
+config();
 import { NestFactory } from '@nestjs/core'
 import { HoodwinkModule } from './hoodwinkModule'
 import helmet from 'helmet'
