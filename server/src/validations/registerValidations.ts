@@ -38,7 +38,7 @@ export class RegisterValidations {
       return false;
     }
 
-    if (nickname.length < 5 || nickname.length > 20) {
+    if (nickname.length < 4 || nickname.length > 20) {
       return false;
     }
 
