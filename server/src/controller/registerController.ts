@@ -18,7 +18,7 @@ export class RegisterController {
   ) { }
 
   @Post("/register")
-  async register(@Body() body: RegisterBody, @Res() res: Response): Promise<ResponseData> {
+  async register(@Body() body: RegisterBody, @Res({ passthrough: true }) res: Response): Promise<ResponseData> {
     const { nickname, email, password } = body;
 
     const validation = await this.RegisterService.validateRegisterInfo(nickname, email, password);
