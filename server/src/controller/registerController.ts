@@ -34,11 +34,11 @@ export class RegisterController {
     const newUser = { nickname, email, password: hashedPassword };
 
     const jwtToken = await this.RegisterService.registerUser(newUser);
-    // res.cookie("jwt", jwtToken, {
-    //   httpOnly: true,
-    //   maxAge: Number(process.env.JWT_EXPIRATION_MS),
-    //   sameSite: "strict",
-    // });
+    res.cookie("jwt", jwtToken, {
+      httpOnly: true,
+      maxAge: Number(process.env.JWT_EXPIRATION_MS),
+      sameSite: "strict",
+    });
 
     return make_response("success", "Usuário Criado", {
       message: "Usuário criado com sucesso!",
