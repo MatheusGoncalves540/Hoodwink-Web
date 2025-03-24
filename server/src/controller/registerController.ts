@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Res } from "@nestjs/common";
+import { Controller, Post, Body, Res, HttpCode, HttpStatus } from "@nestjs/common";
 import { Response } from "express"; // Importa o tipo de resposta do Express
 import { RegisterService } from "../services/registerService";
 import { AuthService } from "src/services/authService";
-import { make_response, ResponseData } from "src/utils/makeResponse";
+import { makeResponse } from "src/utils/makeResponse";
 
 interface RegisterBody {
   nickname: string;
@@ -18,7 +18,7 @@ export class RegisterController {
   ) {}
 
   @Post("/register")
-  async register(@Body() body: RegisterBody, @Res({ passthrough: true }) res: Response): Promise<ResponseData> {
+  async register(@Body() body: RegisterBody, @Res({ passthrough: true }) res: Response) {
     const { nickname, email, password } = body;
 
     const validation = await this.RegisterService.validateRegisterInfo(
@@ -27,7 +27,7 @@ export class RegisterController {
       password
     );
     if (!validation.success) {
-      if (validation.message) return make_response("error", validation.message);
+      if (validation.message) return makeResponse(res, HttpStatus.CONFLICT, validation.message);
     }
 
     const hashedPassword = await this.AuthService.hashPassword(password);
@@ -40,7 +40,7 @@ export class RegisterController {
       sameSite: "strict",
     });
 
-    return make_response("success", "Usuário Criado", {
+    return makeResponse(res, HttpStatus.CREATED, "Usuário Criado", {
       message: "Usuário criado com sucesso!",
     });
   }
