@@ -27,7 +27,7 @@ export class RegisterController {
       password
     );
     if (!validation.success) {
-      if (validation.message) makeResponse(res, HttpStatus.UNAUTHORIZED, validation.message);
+      if (validation.message) makeResponse(res, HttpStatus.CONFLICT, validation.message);
       return
     }
 
