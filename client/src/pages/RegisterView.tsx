@@ -26,13 +26,13 @@ function RegisterView() {
 
   return (
     <form method="POST" id="registerForm" onSubmit={RegisterForm}>
-      <input name="nickname" type="text" required />
+      Nick: <input name="nickname" type="text" required />
       <br />
-      <input name="email" type="email" required />
+      Email: <input name="email" type="email" required />
       <br />
-      <input name="password" type="password" required />
+      Senha: <input name="password" type="password" required />
       <br />
-      <input name="confirmPassword" type="password" required />
+      Confirme senha: <input name="confirmPassword" type="password" required />
       <br />
       <input type="submit" value="Criar Usuário" />
     </form>
