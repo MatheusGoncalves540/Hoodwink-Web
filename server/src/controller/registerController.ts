@@ -15,7 +15,7 @@ export class RegisterController {
   constructor(
     private readonly RegisterService: RegisterService,
     private readonly AuthService: AuthService
-  ) {}
+  ) { }
 
   @Post("/register")
   async register(@Body() body: RegisterBody, @Res({ passthrough: true }) res: Response) {
@@ -27,7 +27,8 @@ export class RegisterController {
       password
     );
     if (!validation.success) {
-      if (validation.message) return makeResponse(res, HttpStatus.CONFLICT, validation.message);
+      if (validation.message) makeResponse(res, HttpStatus.UNAUTHORIZED, validation.message);
+      return
     }
 
     const hashedPassword = await this.AuthService.hashPassword(password);
@@ -40,8 +41,9 @@ export class RegisterController {
       sameSite: "strict",
     });
 
-    return makeResponse(res, HttpStatus.CREATED, "Usuário Criado", {
+    makeResponse(res, HttpStatus.CREATED, "Usuário Criado", {
       message: "Usuário criado com sucesso!",
     });
+    return
   }
 }
