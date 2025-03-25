@@ -5,8 +5,8 @@ import { Response } from 'express';
  * @param res - Objeto de resposta HTTP (Express), utilizado para enviar a resposta.
  * @param status - Código de status HTTP (HttpStatus) a ser retornado (padrão: 200 OK).
  * @param message - Mensagem personalizada para a resposta. (padrão: 'Operation successful' para sucesso e 'An error occurred' para erro).
- * @param data - Dados adicionais a serem retornados na resposta (padrão: null).
  * @param error - Indica se a resposta é de erro (padrão: false, indicando sucesso).
+ * @param data - Dados adicionais a serem retornados na resposta (padrão: null).
  * @param customHeaders - Cabeçalhos personalizados a serem adicionados à resposta (padrão: vazio).
  *
  * @returns Retorna a resposta HTTP com os dados apropriados no formato JSON.
@@ -21,8 +21,8 @@ export function makeResponse(
   res: Response,
   status: number = HttpStatus.OK, // Código de status padrão é 200
   message: string = '', // Mensagem personalizada
-  data: any = null, // Dados opcionais a serem retornados
   error: boolean = false, // Indica se é uma resposta de erro
+  data: any = null, // Dados opcionais a serem retornados
   customHeaders: Record<string, string> = {}, // Cabeçalhos personalizados
 ) {
   Object.keys(customHeaders).forEach(key => {

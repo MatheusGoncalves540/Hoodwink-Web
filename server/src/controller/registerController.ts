@@ -3,6 +3,7 @@ import { Response } from "express"; // Importa o tipo de resposta do Express
 import { RegisterService } from "../services/registerService";
 import { AuthService } from "src/services/authService";
 import { makeResponse } from "src/utils/makeResponse";
+import { error } from "console";
 
 interface RegisterBody {
   nickname: string;
@@ -27,7 +28,7 @@ export class RegisterController {
       password
     );
     if (!validation.success) {
-      if (validation.message) makeResponse(res, HttpStatus.CONFLICT, validation.message);
+      if (validation.message) makeResponse(res, HttpStatus.CONFLICT, validation.message, !validation.success);
       return
     }
 
@@ -41,9 +42,7 @@ export class RegisterController {
       sameSite: "strict",
     });
 
-    makeResponse(res, HttpStatus.CREATED, "Usuário Criado", {
-      message: "Usuário criado com sucesso!",
-    });
+    makeResponse(res, HttpStatus.CREATED, "Usuário criado com sucesso!", !validation.success);
     return
   }
 }
