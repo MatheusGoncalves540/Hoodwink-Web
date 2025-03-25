@@ -1,11 +1,11 @@
 import apiServer from "../api/api";
 
-export class LoginService {
+export class RegisterService {
   constructor() { }
 
-  static async login(email: string, password: string) {
+  static async register(nickname: string, email: string, password: string) {
     try {
-      const response = await apiServer.post("/login", {email, password });
+      const response = await apiServer.post("/register", { nickname, email, password });
       const token = response.data.jwtToken;
       document.cookie = `jwt=${token}`;
       return response.data;
