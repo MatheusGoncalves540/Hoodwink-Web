@@ -11,13 +11,15 @@ export class LoginService {
 
   async loginUser(res: Response, user: Partial<User>): Promise<string | Response> {
     try {
-      if (!user.email) return makeResponse(res, HttpStatus.BAD_REQUEST, "Email não recebido", true);
+      if (!user.email || !user.password) return makeResponse(res, HttpStatus.BAD_REQUEST, "Credenciais não recebido", true);
 
       const loggingUser = await this.UsersService.findByEmail(user.email);
 
-      if (!loggingUser) return makeResponse(res, HttpStatus.NOT_FOUND, "Usuário não encontrado", true, { redirectTo: "/register" });
+      if (!loggingUser) return makeResponse(res, HttpStatus.UNAUTHORIZED, "Credenciais incorretas", true);
 
-      const jwtToken = this.AuthService.generateToken(user);
+      if (!await this.AuthService.validatePassword(user.password, loggingUser.password)) return makeResponse(res, HttpStatus.UNAUTHORIZED, "Credenciais incorretas", true);
+
+      const jwtToken = this.AuthService.generateToken(loggingUser);
 
       return jwtToken;
     } catch (error) {
