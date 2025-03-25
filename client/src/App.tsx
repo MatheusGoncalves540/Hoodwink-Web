@@ -1,12 +1,10 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import RegisterView from './pages/RegisterView';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return (
     <div className="App">
-      <RegisterView/>
+      <AppRoutes/>
     </div>
   );
 }
