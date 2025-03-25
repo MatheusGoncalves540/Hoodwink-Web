@@ -11,7 +11,7 @@ export class AuthService {
   private readonly JWT_SECRET = process.env.JWT_SECRET;
   private readonly JWT_EXPIRATION = process.env.JWT_EXPIRATION || "16h";
 
-  generateToken(user: Partial<User>): string {
+  generateToken(user: User): string {
     try {
       const payload = {
         id: user.id,

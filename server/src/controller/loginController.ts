@@ -17,6 +17,17 @@ export class LoginController {
 
   @Post("/login")
   async login(@Body() body: LoginBody, @Res({ passthrough: true }) res: Response) {
+    const jwtToken = await this.LoginService.loginUser(res, body);
+
+    if (typeof jwtToken !== "string") return;
+
+    res.cookie("jwt", jwtToken, {
+      httpOnly: true,
+      maxAge: Number(process.env.JWT_EXPIRATION_MS),
+      sameSite: "strict",
+    });
+
+    makeResponse(res, HttpStatus.OK, "Logado!", false);
     return
   }
 }
