@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { useState } from "react";
 import { LoginService } from "../services/loginService";
 
 interface RegisterFormData {
@@ -9,33 +9,83 @@ interface RegisterFormData {
 }
 
 function RegisterView() {
-  function RegisterForm(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const [data, setData] = useState<RegisterFormData>({
+    nickname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-    const formData = new FormData(e.target as HTMLFormElement);
-    const data: RegisterFormData = {
-      nickname: formData.get("nickname") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      confirmPassword: formData.get("confirmPassword") as string,
-    };
+  const [error, setError] = useState<string>("");
 
-    console.log(data.nickname);
-    LoginService.register(data.nickname, data.email, data.password);
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setError("");
+  };
+
+  const RegisterForm = async () => {
+    if (data.password !== data.confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
+    setError(""); // Reseta erro se estiver correto
+    const response = await LoginService.register(
+      data.nickname,
+      data.email,
+      data.password
+    );
+
+    if (response.response.data.status == "error") {
+      setError(response.response.data.message);
+    }
+  };
 
   return (
-    <form method="POST" id="registerForm" onSubmit={RegisterForm}>
-      Nick: <input name="nickname" type="text" required />
+    <div id="registerForm">
+      <label>Nick:</label>
+      <input
+        name="nickname"
+        value={data.nickname}
+        onChange={handleChange}
+        type="text"
+        required
+      />
       <br />
-      Email: <input name="email" type="email" required />
+      <label>Email:</label>
+      <input
+        name="email"
+        value={data.email}
+        onChange={handleChange}
+        type="email"
+        required
+      />
       <br />
-      Senha: <input name="password" type="password" required />
+      <label>Senha:</label>
+      <input
+        name="password"
+        value={data.password}
+        onChange={handleChange}
+        type="password"
+        required
+      />
       <br />
-      Confirme senha: <input name="confirmPassword" type="password" required />
+      <label>Confirme senha:</label>
+      <input
+        name="confirmPassword"
+        type="password"
+        value={data.confirmPassword}
+        onChange={handleChange}
+        required
+      />
       <br />
-      <input type="submit" value="Criar Usuário" />
-    </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+      {/* Exibe erro se houver */}
+      <button onClick={RegisterForm}>Criar Usuário</button>
+    </div>
   );
 }
 
