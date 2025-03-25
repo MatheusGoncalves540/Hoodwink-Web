@@ -9,8 +9,8 @@ export class RegisterService {
       const token = response.data.jwtToken;
       document.cookie = `jwt=${token}`;
       return response.data;
-    } catch (error) {
-      return error
+    } catch (error : any) {
+      return error.response.data
     }
   }
 }

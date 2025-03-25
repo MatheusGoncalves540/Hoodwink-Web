@@ -38,9 +38,9 @@ function RegisterView() {
       data.email,
       data.password
     );
-
-    if (response.response.data.status == "error") {
-      setError(response.response.data.message);
+    console.log(response)
+    if (response.status == "error") {
+      setError(response.message);
     }
   };
 
