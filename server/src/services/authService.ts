@@ -4,7 +4,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
-import { User } from "@shared/interfaces/userInterface";
+import { User } from "../interfaces/userInterface";
 
 @Injectable()
 export class AuthService {
