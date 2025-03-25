@@ -1,6 +1,6 @@
 import apiServer from "../api/api";
 
-export class LoginService {
+export class RegisterService {
   constructor() { }
 
   static async register(nickname: string, email: string, password: string) {

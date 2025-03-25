@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LoginService } from "../services/loginService";
+import { RegisterService } from "../services/registerService";
 
 interface RegisterFormData {
   nickname: string;
@@ -33,7 +33,7 @@ function RegisterView() {
       return;
     }
     setError(""); // Reseta erro se estiver correto
-    const response = await LoginService.register(
+    const response = await RegisterService.register(
       data.nickname,
       data.email,
       data.password
