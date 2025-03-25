@@ -17,6 +17,7 @@ export class LoginController {
 
   @Post("/login")
   async login(@Body() body: LoginBody, @Res({ passthrough: true }) res: Response) {
+    this.LoginService.loginUser(res, body);
     return
   }
 }

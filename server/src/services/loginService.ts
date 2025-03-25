@@ -1,15 +1,21 @@
-import { Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { UsersService } from "./usersService";
+import { Response } from "express";
 import { User } from "../interfaces/userInterface";
 import { AuthService } from "./authService";
+import { makeResponse } from "src/utils/makeResponse";
 
 @Injectable()
 export class LoginService {
   constructor(private readonly UsersService: UsersService, private readonly AuthService: AuthService) { }
 
-  loginUser(user: Partial<User>): string {
+  async loginUser(res: Response, user: Partial<User>): Promise<string | Response> {
     try {
-      // this.UsersService.create(user);
+      if (!user.email) return makeResponse(res, HttpStatus.BAD_REQUEST, "Email não recebido", true);
+
+      const loggingUser = await this.UsersService.findByEmail(user.email);
+
+      if (!loggingUser) return makeResponse(res, HttpStatus.NOT_FOUND, "Usuário não encontrado", true, { redirectTo: "/register" });
 
       const jwtToken = this.AuthService.generateToken(user);
 

@@ -19,9 +19,9 @@ import { Response } from 'express';
  */
 export function makeResponse(
   res: Response,
-  status: number = HttpStatus.OK, // Código de status padrão é 200
-  message: string = '', // Mensagem personalizada
-  error: boolean = false, // Indica se é uma resposta de erro
+  status: number, // Código de status padrão é 200
+  message: string, // Mensagem personalizada
+  error: boolean, // Indica se é uma resposta de erro
   data: any = null, // Dados opcionais a serem retornados
   customHeaders: Record<string, string> = {}, // Cabeçalhos personalizados
 ) {

@@ -5,7 +5,7 @@ const apiServer = axios.create({
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "http://localhost:2409",
+    "Access-Control-Allow-Origin": process.env.REACT_APP_BACKEND_URL || "http://localhost:2409",
   },
   withCredentials: true,
 });
@@ -15,20 +15,34 @@ apiServer.interceptors.request.use((config) => {
     .split("; ")
     .find((row) => row.startsWith("jwt="))
     ?.split("=")[1];
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
 apiServer.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (!error.response) return Promise.reject(error);
+
+    const { status, data } = error.response;
+
+    if (status === 401) {
       window.alert("Faça Login Novamente");
-      document.cookie = "jwt=; Max-Age=0";
+
+      document.cookie =
+        "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=strict";
+
       window.location.href = "/login";
     }
+
+    if (typeof data?.redirectTo === "string" && data.redirectTo.trim() !== "") {
+      window.location.href = data.redirectTo;
+    }
+
     return Promise.reject(error);
   }
 );
