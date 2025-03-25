@@ -409,6 +409,10 @@
     "@eslint/core" "^0.12.0"
     levn "^0.4.1"
 
+"@hoodwink/shared@file:../shared":
+  version "1.0.0"
+  resolved "file:../shared"
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"

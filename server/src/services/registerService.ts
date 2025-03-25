@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { UsersService } from "./usersService";
-import { User } from "../interfaces/userInterface";
+import { User } from "@shared/interfaces/userInterface";
 import { AuthService } from "./authService";
 
 interface validationReponse {
