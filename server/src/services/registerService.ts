@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { UsersService } from "./usersService";
 import { User } from "../interfaces/userInterface";
 import { AuthService } from "./authService";
+import { ExceptionsHandler } from "@nestjs/core/exceptions/exceptions-handler";
 
 interface validationReponse {
   success: boolean
@@ -12,11 +13,13 @@ interface validationReponse {
 export class RegisterService {
   constructor(private readonly UsersService: UsersService, private readonly AuthService: AuthService) { }
 
-  registerUser(user: User): string {
+  async registerUser(user: User): Promise<string> {
     try {
-      this.UsersService.create(user);
+      const newUser = await this.UsersService.create(user);
 
-      const jwtToken = this.AuthService.generateToken(user);
+      if (!newUser) throw new InternalServerErrorException("Erro interno");
+
+      const jwtToken = this.AuthService.generateToken(newUser);
 
       return jwtToken;
     } catch (error) {

@@ -42,6 +42,7 @@ export class RegisterController {
       sameSite: "strict",
     });
 
-    return makeResponse(res, HttpStatus.CREATED, "Usuário criado com sucesso!", !validation.success);
+    makeResponse(res, HttpStatus.CREATED, "Usuário criado com sucesso!", !validation.success);
+    return
   }
 }
