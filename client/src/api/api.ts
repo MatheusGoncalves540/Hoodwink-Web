@@ -28,7 +28,7 @@ apiServer.interceptors.response.use(
   (error) => {
     if (!error.response) return Promise.reject(error);
 
-    const { status, data } = error.response;
+    const { status, data: response } = error.response;
 
     if (status === 401) {
       window.alert("Faça Login Novamente");
@@ -39,8 +39,8 @@ apiServer.interceptors.response.use(
       window.location.href = "/login";
     }
 
-    if (typeof data?.redirectTo === "string" && data.redirectTo.trim() !== "") {
-      window.location.href = data.redirectTo;
+    if (typeof response.data?.redirectTo === "string" && response.data.redirectTo.trim() !== "") {
+      window.location.href = response.data.redirectTo;
     }
 
     return Promise.reject(error);

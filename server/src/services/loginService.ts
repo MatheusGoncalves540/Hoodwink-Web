@@ -15,9 +15,9 @@ export class LoginService {
 
       const loggingUser = await this.UsersService.findByEmail(user.email);
 
-      if (!loggingUser) return makeResponse(res, HttpStatus.UNAUTHORIZED, "Credenciais incorretas", true);
+      if (!loggingUser) return makeResponse(res, HttpStatus.FORBIDDEN, "Credenciais incorretas", true);
 
-      if (!await this.AuthService.validatePassword(user.password, loggingUser.password)) return makeResponse(res, HttpStatus.UNAUTHORIZED, "Credenciais incorretas", true);
+      if (!await this.AuthService.validatePassword(user.password, loggingUser.password)) return makeResponse(res, HttpStatus.FORBIDDEN, "Credenciais incorretas", true);
 
       const jwtToken = this.AuthService.generateToken(loggingUser);
 
