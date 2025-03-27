@@ -3,6 +3,7 @@ import { Response } from "express";
 import { LoginService } from "../services/loginService";
 import { AuthService } from "src/services/authService";
 import { makeResponse } from "src/utils/makeResponse";
+import { sendCookies } from "src/utils/sendCookies";
 
 interface LoginBody {
   email: string;
@@ -21,11 +22,7 @@ export class LoginController {
 
     if (typeof jwtToken !== "string") return;
 
-    res.cookie("jwt", jwtToken, {
-      httpOnly: true,
-      maxAge: Number(process.env.JWT_EXPIRATION_MS),
-      sameSite: "strict",
-    });
+    sendCookies(res,jwtToken)
 
     makeResponse(res, HttpStatus.OK, "Logado!", false);
     return
