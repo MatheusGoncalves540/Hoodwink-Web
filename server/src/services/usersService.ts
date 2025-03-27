@@ -10,17 +10,18 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) { }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findLastFifty(): Promise<User[]> {
+    return this.usersRepository.find({
+      take: 50,
+      order: { createdAt: "DESC" },
+    });
   }
 
-  findById(id: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { id } });
-  }
+  findById(id: string): Promise<User | null> { return this.usersRepository.findOne({ where: { id } }); }
 
-  findByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne({ where: { email } });
-  }
+  findByEmail(email: string): Promise<User | null> { return this.usersRepository.findOne({ where: { email } }); }
+
+  findByNick(nickname: string): Promise<User | null> { return this.usersRepository.findOne({ where: { nickname } }); }
 
   create(userData: Partial<User>): Promise<User> | null {
     try {
