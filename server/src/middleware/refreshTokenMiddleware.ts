@@ -1,8 +1,8 @@
 // refresh-token.middleware.ts
 import { HttpStatus, Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import * as jwt from 'jsonwebtoken';
-import * as dayjs from 'dayjs';
+import jwt from 'jsonwebtoken';
+import dayjs from 'dayjs';
 import { AuthService } from 'src/services/authService';
 import { makeResponse } from 'src/utils/makeResponse';
 
