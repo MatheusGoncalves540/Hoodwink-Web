@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { UsersService } from "./usersService";
 import { User } from "../interfaces/userInterface";
 import { AuthService } from "./authService";
+import wordsBlacklist from '../rulesInJson/wordsBlacklist.json'
 
 interface validationReponse {
   success: boolean
@@ -30,7 +31,7 @@ export class RegisterService {
     const validations = [
       this.passwordValidation(password, nickname),
       await this.emailValidation(email),
-      this.nicknameValidation(nickname)
+      await this.nicknameValidation(nickname)
     ]
 
     for (const validation of validations) {
@@ -41,17 +42,17 @@ export class RegisterService {
   }
 
   passwordValidation(password: string, nickname: string): validationReponse {
-    if (!password) return { success: false, message: "senha inválida" };
-    if (password.length < 8 || password.length > 42) return { success: false, message: "senha inválida" };
-    if (password === nickname) return { success: false, message: "senha inválida" };
+    if (!password) return { success: false, message: "Senha inválida" };
+    if (password.length < 8 || password.length > 42) return { success: false, message: "Senha inválida" };
+    if (password === nickname) return { success: false, message: "Senha inválida" };
 
     return { success: true };
   }
 
   async emailValidation(email: string): Promise<validationReponse> {
-    if (!email) return { success: false, message: "email inválido" };
-    if (email.length < 5 || email.length > 42) return { success: false, message: "email inválido" };
-    if (!email.includes("@")) return { success: false, message: "email inválido" };
+    if (!email) return { success: false, message: "Email inválido" };
+    if (email.length < 5 || email.length > 42) return { success: false, message: "Email inválido" };
+    if (!email.includes("@")) return { success: false, message: "Email inválido" };
 
     const alreadyExist = await this.UsersService.findByEmail(email);
     if (alreadyExist) return { success: false, message: "Email já está em uso" };
@@ -59,9 +60,16 @@ export class RegisterService {
     return { success: true };
   }
 
-  nicknameValidation(nickname: string): validationReponse {
-    if (!nickname) return { success: false, message: "nick inválido" };
-    if (nickname.length < 3 || nickname.length > 22) return { success: false, message: "nick inválido" };
+  async nicknameValidation(nickname: string): Promise<validationReponse> {
+    if (!nickname) return { success: false, message: "Nickname inválido" };
+    if (nickname.length < 3 || nickname.length > 22) return { success: false, message: "Nickname inválido" };
+
+    for (const badWord of wordsBlacklist.nickname) {
+      if (nickname.includes(badWord)) return { success: false, message: "Nickname inválido" };
+    }
+
+    const alreadyExist = await this.UsersService.findByNick(nickname);
+    if (alreadyExist) return { success: false, message: "Nickname já está em uso" };
 
     return { success: true };
   }
