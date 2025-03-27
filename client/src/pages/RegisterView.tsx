@@ -27,25 +27,43 @@ function RegisterView() {
     setError("");
   };
 
-  const RegisterForm = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+
+    if (data.nickname.length < 3 || data.nickname.length > 22) {
+      setError("Nick inválido.");
+      return;
+    }
+
+    if (data.email.length < 5 || data.email.length > 42 || !data.email.includes("@")) {
+      setError("Email inválido.");
+      return;
+    }
+
+    if (data.password.length < 8 || data.password.length > 42 || data.password === data.nickname) {
+      setError("Senha inválida.");
+      return;
+    }
+
     if (data.password !== data.confirmPassword) {
       setError("As senhas não coincidem.");
       return;
     }
-    setError(""); // Reseta erro se estiver correto
+
     const response = await RegisterService.register(
       data.nickname,
       data.email,
       data.password
     );
-    console.log(response)
-    if (response.status == "error") {
+
+    if (response.status === "error") {
       setError(response.message);
     }
   };
 
   return (
-    <div id="registerForm">
+    <form id="registerForm" onSubmit={handleSubmit}>
       <label>Nick:</label>
       <input
         name="nickname"
@@ -53,6 +71,8 @@ function RegisterView() {
         onChange={handleChange}
         type="text"
         required
+        minLength={3}
+        maxLength={22}
       />
       <br />
       <label>Email:</label>
@@ -62,6 +82,8 @@ function RegisterView() {
         onChange={handleChange}
         type="email"
         required
+        minLength={5}
+        maxLength={42}
       />
       <br />
       <label>Senha:</label>
@@ -71,6 +93,8 @@ function RegisterView() {
         onChange={handleChange}
         type="password"
         required
+        minLength={8}
+        maxLength={42}
       />
       <br />
       <label>Confirme senha:</label>
@@ -80,12 +104,13 @@ function RegisterView() {
         value={data.confirmPassword}
         onChange={handleChange}
         required
+        minLength={8}
+        maxLength={42}
       />
       <br />
-      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-      {/* Exibe erro se houver */}
-      <button onClick={RegisterForm}>Criar Usuário</button>
-    </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <button type="submit">Criar Usuário</button>
+    </form>
   );
 }
 

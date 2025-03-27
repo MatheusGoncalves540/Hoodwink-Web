@@ -2,7 +2,7 @@
 function HomeView() {
 
   return (
-    <div id="registerForm">
+    <div>
       <h1>HOMESCREEN</h1>
     </div>
   );

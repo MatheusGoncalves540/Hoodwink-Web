@@ -23,20 +23,22 @@ function LoginView() {
     setError("");
   };
 
-  const LoginForm = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setError("");
+
     const response = await LoginService.login(
       data.email,
       data.password
     );
 
-    if (response.response.data.status == "error") {
+    if (response.response.data.status === "error") {
       setError(response.response.data.message);
     }
   };
 
   return (
-    <div id="registerForm">
+    <form id="loginForm" onSubmit={handleSubmit}>
       <label>Email:</label>
       <input
         name="email"
@@ -44,6 +46,8 @@ function LoginView() {
         onChange={handleChange}
         type="email"
         required
+        minLength={5}
+        maxLength={41}
       />
       <br />
       <label>Senha:</label>
@@ -51,15 +55,15 @@ function LoginView() {
         name="password"
         value={data.password}
         onChange={handleChange}
-        min={8}
         type="password"
         required
+        minLength={8}
+        maxLength={41}
       />
       <br />
-      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-      {/* Exibe erro se houver */}
-      <button onClick={LoginForm}>Criar Usuário</button>
-    </div>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <button type="submit">Entrar</button>
+    </form>
   );
 }
 

@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { UsersService } from "./usersService";
 import { User } from "../interfaces/userInterface";
 import { AuthService } from "./authService";
-import { ExceptionsHandler } from "@nestjs/core/exceptions/exceptions-handler";
 
 interface validationReponse {
   success: boolean
@@ -43,7 +42,7 @@ export class RegisterService {
 
   passwordValidation(password: string, nickname: string): validationReponse {
     if (!password) return { success: false, message: "senha inválida" };
-    if (password.length < 8 || password.length > 41) return { success: false, message: "senha inválida" };
+    if (password.length < 8 || password.length > 42) return { success: false, message: "senha inválida" };
     if (password === nickname) return { success: false, message: "senha inválida" };
 
     return { success: true };
@@ -51,7 +50,7 @@ export class RegisterService {
 
   async emailValidation(email: string): Promise<validationReponse> {
     if (!email) return { success: false, message: "email inválido" };
-    if (email.length < 5 || email.length > 41) return { success: false, message: "email inválido" };
+    if (email.length < 5 || email.length > 42) return { success: false, message: "email inválido" };
     if (!email.includes("@")) return { success: false, message: "email inválido" };
 
     const alreadyExist = await this.UsersService.findByEmail(email);
@@ -62,7 +61,7 @@ export class RegisterService {
 
   nicknameValidation(nickname: string): validationReponse {
     if (!nickname) return { success: false, message: "nick inválido" };
-    if (nickname.length < 4 || nickname.length > 20) return { success: false, message: "nick inválido" };
+    if (nickname.length < 3 || nickname.length > 22) return { success: false, message: "nick inválido" };
 
     return { success: true };
   }
