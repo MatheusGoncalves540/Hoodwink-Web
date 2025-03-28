@@ -5,6 +5,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { User } from "../interfaces/userInterface";
+import { decodedToken } from "src/middleware/refreshTokenMiddleware";
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,8 @@ export class AuthService {
 
   generateToken(user: User): string {
     try {
-      const payload = {
+      if (!user.id) return "";
+      const payload: decodedToken = {
         id: user.id,
         nickname: user.nickname,
       };
