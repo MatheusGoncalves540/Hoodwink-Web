@@ -3,16 +3,13 @@ import {
   Post,
   Body,
   Res,
-  HttpCode,
-  HttpStatus,
+  HttpStatus
 } from "@nestjs/common";
-import { Response } from "express"; // Importa o tipo de resposta do Express
+import { Response } from "express";
 import { RegisterService } from "../services/registerService";
 import { AuthService } from "src/services/authService";
 import { makeResponse } from "src/utils/makeResponse";
-import { error } from "console";
 import { sendCookies } from "src/utils/sendCookies";
-
 interface RegisterBody {
   nickname: string;
   email: string;
@@ -24,7 +21,7 @@ export class RegisterController {
   constructor(
     private readonly RegisterService: RegisterService,
     private readonly AuthService: AuthService
-  ) {}
+  ) { }
 
   @Post("/register")
   async register(
@@ -52,13 +49,16 @@ export class RegisterController {
     const hashedPassword = await this.AuthService.hashPassword(password);
     const newUser = { nickname, email, password: hashedPassword };
 
-    const jwtToken = await this.RegisterService.registerUser(newUser);
+    const jwtToken = await this.RegisterService.registerUser(res, newUser);
+
+    if (typeof jwtToken !== "string") return;
+
     sendCookies(res, jwtToken);
 
     makeResponse(
       res,
       HttpStatus.CREATED,
-      "Usuário criado com sucesso!",
+      "Conta criada com sucesso!",
       !validation.success
     );
     return;

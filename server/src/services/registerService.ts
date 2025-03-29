@@ -1,8 +1,10 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { UsersService } from "./usersService";
 import { User } from "../interfaces/userInterface";
 import { AuthService } from "./authService";
 import wordsBlacklist from '../rulesInJson/wordsBlacklist.json'
+import { Response } from 'express'
+import { makeResponse } from "src/utils/makeResponse";
 
 interface validationReponse {
   success: boolean
@@ -13,13 +15,15 @@ interface validationReponse {
 export class RegisterService {
   constructor(private readonly UsersService: UsersService, private readonly AuthService: AuthService) { }
 
-  async registerUser(user: User): Promise<string> {
+  async registerUser(res: Response, user: User): Promise<string | Response> {
     try {
       const newUser = await this.UsersService.create(user);
 
       if (!newUser) throw new InternalServerErrorException("Erro interno");
 
       const jwtToken = this.AuthService.generateToken(newUser);
+
+      if (!jwtToken) return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar a autenticação", true);
 
       return jwtToken;
     } catch (error) {

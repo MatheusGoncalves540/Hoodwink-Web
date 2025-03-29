@@ -12,9 +12,9 @@ export class AuthService {
   private readonly JWT_SECRET = process.env.JWT_SECRET;
   private readonly JWT_EXPIRATION = process.env.JWT_EXPIRATION || "16h";
 
-  generateToken(user: User): string {
+  generateToken(user: User): string | null {
     try {
-      if (!user.id) return "";
+      if (!user.id) return null;
       const payload: decodedToken = {
         id: user.id,
         nickname: user.nickname,
@@ -25,7 +25,7 @@ export class AuthService {
       });
     } catch (error) {
       console.log(error);
-      return "";
+      return null;
     }
   }
 
@@ -43,12 +43,13 @@ export class AuthService {
     }
   }
 
-  validateToken(token: string): any {
+  validateToken(token: string): boolean {
     try {
-      return jwt.verify(token, this.JWT_SECRET);
-    } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException("Token inválido ou expirado");
+      const validToken = jwt.verify(token, this.JWT_SECRET);
+      if (validToken) return true;
+      return false;
+    } catch {
+      return false;
     }
   }
 }

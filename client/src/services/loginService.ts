@@ -1,8 +1,6 @@
 import apiServer from "../api/api";
 
 export class LoginService {
-  constructor() { }
-
   static async login(email: string, password: string) {
     try {
       const response = await apiServer.post("/login", {email, password });

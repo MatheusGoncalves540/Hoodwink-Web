@@ -21,7 +21,7 @@ export interface decodedToken {
 
 @Injectable()
 export class RefreshTokenMiddleware implements NestMiddleware {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.cookies?.jwt;
@@ -41,7 +41,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       if (tokenAge > 4) {
         const newToken = this.authService.generateToken(decodedToken);
 
-        sendCookies(res, newToken);
+        if (newToken) sendCookies(res, newToken);
 
         req.token = decodedToken;
       }

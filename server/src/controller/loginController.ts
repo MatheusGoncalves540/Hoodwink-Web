@@ -22,7 +22,7 @@ export class LoginController {
 
     if (typeof jwtToken !== "string") return;
 
-    sendCookies(res,jwtToken)
+    sendCookies(res, jwtToken);
 
     makeResponse(res, HttpStatus.OK, "Logado!", false);
     return

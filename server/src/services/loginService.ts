@@ -21,6 +21,8 @@ export class LoginService {
 
       const jwtToken = this.AuthService.generateToken(loggingUser);
 
+      if (!jwtToken) return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar a autenticação", true);
+
       return jwtToken;
     } catch (error) {
       return error.message;

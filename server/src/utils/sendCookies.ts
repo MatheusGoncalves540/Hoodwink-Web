@@ -8,8 +8,10 @@ export async function sendCookies(res: Response, token: string) {
     maxAge: Number(process.env.JWT_EXPIRATION_MS),
     sameSite: "strict",
   });
+
   const decodedToken: decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-  res.cookie("userData", decodedToken, {
+
+  res.cookie("userData", JSON.stringify(decodedToken), {
     httpOnly: false,
     sameSite: "strict",
   });
