@@ -25,6 +25,6 @@ export class LoginController {
     sendCookies(res, jwtToken);
 
     makeResponse(res, HttpStatus.OK, "Logado!", false);
-    return
+    return;
   }
 }
