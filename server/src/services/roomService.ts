@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { HttpStatus, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import { NewRoomData } from 'src/controller/roomController';
+import { NewRoomData } from "src/interfaces/newRoomData";
 import { makeResponse } from 'src/utils/makeResponse';
 import { InjectRedis } from "@nestjs-modules/ioredis";
 
@@ -12,25 +12,16 @@ export class RoomService {
   ) { }
 
   // Criar uma sala no Redis
-  async createRoom(newRoomData: any): Promise<any> {
-    const idNewRoom = this.generateNewId();
-    const roomData = {
-      roomId: idNewRoom,
-      roomName: newRoomData.roomName,
-      maxPlayer: newRoomData.maxPlayer,
-      roomPass: newRoomData.roomPass,
-      startCoins: newRoomData.startCoins,
-      maxCoins: newRoomData.maxCoins,
-      displayTime: newRoomData.displayTime,
-    };
-
-    // Salva as informações da sala no Redis
-    await this.redis.set(idNewRoom, JSON.stringify(roomData));
-
-    return roomData;
+  async createRoom(newRoomData: NewRoomData): Promise<any> {
+    try {
+      await this.redis.set(newRoomData.id, JSON.stringify(newRoomData));
+      return true;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 
-  // Recuperar uma sala a partir do Redis
   async getRoom(id: string): Promise<any> {
     const roomData = await this.redis.get(id);
     return roomData ? JSON.parse(roomData) : null; // Retorna null se não encontrar a sala

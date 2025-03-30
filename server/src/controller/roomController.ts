@@ -4,19 +4,7 @@ import { JwtAuthGuard } from "src/middleware/jwtAuthGuard";
 import { makeResponse } from "src/utils/makeResponse";
 import { RoomService } from "../services/roomService";
 import { v7 as uuidv7 } from 'uuid'
-
-export interface NewRoomData {
-    id: string;
-    nickname: string;
-    roomName: string;
-    maxPlayer: number;
-    roomPass: string;
-    startCoins: number;
-    maxCoins: number;
-    displayTime_withPossibleCounterPlays: number;
-    displayTime_highRelevance: number;
-    displayTime: number;
-}
+import { NewRoomData } from "src/interfaces/newRoomData";
 
 @Controller()
 export class RoomController {
@@ -33,7 +21,7 @@ export class RoomController {
 
         if (!validationNewRoomData) return makeResponse(res, HttpStatus.BAD_REQUEST, "Informações inválidas", true);
 
-        const createdRoom = await this.roomService.createRoom(newRoomData);
+        await this.roomService.createRoom(newRoomData);
 
         makeResponse(res, HttpStatus.CREATED, `Sala ${newRoomData.id} criada com sucesso`, false, { ...newRoomData });
 
