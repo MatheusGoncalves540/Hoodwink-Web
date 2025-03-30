@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 if (!process.env.PG_HOST || !process.env.PG_USER || !process.env.PG_PASS || !process.env.PG_NAME) {
-  throw new Error('Missing database configuration in environment variables.');
+  throw new Error('Configuração de banco de dados ausente nas variáveis de ambiente.');
 }
 
 @Module({

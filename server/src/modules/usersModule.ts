@@ -11,7 +11,6 @@ import { UsersService } from "src/services/usersService";
 @Module({
     imports: [TypeOrmModule.forFeature([User])],
     controllers: [LoginController, RegisterController],
-    providers: [UsersService, RegisterService, LoginService, AuthService],
-    exports:[UsersService]
+    providers: [UsersService, RegisterService, LoginService, AuthService]
 })
 export class UsersModule { }

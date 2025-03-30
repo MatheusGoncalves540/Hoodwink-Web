@@ -28,39 +28,46 @@ export class RegisterController {
     @Body() body: RegisterBody,
     @Res({ passthrough: true }) res: Response
   ) {
-    const { nickname, email, password } = body;
+    try {
+      const { nickname, email, password } = body;
 
-    const validation = await this.RegisterService.validateRegisterInfo(
-      nickname,
-      email,
-      password
-    );
-    if (!validation.success) {
-      if (validation.message)
-        makeResponse(
-          res,
-          HttpStatus.CONFLICT,
-          validation.message,
-          !validation.success
-        );
+      const validation = await this.RegisterService.validateRegisterInfo(
+        nickname,
+        email,
+        password
+      );
+      if (!validation.success) {
+        if (validation.message)
+          makeResponse(
+            res,
+            HttpStatus.CONFLICT,
+            validation.message,
+            !validation.success
+          );
+        return;
+      }
+
+      const hashedPassword = await this.AuthService.hashPassword(password);
+      const newUser = { nickname, email, password: hashedPassword };
+
+      const jwtToken = await this.RegisterService.registerUser(res, newUser);
+
+      if (typeof jwtToken !== "string") return;
+
+      sendCookies(res, jwtToken);
+
+      makeResponse(
+        res,
+        HttpStatus.CREATED,
+        "Conta criada com sucesso!",
+        !validation.success
+      );
+      return;
+    } catch (error) {
+      console.error(error);
+      makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar o cadastro", true);
       return;
     }
 
-    const hashedPassword = await this.AuthService.hashPassword(password);
-    const newUser = { nickname, email, password: hashedPassword };
-
-    const jwtToken = await this.RegisterService.registerUser(res, newUser);
-
-    if (typeof jwtToken !== "string") return;
-
-    sendCookies(res, jwtToken);
-
-    makeResponse(
-      res,
-      HttpStatus.CREATED,
-      "Conta criada com sucesso!",
-      !validation.success
-    );
-    return;
   }
 }

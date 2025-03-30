@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { UsersService } from "./usersService";
 import { User } from "../interfaces/userInterface";
 import { AuthService } from "./authService";
@@ -19,15 +19,16 @@ export class RegisterService {
     try {
       const newUser = await this.UsersService.create(user);
 
-      if (!newUser) throw new InternalServerErrorException("Erro interno");
+      if (!newUser) return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar o cadastro", true);
 
       const jwtToken = this.AuthService.generateToken(newUser);
 
-      if (!jwtToken) return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar a autenticação", true);
+      if (!jwtToken) return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar o cadastro", true);
 
       return jwtToken;
     } catch (error) {
-      return error.message;
+      console.error(error);
+      return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar o cadastro", true);
     }
   }
 

@@ -25,7 +25,8 @@ export class LoginService {
 
       return jwtToken;
     } catch (error) {
-      return error.message;
+      console.error(error.message);
+      return makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao realizar o cadastro", true);
     }
   }
 }
