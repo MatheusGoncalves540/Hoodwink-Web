@@ -10,13 +10,23 @@ podman start postgres
 #########
 
 #########
-podman create --name mongodb \
--e MONGO_INITDB_ROOT_USERNAME=admin \
--e MONGO_INITDB_ROOT_PASSWORD=mongo \
--p 27017:27017 \
--v mongo:/data/db \
-docker.io/library/postgres
+podman network create redis-network
 #########
-podman start mongodb
-
+podman create --name redisdb \
+  -p 6379:6379 \
+  -e REDIS_PASSWORD=redis \
+  --network redis-network \
+  docker.io/library/redis
+#########
+podman start redisdb
+#########
+podman run --name redis-commander \
+  --network redis-network \
+  -d -p 8081:8081 \
+  -e REDIS_HOST=redisdb \
+  -e REDIS_PORT=6379 \
+  -e REDIS_PASSWORD=redis \
+  docker.io/rediscommander/redis-commander
+#########
+http://localhost:8081 #acessar redis-commander
 # Executar migrations e seeds após essas etapas
