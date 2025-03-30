@@ -1,20 +1,18 @@
 import { Response } from "express";
-import { HttpStatus, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
-import { NewRoomData } from "src/interfaces/newRoomData";
-import { makeResponse } from 'src/utils/makeResponse';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import Redis from "ioredis";
+import { RoomHeader, RoomInterface } from "src/interfaces/roomInterface";
+import { makeResponse } from "src/utils/makeResponse";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 
 @Injectable()
 export class RoomService {
-  constructor(
-    @InjectRedis() private readonly redis: Redis,
-  ) { }
+  constructor(@InjectRedis() private readonly redis: Redis) {}
 
   // Criar uma sala no Redis
-  async createRoom(newRoomData: NewRoomData): Promise<any> {
+  async createRoom(RoomHeader: RoomHeader): Promise<any> {
     try {
-      await this.redis.set(newRoomData.id, JSON.stringify(newRoomData));
+      await this.redis.set(`${RoomHeader.id}:header`, JSON.stringify(RoomHeader));
       return true;
     } catch (error) {
       console.error(error);
@@ -38,20 +36,28 @@ export class RoomService {
     return `room_${Date.now()}`;
   }
 
-  async validateCreatedRoom(res: Response, newRoomData: NewRoomData): Promise<true | Response> {
+  async validateCreatedRoom(
+    res: Response,
+    RoomHeader: RoomHeader
+  ): Promise<true | Response> {
     try {
       return true;
     } catch (error) {
       console.error(error.message);
-      return makeResponse(res, HttpStatus.BAD_REQUEST, "Erro ao criar a sala. Verifique as informações enviadas", true);
+      return makeResponse(
+        res,
+        HttpStatus.BAD_REQUEST,
+        "Erro ao criar a sala. Verifique as informações enviadas",
+        true
+      );
     }
   }
 
   ///////////////////////////////////////
 
   async findLastFifty(): Promise<any[]> {
-    const keys = await this.redis.keys('user:*');
-    const users = await Promise.all(keys.map(key => this.redis.hgetall(key)));
+    const keys = await this.redis.keys("user:*");
+    const users = await Promise.all(keys.map((key) => this.redis.hgetall(key)));
 
     return users
       .sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
@@ -64,7 +70,7 @@ export class RoomService {
   }
 
   async findByEmail(email: string): Promise<any | null> {
-    const keys = await this.redis.keys('user:*');
+    const keys = await this.redis.keys("user:*");
     for (const key of keys) {
       const user = await this.redis.hgetall(key);
       if (user.email === email) return user;
@@ -73,7 +79,7 @@ export class RoomService {
   }
 
   async findByNick(nickname: string): Promise<any | null> {
-    const keys = await this.redis.keys('user:*');
+    const keys = await this.redis.keys("user:*");
     for (const key of keys) {
       const user = await this.redis.hgetall(key);
       if (user.nickname === nickname) return user;
@@ -83,7 +89,7 @@ export class RoomService {
 
   async create(userData: any): Promise<any> {
     if (!userData.email) {
-      throw new Error('Email é obrigatório');
+      throw new Error("Email é obrigatório");
     }
 
     const id = userData.id || Date.now().toString();

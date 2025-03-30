@@ -1,4 +1,6 @@
-export interface Room {
+import dayjs from "dayjs";
+
+export interface RoomInterface {
     header: RoomHeader;
     gameOver: boolean;
     turn: number;
@@ -14,15 +16,15 @@ export interface Room {
     cards: {}[];
 }
 
-interface RoomHeader {
-    roomId: string;
+export interface RoomHeader {
+    id: string;
     roomName: string;
     maxPlayer: number;
     roomPass?: string;
-    startTime?: number;
+    startTime?: dayjs.Dayjs;
     startCoins: number;
     maxCoins: number;
-    displayTime_withPossibleCounterPlays: number;
-    displayTime_highRelevance: number;
-    displayTime: number;
+    // displayTime_withPossibleCounterPlays: number;
+    // displayTime_highRelevance: number;
+    // displayTime: number;
 }
