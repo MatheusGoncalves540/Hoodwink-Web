@@ -21,7 +21,7 @@ if (!process.env.PG_HOST || !process.env.PG_USER || !process.env.PG_PASS || !pro
     }),
     RedisModule.forRoot({
       type: 'single',
-      url: 'redis://localhost:6379',
+      url: `${process.env.REDIS_URL}`,
       options: {
         password: `${process.env.REDIS_PASS}`
       }
