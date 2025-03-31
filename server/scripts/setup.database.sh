@@ -12,11 +12,20 @@ podman start postgres
 #########
 podman network create redis-network
 
+echo 'requirepass redis
+loadmodule /opt/redis-stack/lib/redisearch.so MAXSEARCHRESULTS 10000 MAXAGGREGATERESULTS 10000
+loadmodule /opt/redis-stack/lib/rediscompat.so
+loadmodule /opt/redis-stack/lib/redisbloom.so
+loadmodule /opt/redis-stack/lib/redistimeseries.so
+loadmodule /opt/redis-stack/lib/redisgears.so v8-plugin-path /opt/redis-stack/lib/libredisgears_v8_plugin.so
+loadmodule /opt/redis-stack/lib/rejson.so' > redis.cof
+
 podman create --name redisdb \
   -p 6379:6379 \
   --network redis-network \
-  docker.io/library/redis \
-  redis-server --requirepass "redis"
+  -v $(pwd)/redis.conf:/etc/redis.conf:ro \
+  docker.io/redis/redis-stack-server:latest \
+  redis-server /etc/redis.conf
 
 podman start redisdb
 

@@ -12,7 +12,7 @@ export class RoomService {
   // Criar uma sala no Redis
   async createRoom(RoomHeader: RoomHeader): Promise<any> {
     try {
-      await this.redis.set(`${RoomHeader.id}:header`, JSON.stringify(RoomHeader));
+      await this.redis.call(`${RoomHeader.id}`, '$', JSON.stringify(RoomHeader));
       return true;
     } catch (error) {
       console.error(error);
