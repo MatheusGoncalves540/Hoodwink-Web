@@ -4,15 +4,31 @@ import Redis from "ioredis";
 import { RoomHeader, RoomInterface } from "src/interfaces/roomInterface";
 import { makeResponse } from "src/utils/makeResponse";
 import { InjectRedis } from "@nestjs-modules/ioredis";
+import { generateNewId } from "src/utils/generateNewId";
 
 @Injectable()
 export class RoomService {
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: Redis) { }
 
-  // Criar uma sala no Redis
   async createRoom(RoomHeader: RoomHeader): Promise<any> {
     try {
-      await this.redis.call(`${RoomHeader.id}`, '$', JSON.stringify(RoomHeader));
+      const newRoom: RoomInterface = {
+        header: RoomHeader,
+        gameOver: false,
+        turn: 0,
+        currentTurnOwner: null,
+        tax: 0,
+        currentMove: {},
+        playersWhoWantsToSkip: [],
+        aliveDeck: [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12],
+        deadDeck: [],
+        players: [],
+        spectators: [],
+        chat: [],
+        cards: []
+      }
+
+      await this.redis.call("JSON.SET", `${newRoom.header.id}`, "$", JSON.stringify(newRoom));
       return true;
     } catch (error) {
       console.error(error);
@@ -20,83 +36,48 @@ export class RoomService {
     }
   }
 
-  async getRoom(id: string): Promise<any> {
-    const roomData = await this.redis.get(id);
-    return roomData ? JSON.parse(roomData) : null; // Retorna null se não encontrar a sala
+  async getEntireRoom(roomId: string): Promise<RoomInterface | null> {
+    const roomData = await this.redis.call("JSON.GET", roomId, "$") as string | null;
+
+    if (!roomData) return null;
+
+    return JSON.parse(roomData) as RoomInterface;
   }
 
-  // Remover uma sala do Redis
+  async getRoomHeaders(roomId: string): Promise<RoomHeader | null> {
+    const roomData = await this.redis.call("JSON.GET", roomId, "$.header") as string | null;
+
+    if (!roomData) return null;
+
+    return JSON.parse(roomData) as RoomHeader;
+  }
+
   async removeRoom(id: string): Promise<boolean> {
     const result = await this.redis.del(id);
     return result > 0; // Retorna true se a sala foi removida com sucesso
   }
 
-  private generateNewId(): string {
-    // Geração de um ID único para a sala
-    return `room_${Date.now()}`;
-  }
-
-  async validateCreatedRoom(
-    res: Response,
-    RoomHeader: RoomHeader
-  ): Promise<true | Response> {
+  async validateRoomHeader(RoomHeader: RoomHeader): Promise<boolean> {
     try {
       return true;
     } catch (error) {
       console.error(error.message);
-      return makeResponse(
-        res,
-        HttpStatus.BAD_REQUEST,
-        "Erro ao criar a sala. Verifique as informações enviadas",
-        true
-      );
+      return false;
     }
   }
 
-  ///////////////////////////////////////
-
-  async findLastFifty(): Promise<any[]> {
-    const keys = await this.redis.keys("user:*");
-    const users = await Promise.all(keys.map((key) => this.redis.hgetall(key)));
-
-    return users
-      .sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
-      .slice(0, 50);
-  }
-
-  async findById(id: string): Promise<any | null> {
-    const user = await this.redis.hgetall(`user:${id}`);
-    return Object.keys(user).length ? user : null;
-  }
-
-  async findByEmail(email: string): Promise<any | null> {
-    const keys = await this.redis.keys("user:*");
-    for (const key of keys) {
-      const user = await this.redis.hgetall(key);
-      if (user.email === email) return user;
+  async headerConstructor(RoomHeader: RoomHeader): Promise<RoomHeader | null> {
+    try {
+      RoomHeader.id = generateNewId();
+      RoomHeader.startTime = undefined //dayjs();
+      //TODO fazer o resto dos valores padrões
+      RoomHeader.displayTime_withPossibleCounterPlays ??= 5;
+      RoomHeader.displayTime_highRelevance ??= 3
+      RoomHeader.displayTime ??= 2
+      return RoomHeader;
+    } catch (error) {
+      console.error(error.message);
+      return null;
     }
-    return null;
-  }
-
-  async findByNick(nickname: string): Promise<any | null> {
-    const keys = await this.redis.keys("user:*");
-    for (const key of keys) {
-      const user = await this.redis.hgetall(key);
-      if (user.nickname === nickname) return user;
-    }
-    return null;
-  }
-
-  async create(userData: any): Promise<any> {
-    if (!userData.email) {
-      throw new Error("Email é obrigatório");
-    }
-
-    const id = userData.id || Date.now().toString();
-    const key = `user:${id}`;
-    const user = { ...userData, createdAt: Date.now().toString() };
-
-    await this.redis.hset(key, user);
-    return user;
   }
 }

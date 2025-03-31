@@ -26,37 +26,36 @@ export class RoomController {
     @UseGuards(JwtAuthGuard)
     @Post("/newRoom")
     async newRoom(
-        @Body() RoomHeader: RoomHeader,
+        @Body() body: RoomHeader,
         @Res({ passthrough: true }) res: Response,
         @Req() req: Request
     ) {
-        RoomHeader.id = generateNewId();
-        RoomHeader.startTime = dayjs()
+        try {
+            const RoomHeader = await this.roomService.headerConstructor(body);
 
-        const validationRoomHeader = await this.roomService.validateCreatedRoom(
-            res,
-            RoomHeader
-        );
+            if (!RoomHeader) {
+                makeResponse(res, HttpStatus.BAD_REQUEST, "Erro ao criar a sala. Verifique as informações enviadas", true);
+                return;
+            }
 
-        if (!validationRoomHeader)
-            return makeResponse(
-                res,
-                HttpStatus.BAD_REQUEST,
-                "Informações inválidas",
-                true
-            );
+            const validationRoomHeader = await this.roomService.validateRoomHeader(RoomHeader);
 
-        await this.roomService.createRoom(RoomHeader);
+            if (!validationRoomHeader) {
+                makeResponse(res, HttpStatus.BAD_REQUEST, "Erro ao criar a sala. Verifique as informações enviadas", true);
+                return;
+            }
 
-        makeResponse(
-            res,
-            HttpStatus.CREATED,
-            `Sala ${RoomHeader.id} criada com sucesso`,
-            false,
-            { ...RoomHeader }
-        );
+            await this.roomService.createRoom(RoomHeader);
 
-        console.log("a sala: " + RoomHeader.id + " foi criada.");
+            makeResponse(res, HttpStatus.CREATED, `Sala ${RoomHeader.id} criada com sucesso`, false, { ...RoomHeader });
+
+            console.log("a sala: " + RoomHeader.id + " foi criada.");
+        } catch (error) {
+            console.error(error);
+            makeResponse(res, HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao criar sala", true);
+            return;
+        }
+
     }
 }
 

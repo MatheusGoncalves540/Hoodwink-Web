@@ -4,7 +4,7 @@ export interface RoomInterface {
     header: RoomHeader;
     gameOver: boolean;
     turn: number;
-    currentTurnOwner?: string;
+    currentTurnOwner: string | null;
     tax: number;
     currentMove: {};
     playersWhoWantsToSkip: string[];
@@ -24,7 +24,7 @@ export interface RoomHeader {
     startTime?: dayjs.Dayjs;
     startCoins: number;
     maxCoins: number;
-    // displayTime_withPossibleCounterPlays: number;
-    // displayTime_highRelevance: number;
-    // displayTime: number;
+    displayTime_withPossibleCounterPlays: number;
+    displayTime_highRelevance: number;
+    displayTime: number;
 }
