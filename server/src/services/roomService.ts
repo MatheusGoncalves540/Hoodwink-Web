@@ -1,8 +1,7 @@
 import { Response } from "express";
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import Redis from "ioredis";
 import { RoomHeader, RoomInterface } from "src/interfaces/roomInterface";
-import { makeResponse } from "src/utils/makeResponse";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import { generateNewId } from "src/utils/generateNewId";
 

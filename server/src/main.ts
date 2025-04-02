@@ -10,7 +10,7 @@ const cors = require('cors');
 // Configuração de Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 500, // Limite de 500 requisições por IP
+  max: 180, // Limite de requisições por IP
   message: 'Muitas requisições feitas, tente novamente mais tarde',
 });
 

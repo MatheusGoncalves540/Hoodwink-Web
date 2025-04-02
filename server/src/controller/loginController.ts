@@ -1,7 +1,6 @@
 import { Controller, Post, Body, Res, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
 import { LoginService } from "../services/loginService";
-import { AuthService } from "src/services/authService";
 import { makeResponse } from "src/utils/makeResponse";
 import { sendCookies } from "src/utils/sendCookies";
 
@@ -12,8 +11,7 @@ interface LoginBody {
 @Controller()
 export class LoginController {
   constructor(
-    private readonly LoginService: LoginService,
-    private readonly AuthService: AuthService
+    private readonly LoginService: LoginService
   ) { }
 
   @Post("/login")

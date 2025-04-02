@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { AuthService } from "src/services/authService";
 import { makeResponse } from "src/utils/makeResponse";
 import { sendCookies } from "src/utils/sendCookies";
+import { clearCookies } from "src/utils/clearCookies";
 
 export interface decodedToken {
   id: string;
@@ -48,6 +49,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       }
 
       if (decodedToken["exp"] * 1000 < Date.now()) {
+        clearCookies(res);
         makeResponse(
           res,
           HttpStatus.UNAUTHORIZED,
@@ -60,6 +62,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       next();
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
+        clearCookies(res);
         makeResponse(
           res,
           HttpStatus.UNAUTHORIZED,
@@ -70,6 +73,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       }
 
       if (error instanceof jwt.JsonWebTokenError) {
+        clearCookies(res);
         makeResponse(
           res,
           HttpStatus.UNAUTHORIZED,
