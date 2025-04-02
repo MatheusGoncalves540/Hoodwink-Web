@@ -22,7 +22,7 @@ loadmodule /opt/redis-stack/lib/rediscompat.so
 loadmodule /opt/redis-stack/lib/redisbloom.so
 loadmodule /opt/redis-stack/lib/redistimeseries.so
 loadmodule /opt/redis-stack/lib/redisgears.so v8-plugin-path /opt/redis-stack/lib/libredisgears_v8_plugin.so
-loadmodule /opt/redis-stack/lib/rejson.so' > redis.cof
+loadmodule /opt/redis-stack/lib/rejson.so' > redis.conf
 podman create --name redisdb \
   -p 6379:6379 \
   --network redis-network \
