@@ -15,6 +15,8 @@ podman start postgresdb
 
 podman network create redis-network
 echo 'requirepass redis
+appendonly yes
+appendfsync everysec
 loadmodule /opt/redis-stack/lib/redisearch.so MAXSEARCHRESULTS 10000 MAXAGGREGATERESULTS 10000
 loadmodule /opt/redis-stack/lib/rediscompat.so
 loadmodule /opt/redis-stack/lib/redisbloom.so
