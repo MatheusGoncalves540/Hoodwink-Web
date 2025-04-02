@@ -6,14 +6,14 @@ export interface RoomInterface {
     turn: number;
     currentTurnOwner: string | null;
     tax: number;
-    currentMove: {};
+    currentMove: Record<string, any>;
     playersWhoWantsToSkip: string[];
     aliveDeck: number[];
     deadDeck: number[];
-    players: any[];
+    players: PlayerInterface[];
     spectators: string[];
-    chat: {}[];
-    cards: {}[];
+    chat: ChatMessage[];
+    cards: CardInterface[];
 }
 
 export interface RoomHeader {
@@ -27,4 +27,16 @@ export interface RoomHeader {
     displayTime_withPossibleCounterPlays: number;
     displayTime_highRelevance: number;
     displayTime: number;
+}
+
+export interface PlayerInterface {
+    //TODO
+}
+
+export interface ChatMessage {
+    //TODO
+}
+
+export interface CardInterface {
+    //TODO
 }

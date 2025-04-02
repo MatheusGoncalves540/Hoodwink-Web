@@ -24,13 +24,14 @@ export class RefreshTokenMiddleware implements NestMiddleware {
   constructor(private readonly authService: AuthService) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const token = req.cookies?.jwt;
-
-    if (!token) {
-      return next();
-    }
-
     try {
+      const token = req.cookies?.jwt;
+
+      if (!token) {
+        return next();
+      }
+
+      const JWT_REFRESH_MIDDLEWARE = Number(process.env.JWT_REFRESH_MIDDLEWARE);
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
       if (!decodedToken["iat"]) return next();
@@ -38,7 +39,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
 
       const tokenAge = dayjs().diff(dayjs(decodedToken["iat"] * 1000), "hour");
 
-      if (tokenAge > 4) {
+      if (tokenAge > JWT_REFRESH_MIDDLEWARE) {
         const newToken = this.authService.generateToken(decodedToken);
 
         if (newToken) sendCookies(res, newToken);

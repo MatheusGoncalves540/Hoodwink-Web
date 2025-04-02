@@ -28,7 +28,6 @@ export class RoomController {
     async newRoom(
         @Body() body: RoomHeader,
         @Res({ passthrough: true }) res: Response,
-        @Req() req: Request
     ) {
         try {
             const RoomHeader = await this.roomService.headerConstructor(body);
