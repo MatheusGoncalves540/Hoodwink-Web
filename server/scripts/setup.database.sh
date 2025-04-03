@@ -3,7 +3,7 @@
 ## NÃO EXECUTE ESSE ARQUIVO, APENAS COPIE E RODE OS COMANDOS!  ##
 #################################################################
 
-mkdir ./postgres:
+mkdir ./postgres
 podman create --name postgresdb \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
