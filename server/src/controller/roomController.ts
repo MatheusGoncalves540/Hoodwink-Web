@@ -29,20 +29,13 @@ export class RoomController {
         @Res({ passthrough: true }) res: Response,
     ) {
         try {
-            const roomCreator: decodedJwtToken = {
-                id: req.decodedToken.id,
-                nickname: req.decodedToken.nickname
-            }
-
-            const RoomHeader = await this.roomService.headerConstructor(body, roomCreator);
-
+            const RoomHeader = await this.roomService.headerConstructor(body, req.decodedToken);
             if (!RoomHeader) {
                 makeResponse(res, HttpStatus.BAD_REQUEST, "Erro ao criar a sala. Verifique as informações enviadas", true);
                 return;
             }
 
             const validationRoomHeader = await this.roomService.validateRoomHeader(RoomHeader);
-
             if (!validationRoomHeader) {
                 makeResponse(res, HttpStatus.BAD_REQUEST, "Erro ao criar a sala. Verifique as informações enviadas", true);
                 return;
