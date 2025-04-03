@@ -4,12 +4,13 @@ import Redis from "ioredis";
 import { RoomHeader, RoomInterface } from "src/interfaces/roomInterface";
 import { InjectRedis } from "@nestjs-modules/ioredis";
 import { generateNewId } from "src/utils/generateNewId";
+import { decodedJwtToken } from "src/interfaces/decodedJwtToken";
 
 @Injectable()
 export class RoomService {
   constructor(@InjectRedis() private readonly redis: Redis) { }
 
-  async createRoom(RoomHeader: RoomHeader): Promise<any> {
+  async createRoom(RoomHeader: RoomHeader): Promise<boolean> {
     try {
       const newRoom: RoomInterface = {
         header: RoomHeader,
@@ -31,7 +32,7 @@ export class RoomService {
       return true;
     } catch (error) {
       console.error(error);
-      return null;
+      return false;
     }
   }
 
@@ -65,11 +66,16 @@ export class RoomService {
     }
   }
 
-  async headerConstructor(RoomHeader: RoomHeader): Promise<RoomHeader | null> {
+  async headerConstructor(RoomHeader: RoomHeader, roomCreator: decodedJwtToken): Promise<RoomHeader | null> {
     try {
       RoomHeader.id = generateNewId();
-      RoomHeader.startTime = undefined //dayjs();
-      //TODO fazer o resto dos valores padrões
+      RoomHeader.roomCreator = roomCreator;
+      RoomHeader.roomName ??= roomCreator.nickname.toLowerCase().endsWith("s") ? `${roomCreator.nickname}' room` : `${roomCreator.nickname}'s room`;
+      RoomHeader.startTime = null; //dayjs();
+      RoomHeader.maxPlayer ??= 10;
+      RoomHeader.roomPass ??= null;
+      RoomHeader.startCoins ??= 2;
+      RoomHeader.maxCoins ??= 20;
       RoomHeader.displayTime_withPossibleCounterPlays ??= 5;
       RoomHeader.displayTime_highRelevance ??= 3
       RoomHeader.displayTime ??= 2

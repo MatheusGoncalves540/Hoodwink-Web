@@ -3,7 +3,6 @@ import {
   HttpStatus,
   Injectable,
   NestMiddleware,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
@@ -12,13 +11,7 @@ import { AuthService } from "src/services/authService";
 import { makeResponse } from "src/utils/makeResponse";
 import { sendCookies } from "src/utils/sendCookies";
 import { clearCookies } from "src/utils/clearCookies";
-
-export interface decodedToken {
-  id: string;
-  nickname: string;
-  iat?: number;
-  exp?: number;
-}
+import { decodedJwtToken } from "src/interfaces/decodedJwtToken";
 
 @Injectable()
 export class RefreshTokenMiddleware implements NestMiddleware {
@@ -33,7 +26,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       }
 
       const JWT_REFRESH_MIDDLEWARE = Number(process.env.JWT_REFRESH_MIDDLEWARE);
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      const decodedToken: decodedJwtToken = jwt.verify(token, process.env.JWT_SECRET);
 
       if (!decodedToken["iat"]) return next();
       if (!decodedToken["exp"]) return next();
@@ -45,7 +38,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
 
         if (newToken) sendCookies(res, newToken);
 
-        req.token = decodedToken;
+        req.decodedToken = decodedToken;
       }
 
       if (decodedToken["exp"] * 1000 < Date.now()) {
@@ -58,6 +51,8 @@ export class RefreshTokenMiddleware implements NestMiddleware {
         );
         return;
       }
+
+      req.decodedToken = decodedToken;
 
       next();
     } catch (error) {

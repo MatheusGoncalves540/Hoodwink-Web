@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { decodedJwtToken } from "./decodedJwtToken";
 
 export interface RoomInterface {
     header: RoomHeader;
@@ -19,9 +20,10 @@ export interface RoomInterface {
 export interface RoomHeader {
     id: string;
     roomName: string;
+    roomCreator: decodedJwtToken;
     maxPlayer: number;
-    roomPass?: string;
-    startTime?: dayjs.Dayjs;
+    roomPass: string | null;
+    startTime: dayjs.Dayjs | null;
     startCoins: number;
     maxCoins: number;
     displayTime_withPossibleCounterPlays: number;
