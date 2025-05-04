@@ -32,10 +32,6 @@ apiServer.interceptors.response.use(
 
     if (status === 401) {
       window.alert("Faça Login Novamente");
-
-      document.cookie =
-        "jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; samesite=strict";
-
       window.location.href = "/login";
     }
 

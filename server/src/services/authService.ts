@@ -5,17 +5,17 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { User } from "../interfaces/userInterface";
-import { decodedToken } from "src/middleware/refreshTokenMiddleware";
+import { decodedJwtToken } from "src/interfaces/decodedJwtToken";
 
 @Injectable()
 export class AuthService {
   private readonly JWT_SECRET = process.env.JWT_SECRET;
   private readonly JWT_EXPIRATION = process.env.JWT_EXPIRATION || "16h";
 
-  generateToken(user: User): string | null {
+  generateToken(user: Partial<User>): string | null {
     try {
-      if (!user.id) return null;
-      const payload: decodedToken = {
+      if (!user.id || !user.nickname) return null;
+      const payload: decodedJwtToken = {
         id: user.id,
         nickname: user.nickname,
       };

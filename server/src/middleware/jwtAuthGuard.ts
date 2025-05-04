@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService } from '../services/authService';
 import { makeResponse } from 'src/utils/makeResponse';
+import { clearCookies } from 'src/utils/clearCookies';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -12,6 +13,7 @@ export class JwtAuthGuard implements CanActivate {
         const token: string | null = req.cookies?.jwt || null;
 
         if (!token) {
+            clearCookies(res);
             makeResponse(res, HttpStatus.UNAUTHORIZED, 'Faça login para continuar', true);
             return false;
         }
@@ -20,6 +22,7 @@ export class JwtAuthGuard implements CanActivate {
             req.user = this.authService.validateToken(token);
             return true;
         } catch (error) {
+            clearCookies(res);
             makeResponse(res, HttpStatus.UNAUTHORIZED, 'Faça login para continuar', true);
             return true;
         }

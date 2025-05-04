@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 if (!process.env.PG_HOST || !process.env.PG_USER || !process.env.PG_PASS || !process.env.PG_NAME) {
   throw new Error('Configuração de banco de dados ausente nas variáveis de ambiente.');
@@ -18,6 +19,13 @@ if (!process.env.PG_HOST || !process.env.PG_USER || !process.env.PG_PASS || !pro
       synchronize: true,
       autoLoadEntities: true,
     }),
+    RedisModule.forRoot({
+      type: 'single',
+      url: `${process.env.REDIS_URL}`,
+      options: {
+        password: `${process.env.REDIS_PASS}`
+      }
+    })
   ],
 })
 export class DatabaseModule { }
