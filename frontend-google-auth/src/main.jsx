@@ -26,9 +26,9 @@ function App() {
     });
     const data = await res.json();
 
-    if (data.status === "logged_in") {
-      setStatus("Login concluído. Token JWT: " + data.token);
-    } else if (data.status === "need_additional_data") {
+    if (data.message === "logged_in") {
+      setStatus("Login concluído. Token JWT: " + data.data.token);
+    } else if (data.message === "need_additional_data") {
       const username = prompt("Novo usuário! Escolha um nome de usuário:");
       const completeRes = await fetch(BACKEND_URL, {
         method: "POST",
@@ -36,7 +36,7 @@ function App() {
         body: JSON.stringify({ IdToken: response.credential, username }),
       });
       const completeData = await completeRes.json();
-      setStatus("Cadastro finalizado. Token JWT: " + completeData.token);
+      setStatus("Cadastro finalizado. Token JWT: " + completeData.data.token);
     } else {
       setStatus("Erro: " + JSON.stringify(data));
     }
