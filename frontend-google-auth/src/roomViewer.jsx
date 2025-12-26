@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-function RoomViewer() {
+function RoomViewer({ ticket }) {
   const [dynamicText, setDynamicText] = useState('Aguardando mensagens...');
   const [status, setStatus] = useState('Conectando...');
+  const [reconnectTrigger, setReconnectTrigger] = useState(0);
 
-  const ticket = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJJZCI6IjAxOWI0N2UyLWIzM2MtNzZmNi1iZmZiLTg4NDlkMmY3MWQ0MyIsInVzZXJuYW1lIjoicG9ycm9saG8iLCJyb29tSWQiOiI2NWY3ZGE4OWM3ZWEzMDAiLCJleHAiOjE3NjY2MDM2NjJ9.SY6dWZmgAuENJx9VNwYkLae5SPveu_lVRmv2_vXGAUQ';
+  // const ticket = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJJZCI6IjAxOWI0N2UyLWIzM2MtNzZmNi1iZmZiLTg4NDlkMmY3MWQ0MyIsInVzZXJuYW1lIjoicG9ycm9saG8iLCJyb29tSWQiOiIzZWZkZDBlZWY5NjUwZTAiLCJleHAiOjE3NjY3MDQ4MDN9.Ix2XkCJOLT4nNOI0kM7hi6n0SUQsNvhjjNng4uCUWtY'
   useEffect(() => {
+    if (!ticket) return; // Não conectar se não houver ticket
+
     const ws = new WebSocket('ws://localhost:5000/game?Ticket=' + ticket);
 
     ws.onopen = () => {
@@ -35,7 +38,11 @@ function RoomViewer() {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [ticket, reconnectTrigger]);
+
+  const handleReconnect = () => {
+    setReconnectTrigger(prev => prev + 1);
+  };
 
   return (
     <div style={{
@@ -54,9 +61,13 @@ function RoomViewer() {
         fontWeight: 'bold',
         textAlign: 'center',
         borderBottom: '1px solid #000',
-        backgroundColor: status === 'Conectado' ? '#d4edda' : status === 'Desconectado' ? '#f8d7da' : '#fff3cd'
+        backgroundColor: status === 'Conectado' ? '#d4edda' : status === 'Desconectado' ? '#f8d7da' : '#fff3cd',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
-        Status: {status}
+        <span>Status: {status}</span>
+        <button onClick={handleReconnect} disabled={!ticket}>Reconectar</button>
       </div>
       <div style={{
         flex: 1,
