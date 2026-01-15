@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { WebSocketContext } from './WebSocketContext';
 
 function RoomViewer({ ticket }) {
+  const { ws, status: wsStatus } = useContext(WebSocketContext);
   const [dynamicText, setDynamicText] = useState('Aguardando mensagens...');
   const [status, setStatus] = useState('Conectando...');
   const [reconnectTrigger, setReconnectTrigger] = useState(0);
 
-  // const ticket = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJJZCI6IjAxOWI0N2UyLWIzM2MtNzZmNi1iZmZiLTg4NDlkMmY3MWQ0MyIsInVzZXJuYW1lIjoicG9ycm9saG8iLCJyb29tSWQiOiIzZWZkZDBlZWY5NjUwZTAiLCJleHAiOjE3NjY3MDQ4MDN9.Ix2XkCJOLT4nNOI0kM7hi6n0SUQsNvhjjNng4uCUWtY'
   useEffect(() => {
-    if (!ticket) return; // Não conectar se não houver ticket
+    setStatus(wsStatus);
+  }, [wsStatus]);
 
-    const ws = new WebSocket('ws://localhost:5000/game?Ticket=' + ticket);
+  useEffect(() => {
+    if (!ws) return;
 
-    ws.onopen = () => {
-      console.log('Conectado ao WebSocket');
-      setStatus('Conectado');
-    };
-
-    ws.onmessage = (event) => {
+    const handleMessage = (event) => {
       try {
         const parsed = JSON.parse(event.data);
         setDynamicText(JSON.stringify(parsed, null, 2));
@@ -25,20 +23,12 @@ function RoomViewer({ ticket }) {
       }
     };
 
-    ws.onclose = () => {
-      console.log('WebSocket desconectado');
-      setStatus('Desconectado');
-    };
-
-    ws.onerror = (error) => {
-      console.error('Erro no WebSocket:', error);
-      setStatus('Erro na conexão');
-    };
+    ws.addEventListener('message', handleMessage);
 
     return () => {
-      ws.close();
+      ws.removeEventListener('message', handleMessage);
     };
-  }, [ticket, reconnectTrigger]);
+  }, [ws]);
 
   const handleReconnect = () => {
     setReconnectTrigger(prev => prev + 1);

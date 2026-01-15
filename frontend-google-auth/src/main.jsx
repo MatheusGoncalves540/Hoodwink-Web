@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import GoogleAuth from "./googleAuth.jsx";
 import RoomViewer from "./roomViewer.jsx";
+import ButtonPanel from "./ButtonPanel.jsx";
+import { WebSocketProvider } from "./WebSocketContext.jsx";
 
 function App() {
   const [ticket, setTicket] = useState('');
@@ -33,10 +35,13 @@ function App() {
   };
 
   return (
-    <>
+    <WebSocketProvider ticket={ticket}>
       <GoogleAuth updateTicket={updateTicket} setJwtToken={setJwtTokenWithStorage} jwtToken={jwtToken} />
-      <RoomViewer ticket={ticket} />
-    </>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <ButtonPanel />
+        <RoomViewer ticket={ticket} />
+      </div>
+    </WebSocketProvider>
   );
 }
 
