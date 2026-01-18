@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import GoogleAuth from "./googleAuth.jsx";
 import RoomViewer from "./roomViewer.jsx";
 import ButtonPanel from "./ButtonPanel.jsx";
+import CommandPanel from "./CommandPanel.jsx";
 import { WebSocketProvider } from "./WebSocketContext.jsx";
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <ButtonPanel />
         <RoomViewer ticket={ticket} />
+        <CommandPanel />
       </div>
     </WebSocketProvider>
   );

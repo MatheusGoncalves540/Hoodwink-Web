@@ -4,6 +4,22 @@ import { WebSocketContext } from './WebSocketContext';
 const ButtonPanel = () => {
     const { sendMessage } = useContext(WebSocketContext);
     const messages = [
+        {
+            text: 'Contestar',
+            data: {
+                "type": "CONTEST",
+                "payload": "null"
+            }
+        },
+        {
+            text: 'Selecionar Carta',
+            data: {
+                "type": "CONTEST_PENALTY",
+                "payload": {
+                    "TargetCardIndex": 1
+                }
+            }
+        },
         { 
             text: 'Assassino',
             data: {
