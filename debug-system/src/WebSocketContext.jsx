@@ -2,7 +2,7 @@ import React, { createContext, useRef, useState, useEffect, useCallback } from '
 
 export const WebSocketContext = createContext();
 
-export const WebSocketProvider = ({ ticket, children }) => {
+export const WebSocketProvider = ({ ticket, targetPlayer, children }) => {
   const wsRef = useRef(null);
   const [status, setStatus] = useState('Conectando...');
 
@@ -46,7 +46,7 @@ export const WebSocketProvider = ({ ticket, children }) => {
   }, []);
 
   return (
-    <WebSocketContext.Provider value={{ sendMessage, status, ws: wsRef.current }}>
+    <WebSocketContext.Provider value={{ sendMessage, status, ws: wsRef.current, targetPlayer }}>
       {children}
     </WebSocketContext.Provider>
   );

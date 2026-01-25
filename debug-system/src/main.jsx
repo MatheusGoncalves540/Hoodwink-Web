@@ -10,6 +10,7 @@ function App() {
   const [ticket, setTicket] = useState('');
   const [roomId, setRoomId] = useState(localStorage.getItem('roomId') || '');
   const [jwtToken, setJwtToken] = useState(localStorage.getItem('jwtToken') || '');
+  const [targetPlayer, setTargetPlayer] = useState(localStorage.getItem('targetPlayer') || '');
 
   const setJwtTokenWithStorage = (token) => {
     localStorage.setItem('jwtToken', token);
@@ -35,9 +36,16 @@ function App() {
     }
   };
 
+  const updateTarget = () => {
+    const newTarget = prompt("insira o targetPlayer", targetPlayer);
+    setTargetPlayer(newTarget);
+    localStorage.setItem('targetPlayer', newTarget);
+  };
+
   return (
-    <WebSocketProvider ticket={ticket}>
+    <WebSocketProvider ticket={ticket} targetPlayer={targetPlayer}>
       <GoogleAuth updateTicket={updateTicket} setJwtToken={setJwtTokenWithStorage} jwtToken={jwtToken} />
+      <button onClick={updateTarget} style={{ margin: '10px' }}>Atualize Target</button>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <ButtonPanel />
         <RoomViewer ticket={ticket} />

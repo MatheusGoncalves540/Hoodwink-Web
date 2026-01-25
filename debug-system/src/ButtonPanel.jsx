@@ -2,13 +2,13 @@ import React, { useContext } from 'react';
 import { WebSocketContext } from './WebSocketContext';
 
 const ButtonPanel = () => {
-    const { sendMessage } = useContext(WebSocketContext);
+    const { sendMessage, targetPlayer } = useContext(WebSocketContext);
     const messages = [
         {
             text: 'Contestar',
             data: {
                 "type": "CONTEST",
-                "payload": "null"
+                "payload": {}
             }
         },
         {
@@ -25,7 +25,7 @@ const ButtonPanel = () => {
             data: {
                 "type": "ASSASSIN",
                 "payload": {
-                    "targetPlayer": "019bb7a4-e85c-7fd6-921e-e735ef0cbf40",
+                    "targetPlayer": targetPlayer,
                     "targetCardIndex": 1,
                 }
             }
@@ -35,10 +35,31 @@ const ButtonPanel = () => {
             data: {
                 "type": "KAMIKAZE",
                 "payload": {
-                    "targetPlayer": "019bb7a4-e85c-7fd6-921e-e735ef0cbf40",
+                    "targetPlayer": targetPlayer,
                     "targetCardIndex": 0,
                     "targetAllyCardIndex": 1
                 }
+            }
+        },
+        {
+            text: 'Trilionario',
+            data: {
+                "type": "TRILLIONAIRE",
+                "payload": null
+            }
+        },
+        {
+            text: 'Politica',
+            data: {
+                "type": "POLITICAL",
+                "payload": null
+            }
+        },
+        {
+            text: 'Rebelde',
+            data: {
+                "type": "REBEL",
+                "payload": null
             }
         },
     ];
