@@ -62,6 +62,17 @@ const ButtonPanel = () => {
                 "payload": null
             }
         },
+        {
+            text: 'Clarividente',
+            data: {
+                "type": "CLAIRVOYANT",
+                "payload": {
+                    "targetPlayer": targetPlayer,
+                    "targetCardIndex": 0,
+                    "showToAllPlayers": false
+                }
+            }
+        },
     ];
 
     return (

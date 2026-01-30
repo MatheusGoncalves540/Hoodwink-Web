@@ -2,11 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { WebSocketContext } from './WebSocketContext';
 
 function RoomViewer({ ticket }) {
-  const { ws, status: wsStatus } = useContext(WebSocketContext);
+  const { ws, status: wsStatus, reconnect } = useContext(WebSocketContext);
   const [roomData, setRoomData] = useState(null);
   const [rawMessage, setRawMessage] = useState('Aguardando mensagens...');
   const [status, setStatus] = useState('Conectando...');
-  const [reconnectTrigger, setReconnectTrigger] = useState(0);
   const [timeLeft, setTimeLeft] = useState(null);
 
   const formatDate = (value) => {
@@ -67,7 +66,7 @@ function RoomViewer({ ticket }) {
   }, [ws]);
 
   const handleReconnect = () => {
-    setReconnectTrigger(prev => prev + 1);
+    reconnect();
   };
 
   return (
