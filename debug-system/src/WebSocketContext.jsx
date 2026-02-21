@@ -2,7 +2,7 @@ import React, { createContext, useRef, useState, useEffect, useCallback } from '
 
 export const WebSocketContext = createContext();
 
-export const WebSocketProvider = ({ ticket, targetPlayer, children }) => {
+export const WebSocketProvider = ({ ticket, targetPlayer, playerId, children }) => {
   const wsRef = useRef(null);
   const [status, setStatus] = useState('Conectando...');
 

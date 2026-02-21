@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import decodeJWT from "./decodeJWT";
 
 const CLIENT_ID = "58863270996-45l8cn568h3uoauamoqkkdh9dh0o6ota.apps.googleusercontent.com";
 const BACKEND_URL = "http://localhost:8080/auth/external/google";
 
-function GoogleAuth({ updateTicket, setJwtToken, jwtToken }) {
+function GoogleAuth({ updateTicket, setJwtToken, jwtToken, setPlayerId }) {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -32,8 +33,15 @@ function GoogleAuth({ updateTicket, setJwtToken, jwtToken }) {
     const data = await res.json();
 
     if (data.message === "logged_in") {
-      setStatus("Login concluído. Token JWT: " + data.data.token);
-      setJwtToken(data.data.token);
+      const token = data.data.token;
+      setStatus("Login concluído. Token JWT: " + token);
+      setJwtToken(token);
+
+      const tokenClaims = decodeJWT(token);
+      const playerIdFromToken = tokenClaims?.id;
+
+      setPlayerId(playerIdFromToken);
+
     } else if (data.message === "need_additional_data") {
       const username = prompt("Novo usuário! Escolha um nome de usuário:");
       const completeRes = await fetch(BACKEND_URL, {
@@ -42,8 +50,16 @@ function GoogleAuth({ updateTicket, setJwtToken, jwtToken }) {
         body: JSON.stringify({ IdToken: response.credential, username }),
       });
       const completeData = await completeRes.json();
-      setStatus("Cadastro finalizado. Token JWT: " + completeData.data.token);
-      setJwtToken(completeData.data.token);
+      const token = completeData.data.token;
+
+      setStatus("Cadastro finalizado. Token JWT: " + token);
+      setJwtToken(token);
+
+      const tokenClaims = decodeJWT(token);
+      const playerIdFromToken = tokenClaims?.id;
+
+      setPlayerId(playerIdFromToken);
+
     } else {
       setStatus("Erro: " + JSON.stringify(data));
     }

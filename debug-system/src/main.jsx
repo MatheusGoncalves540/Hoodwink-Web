@@ -9,6 +9,7 @@ import { WebSocketProvider } from "./WebSocketContext.jsx";
 function App() {
   const [ticket, setTicket] = useState('');
   const [roomId, setRoomId] = useState(localStorage.getItem('roomId') || '');
+  const [playerId, setPlayerId] = useState(localStorage.getItem('playerId') || '');
   const [jwtToken, setJwtToken] = useState(localStorage.getItem('jwtToken') || '');
   const [targetPlayer, setTargetPlayer] = useState(localStorage.getItem('targetPlayer') || '');
 
@@ -44,10 +45,10 @@ function App() {
 
   return (
     <WebSocketProvider ticket={ticket} targetPlayer={targetPlayer}>
-      <GoogleAuth updateTicket={updateTicket} setJwtToken={setJwtTokenWithStorage} jwtToken={jwtToken} />
+      <GoogleAuth updateTicket={updateTicket} setJwtToken={setJwtTokenWithStorage} jwtToken={jwtToken} setPlayerId={setPlayerId} />
       <button onClick={updateTarget} style={{ margin: '10px' }}>Atualize Target</button>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <ButtonPanel />
+        <ButtonPanel playerId={playerId}/>
         <RoomViewer ticket={ticket} />
         <CommandPanel />
       </div>

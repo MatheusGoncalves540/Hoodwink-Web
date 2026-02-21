@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { WebSocketContext } from './WebSocketContext';
 
-const ButtonPanel = () => {
+const ButtonPanel = ( {playerId} ) => {
     const { sendMessage, targetPlayer } = useContext(WebSocketContext);
+    console.log({ sendMessage, targetPlayer, playerId });
     const messages = [
         {
             text: 'Contestar',
@@ -26,7 +27,7 @@ const ButtonPanel = () => {
                 "type": "ASSASSIN",
                 "payload": {
                     "targetPlayer": targetPlayer,
-                    "targetCardIndex": 1,
+                    "targetCardIndex": 0,
                 }
             }
         },
@@ -70,6 +71,16 @@ const ButtonPanel = () => {
                     "targetPlayer": targetPlayer,
                     "targetCardIndex": 0,
                     "showToAllPlayers": false
+                }
+            }
+        },
+        {
+            text: 'Guardiã',
+            data: {
+                "type": "GUARDIAN",
+                "payload": {
+                    "targetPlayer": playerId,
+                    "targetCardIndex": 0
                 }
             }
         },
