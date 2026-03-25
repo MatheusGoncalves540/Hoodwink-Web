@@ -84,6 +84,15 @@ const ButtonPanel = ( {playerId} ) => {
                 }
             }
         },
+        {
+            text: 'Trapaceiro',
+            data: {
+                "type": "TRICKSTER",
+                "payload": {
+                    "targetPlayer": targetPlayer
+                }
+            }
+        },
     ];
 
     return (
