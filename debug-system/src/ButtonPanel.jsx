@@ -93,6 +93,16 @@ const ButtonPanel = ( {playerId} ) => {
                 }
             }
         },
+        {
+            text: 'Coveiro',
+            data: {
+                "type": "GRAVEDIGGER",
+                "payload": {
+                    "targetPlayer": playerId,
+                    "targetCardIndex": 0
+                }
+            }
+        },
     ];
 
     return (
