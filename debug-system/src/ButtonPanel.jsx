@@ -103,6 +103,17 @@ const ButtonPanel = ( {playerId} ) => {
                 }
             }
         },
+        {
+            text: 'Crupiê',
+            data: {
+                "type": "CROUPIER",
+                "payload": {
+                    "targetPlayer": playerId,
+                    "targetCardIndex": 0,
+                    "useOnTwoCards": false
+                }
+            }
+        },
     ];
 
     return (
