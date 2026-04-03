@@ -114,6 +114,13 @@ const ButtonPanel = ( {playerId} ) => {
                 }
             }
         },
+        {
+            text: 'Investidor',
+            data: {
+                "type": "INVESTOR",
+                "payload": null
+            }
+        },
     ];
 
     return (
