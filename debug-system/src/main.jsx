@@ -43,10 +43,29 @@ function App() {
     localStorage.setItem('targetPlayer', newTarget);
   };
 
+  const fetchCreateRoom = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/newRoom", {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${jwtToken}`,
+        'content-type': 'application/json'
+      },
+      body: '{"roomName":"Sala nome Teste212","password":"passwo","MaxPlayers":4}'
+    });
+      const data = await response.json();
+      setRoomId(data.RoomId);
+      console.log(data.RoomId);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <WebSocketProvider ticket={ticket} targetPlayer={targetPlayer}>
       <GoogleAuth updateTicket={updateTicket} setJwtToken={setJwtTokenWithStorage} jwtToken={jwtToken} setPlayerId={setPlayerId} />
       <button onClick={updateTarget} style={{ margin: '10px' }}>Atualize Target</button>
+      <button onClick={fetchCreateRoom} style={{ margin: '10px' }}>Criar Sala</button>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <ButtonPanel playerId={playerId}/>
         <RoomViewer ticket={ticket} />
