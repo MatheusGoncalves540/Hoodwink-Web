@@ -121,6 +121,13 @@ const ButtonPanel = ( {playerId} ) => {
                 "payload": null
             }
         },
+        {
+            text: 'Egoísta',
+            data: {
+                "type": "SELFISH",
+                "payload": null
+            }
+        },
     ];
 
     return (
