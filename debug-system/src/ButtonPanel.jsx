@@ -6,6 +6,13 @@ const ButtonPanel = ( {playerId} ) => {
     console.log({ sendMessage, targetPlayer, playerId });
     const messages = [
         {
+            text: 'Iniciar Jogo',
+            data: {
+                "type": "COMMAND_START_GAME",
+                "payload": {}
+            }
+        },
+        {
             text: 'Contestar',
             data: {
                 "type": "CONTEST",
