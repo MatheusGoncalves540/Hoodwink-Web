@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { WebSocketContext } from './WebSocketContext';
+import CommandPanel from './CommandPanel';
 
 function RoomViewer({ ticket }) {
   const { ws, status: wsStatus, reconnect } = useContext(WebSocketContext);
@@ -11,7 +12,10 @@ function RoomViewer({ ticket }) {
   const formatDate = (value) => {
     if (!value) return '—';
     const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString();
+    if (Number.isNaN(parsed.getTime())) return '—';
+    // If year is before 1900, it's an invalid/default date
+    if (parsed.getFullYear() < 1900) return '—';
+    return parsed.toLocaleString();
   };
 
   const calculateTimeLeft = (expiresAt) => {
@@ -71,14 +75,14 @@ function RoomViewer({ ticket }) {
 
   return (
     <div style={{
-      width: '50%',
-      height: '80%',
+      width: '100%',
+      height: '100%',
       border: '2px solid #000',
       backgroundColor: '#f0f0f0',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
-      margin: '0 auto'
+      overflow: 'hidden'
     }}>
       <div style={{
         padding: '10px',
@@ -99,13 +103,16 @@ function RoomViewer({ ticket }) {
         padding: '10px',
         fontSize: '14px',
         textAlign: 'left',
-        overflow: 'auto'
+        overflow: 'auto',
+        overflowX: 'hidden',
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         {roomData ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', boxSizing: 'border-box' }}>
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Informações Gerais</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
                 <div><strong>ID:</strong> {roomData.id || '—'}</div>
                 <div><strong>Nome:</strong> {roomData.name || '—'}</div>
                 <div><strong>Turno:</strong> {roomData.turn ?? '—'}</div>
@@ -117,10 +124,10 @@ function RoomViewer({ ticket }) {
               </div>
             </section>
 
-            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Evento Atual</h3>
               {roomData.gameEvent ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '6px', width: '100%', boxSizing: 'border-box' }}>
                   <div><strong>Tipo:</strong> {roomData.gameEvent.Type || '—'}</div>
                   <div><strong>Jogador:</strong> {roomData.gameEvent.PlayerID || '—'}</div>
                   <div><strong>Expira:</strong> {formatDate(roomData.gameEvent.ExpiresAt)} {timeLeft && `(${timeLeft})`}</div>
@@ -131,7 +138,7 @@ function RoomViewer({ ticket }) {
               )}
             </section>
 
-            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Valores Dobrados de Cartas</h3>
               {roomData.doubledCardValues ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -151,13 +158,13 @@ function RoomViewer({ ticket }) {
               )}
             </section>
 
-            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Jogadores</h3>
               {roomData.players && Object.keys(roomData.players).length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {Object.values(roomData.players).map((player) => (
                     <div key={player.id} style={{ border: '1px solid #e0e0e0', borderRadius: '4px', padding: '8px', backgroundColor: '#fafafa' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '6px', marginBottom: '6px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '6px', marginBottom: '6px', width: '100%', boxSizing: 'border-box' }}>
                         <div><strong>ID:</strong> {player.id || '—'}</div>
                         <div><strong>Nome:</strong> {player.name || '—'}</div>
                         <div><strong>Moedas:</strong> {player.coins ?? '—'}</div>
@@ -173,7 +180,7 @@ function RoomViewer({ ticket }) {
                       <div>
                         <strong>Cartas:</strong>
                         {player.cards && player.cards.length > 0 ? (
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '4px', marginTop: '4px' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '4px', marginTop: '4px', width: '100%', boxSizing: 'border-box' }}>
                             {player.cards.map((card) => (
                               <div key={`${player.id}-${card.index}`} style={{ border: '1px solid #dcdcdc', borderRadius: '4px', padding: '6px', backgroundColor: '#fff' }}>
                                 <div><strong>Índice:</strong> {card.index ?? '—'}</div>
@@ -195,23 +202,14 @@ function RoomViewer({ ticket }) {
               )}
             </section>
 
-            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Chat</h3>
-              {roomData.chat && roomData.chat.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflow: 'auto' }}>
-                  {roomData.chat.map((msg, idx) => (
-                    <div key={idx} style={{ border: '1px solid #e0e0e0', borderRadius: '4px', padding: '6px', backgroundColor: '#fafafa', fontSize: '13px' }}>
-                      <div><strong>{msg.playerName}</strong> <span style={{ fontSize: '11px', color: '#999' }}>({formatDate(msg.timestamp)})</span></div>
-                      <div style={{ marginLeft: '12px', marginTop: '4px', wordBreak: 'break-word' }}>{msg.message}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <span>Nenhuma mensagem no chat.</span>
-              )}
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Comandos</h3>
+              <div style={{ width: '100%', boxSizing: 'border-box' }}>
+                <CommandPanel />
+              </div>
             </section>
 
-            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Dados Brutos</h3>
               <pre style={{ margin: 0, fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>{rawMessage}</pre>
             </section>
