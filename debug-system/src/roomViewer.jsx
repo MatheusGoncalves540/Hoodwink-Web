@@ -108,19 +108,12 @@ function RoomViewer({ ticket }) {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '6px' }}>
                 <div><strong>ID:</strong> {roomData.id || '—'}</div>
                 <div><strong>Nome:</strong> {roomData.name || '—'}</div>
-                <div><strong>Senha:</strong> {roomData.password || '—'}</div>
-                <div><strong>Regras:</strong> {roomData.rules || '—'}</div>
-                <div><strong>Timeout:</strong> {roomData.timeoutType || '—'}</div>
-                <div><strong>Taxa:</strong> {roomData.tax ?? '—'}</div>
-                <div><strong>Jogadores Máx.:</strong> {roomData.maxPlayers ?? '—'}</div>
                 <div><strong>Turno:</strong> {roomData.turn ?? '—'}</div>
-                <div><strong>Partida Custom:</strong> {roomData.customMatch ? 'Sim' : 'Não'}</div>
+                <div><strong>Taxa:</strong> {roomData.tax ?? '—'}</div>
+                <div><strong>Deck:</strong> {roomData.deck ?? '—'}</div>
                 <div><strong>Jogador Atual:</strong> {roomData.currentPlayer || '—'}</div>
-                <div><strong>Deck:</strong> {Array.isArray(roomData.Deck) ? roomData.Deck.length : '—'}</div>
-                <div><strong>Pendências:</strong> {Array.isArray(roomData.pendingEffects) ? roomData.pendingEffects.length : '—'}</div>
                 <div><strong>Game Over:</strong> {roomData.gameOver ? 'Sim' : 'Não'}</div>
                 <div><strong>Início:</strong> {formatDate(roomData.startTime)}</div>
-                <div><strong>Criada:</strong> {formatDate(roomData.created)}</div>
               </div>
             </section>
 
@@ -139,6 +132,26 @@ function RoomViewer({ ticket }) {
             </section>
 
             <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Valores Dobrados de Cartas</h3>
+              {roomData.doubledCardValues ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {Object.entries(roomData.doubledCardValues).map(([cardType, data]) => (
+                    <div key={cardType} style={{ border: '1px solid #e0e0e0', borderRadius: '4px', padding: '8px', backgroundColor: '#fafafa' }}>
+                      <div><strong>{cardType}</strong></div>
+                      <div style={{ marginLeft: '12px', fontSize: '13px' }}>
+                        <div>Rodadas até diminuir: {data.roundsUntilDecrease ?? '—'}</div>
+                        <div>Vezes dobrado: {data.timesValueDoubled ?? '—'}</div>
+                        <div>Usado este turno: {data.usedThisTurn ? 'Sim' : 'Não'}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <span>Nenhum valor dobrado.</span>
+              )}
+            </section>
+
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
               <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Jogadores</h3>
               {roomData.players && Object.keys(roomData.players).length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -149,15 +162,22 @@ function RoomViewer({ ticket }) {
                         <div><strong>Nome:</strong> {player.name || '—'}</div>
                         <div><strong>Moedas:</strong> {player.coins ?? '—'}</div>
                         <div><strong>Vivo:</strong> {player.alive ? 'Sim' : 'Não'}</div>
+                        <div><strong>Tempo de Movimento:</strong> {player.moveTime ?? '—'}</div>
+                        <div><strong>Investimento Pendente:</strong> {player.pendingInvestmentCoin ? 'Sim' : 'Não'}</div>
                       </div>
+                      {player.investments && (
+                        <div style={{ marginBottom: '6px' }}>
+                          <strong>Investimentos:</strong> {JSON.stringify(player.investments)}
+                        </div>
+                      )}
                       <div>
                         <strong>Cartas:</strong>
                         {player.cards && player.cards.length > 0 ? (
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '4px', marginTop: '4px' }}>
                             {player.cards.map((card) => (
                               <div key={`${player.id}-${card.index}`} style={{ border: '1px solid #dcdcdc', borderRadius: '4px', padding: '6px', backgroundColor: '#fff' }}>
-                                <div><strong>Nome:</strong> {card.name || '—'}</div>
                                 <div><strong>Índice:</strong> {card.index ?? '—'}</div>
+                                {card.name && <div><strong>Nome:</strong> {card.name}</div>}
                                 <div><strong>Protegida:</strong> {card.protected ? 'Sim' : 'Não'}</div>
                                 <div><strong>Morta:</strong> {card.dead ? 'Sim' : 'Não'}</div>
                               </div>
@@ -172,6 +192,22 @@ function RoomViewer({ ticket }) {
                 </div>
               ) : (
                 <span>Nenhum jogador cadastrado.</span>
+              )}
+            </section>
+
+            <section style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '10px', backgroundColor: '#fff' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Chat</h3>
+              {roomData.chat && roomData.chat.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '200px', overflow: 'auto' }}>
+                  {roomData.chat.map((msg, idx) => (
+                    <div key={idx} style={{ border: '1px solid #e0e0e0', borderRadius: '4px', padding: '6px', backgroundColor: '#fafafa', fontSize: '13px' }}>
+                      <div><strong>{msg.playerName}</strong> <span style={{ fontSize: '11px', color: '#999' }}>({formatDate(msg.timestamp)})</span></div>
+                      <div style={{ marginLeft: '12px', marginTop: '4px', wordBreak: 'break-word' }}>{msg.message}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <span>Nenhuma mensagem no chat.</span>
               )}
             </section>
 

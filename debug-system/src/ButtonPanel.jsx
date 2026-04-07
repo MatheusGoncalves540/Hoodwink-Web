@@ -135,6 +135,15 @@ const ButtonPanel = ( {playerId} ) => {
                 "payload": null
             }
         },
+        {
+            text: 'Mensagem no chat',
+            data: {
+                "type": "CHAT_MESSAGE",
+                "payload": {
+                    "msg": "ablubluble"
+                }
+            }
+        },
     ];
 
     return (
