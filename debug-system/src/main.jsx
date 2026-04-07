@@ -12,6 +12,7 @@ function App() {
   const [playerId, setPlayerId] = useState(localStorage.getItem('playerId') || '');
   const [jwtToken, setJwtToken] = useState(localStorage.getItem('jwtToken') || '');
   const [targetPlayer, setTargetPlayer] = useState(localStorage.getItem('targetPlayer') || '');
+  const [targetCardIndex, setTargetCardIndex] = useState(localStorage.getItem('targetCardIndex') || '');
 
   const setJwtTokenWithStorage = (token) => {
     localStorage.setItem('jwtToken', token);
@@ -43,6 +44,12 @@ function App() {
     localStorage.setItem('targetPlayer', newTarget);
   };
 
+  const updateTargetCardIndex = () => {
+    const newTargetCardIndex = prompt("insira o targetCardIndex", targetCardIndex);
+    setTargetCardIndex(newTargetCardIndex);
+    localStorage.setItem('targetCardIndex', newTargetCardIndex);
+  };
+
   const fetchCreateRoom = async () => {
     try {
       const response = await fetch("http://localhost:5000/newRoom", {
@@ -62,7 +69,7 @@ function App() {
   }
 
   return (
-    <WebSocketProvider ticket={ticket} targetPlayer={targetPlayer}>
+    <WebSocketProvider ticket={ticket} targetPlayer={targetPlayer} targetCardIndex={targetCardIndex}>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f5f5f5' }}>
         {/* Header */}
         <div style={{ 
@@ -89,7 +96,7 @@ function App() {
         }}>
           <button onClick={updateTarget} style={{ 
             padding: '8px 16px',
-            backgroundColor: '#4CAF50',
+            backgroundColor: '#8f1919',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
@@ -97,11 +104,23 @@ function App() {
             fontSize: '14px',
             fontWeight: '500'
           }}>
-            Atualize Target
+            Mudar Player Alvo
+          </button>
+          <button onClick={updateTargetCardIndex} style={{ 
+            padding: '8px 16px',
+            backgroundColor: '#be7403',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500'
+          }}>
+            Mudar Index de Carta Alvo
           </button>
           <button onClick={fetchCreateRoom} style={{ 
             padding: '8px 16px',
-            backgroundColor: '#2196F3',
+            backgroundColor: '#2bb855',
             color: 'white',
             border: 'none',
             borderRadius: '4px',

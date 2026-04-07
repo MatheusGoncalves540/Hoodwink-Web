@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 import { WebSocketContext } from './WebSocketContext';
 
 const ButtonPanel = ( {playerId} ) => {
-    const { sendMessage, targetPlayer } = useContext(WebSocketContext);
-    console.log({ sendMessage, targetPlayer, playerId });
+    const { sendMessage, targetPlayer, targetCardIndex } = useContext(WebSocketContext);
+    console.log({ sendMessage, targetPlayer, targetCardIndex });
+    const targetCardIndexInt = parseInt(targetCardIndex);
+
     const messages = [
         {
             text: 'Iniciar Jogo',
@@ -24,7 +26,7 @@ const ButtonPanel = ( {playerId} ) => {
             data: {
                 "type": "CONTEST_PENALTY",
                 "payload": {
-                    "TargetCardIndex": 1
+                    "TargetCardIndex": targetCardIndexInt
                 }
             }
         },
@@ -34,7 +36,7 @@ const ButtonPanel = ( {playerId} ) => {
                 "type": "ASSASSIN",
                 "payload": {
                     "targetPlayer": targetPlayer,
-                    "targetCardIndex": 0,
+                    "targetCardIndex": targetCardIndexInt,
                 }
             }
         },
@@ -44,8 +46,8 @@ const ButtonPanel = ( {playerId} ) => {
                 "type": "KAMIKAZE",
                 "payload": {
                     "targetPlayer": targetPlayer,
-                    "targetCardIndex": 0,
-                    "targetAllyCardIndex": 1
+                    "targetCardIndex": targetCardIndexInt,
+                    "targetAllyCardIndex": targetCardIndexInt
                 }
             }
         },
@@ -76,7 +78,7 @@ const ButtonPanel = ( {playerId} ) => {
                 "type": "CLAIRVOYANT",
                 "payload": {
                     "targetPlayer": targetPlayer,
-                    "targetCardIndex": 0,
+                    "targetCardIndex": targetCardIndexInt,
                     "showToAllPlayers": false
                 }
             }
@@ -87,7 +89,7 @@ const ButtonPanel = ( {playerId} ) => {
                 "type": "GUARDIAN",
                 "payload": {
                     "targetPlayer": playerId,
-                    "targetCardIndex": 0
+                    "targetCardIndex": targetCardIndexInt
                 }
             }
         },
@@ -106,7 +108,7 @@ const ButtonPanel = ( {playerId} ) => {
                 "type": "GRAVEDIGGER",
                 "payload": {
                     "targetPlayer": playerId,
-                    "targetCardIndex": 0
+                    "targetCardIndex": targetCardIndexInt
                 }
             }
         },
@@ -116,7 +118,7 @@ const ButtonPanel = ( {playerId} ) => {
                 "type": "CROUPIER",
                 "payload": {
                     "targetPlayer": playerId,
-                    "targetCardIndex": 0,
+                    "targetCardIndex": targetCardIndexInt,
                     "useOnTwoCards": false
                 }
             }
