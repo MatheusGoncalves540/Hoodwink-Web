@@ -25,23 +25,43 @@ function GoogleAuth({ updateTicket, setJwtToken, jwtToken, setPlayerId }) {
   }, [jwtToken]);
 
   async function handleCredentialResponse(response) {
-    try {
-      const res = await fetch(BACKEND_URL, {
+    const res = await fetch(BACKEND_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ IdToken: response.credential }),
+    });
+    const data = await res.json();
+
+    if (data.message === "logged_in") {
+      const token = data.data.token;
+      setStatus("Login concluído. Token JWT: " + token);
+      setJwtToken(token);
+
+      const tokenClaims = decodeJWT(token);
+      const playerIdFromToken = tokenClaims?.id;
+
+      setPlayerId(playerIdFromToken);
+
+    } else if (data.message === "need_additional_data") {
+      const username = prompt("Novo usuário! Escolha um nome de usuário:");
+      const completeRes = await fetch(BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ IdToken: response.credential }),
+        body: JSON.stringify({ IdToken: response.credential, username }),
       });
+      const completeData = await completeRes.json();
+      const token = completeData.data.token;
 
-      console.log("STATUS:", res.status);
+      setStatus("Cadastro finalizado. Token JWT: " + token);
+      setJwtToken(token);
 
-      const text = await res.text();
-      console.log("RAW RESPONSE:", text);
+      const tokenClaims = decodeJWT(token);
+      const playerIdFromToken = tokenClaims?.id;
 
-      const data = JSON.parse(text);
-      console.log("PARSED:", data);
+      setPlayerId(playerIdFromToken);
 
-    } catch (err) {
-      console.error("ERRO REAL:", err);
+    } else {
+      setStatus("Erro: " + JSON.stringify(data));
     }
   }
 
