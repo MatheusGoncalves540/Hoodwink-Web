@@ -1,5 +1,5 @@
-const backendUrl = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8080";
-const gameServerUrl = import.meta.env.VITE_GAME_SERVER_URL ?? "http://localhost:5000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL ?? "http://localhost:8088";
+const gameServerUrl = import.meta.env.VITE_GAME_SERVER_URL ?? "http://localhost:4444";
 
 export const FRONT_CONFIG = {
 	backendUrl,

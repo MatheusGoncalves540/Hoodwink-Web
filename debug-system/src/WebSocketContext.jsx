@@ -17,7 +17,7 @@ export const WebSocketProvider = ({ ticket, targetPlayer, targetCardIndex, child
     }
 
     setStatus('Conectando...');
-    const ws = new WebSocket('ws://localhost:5000/game?Ticket=' + ticket);
+    const ws = new WebSocket('ws://localhost:4444/game?Ticket=' + ticket);
     wsRef.current = ws;
 
     ws.onopen = () => {

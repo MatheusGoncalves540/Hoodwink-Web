@@ -24,7 +24,7 @@ function App() {
     setRoomId(newRoomId);
     localStorage.setItem('roomId', newRoomId);
     try {
-      const response = await fetch(`http://localhost:5000/getTicket/${newRoomId}`, {
+      const response = await fetch(`http://localhost:4444/getTicket/${newRoomId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ function App() {
 
   const fetchCreateRoom = async () => {
     try {
-      const response = await fetch("http://localhost:5000/newRoom", {
+      const response = await fetch("http://144.33.18.156:4444/newRoom", {
       method: 'POST',
       headers: {
         authorization: `Bearer ${jwtToken}`,
