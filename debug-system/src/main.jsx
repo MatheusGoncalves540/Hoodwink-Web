@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import GoogleAuth from "./googleAuth.jsx";
-import RoomViewer from "./roomViewer.jsx";
-import ChatViewer from "./ChatViewer.jsx";
-import ButtonPanel from "./ButtonPanel.jsx";
-import { WebSocketProvider } from "./WebSocketContext.jsx";
+import GoogleAuth from "./componentsJSX/googleAuth.jsx";
+import RoomViewer from "./componentsJSX/roomViewer.jsx";
+import ChatViewer from "./componentsJSX/ChatViewer.jsx";
+import ButtonPanel from "./componentsJSX/ButtonPanel.jsx";
+import { WebSocketProvider } from "./componentsJSX/WebSocketContext.jsx";
 
 function App() {
   const [ticket, setTicket] = useState('');
@@ -39,6 +39,7 @@ function App() {
   };
 
   const updateTarget = () => {
+    // TODO substituir prompts pelo código por modal com lista de jogadores e cartas
     const newTarget = prompt("insira o targetPlayer", targetPlayer);
     setTargetPlayer(newTarget);
     localStorage.setItem('targetPlayer', newTarget);
@@ -197,7 +198,6 @@ function App() {
           </div>
         </div>
       </div>
-      {isModalOpen && <OptionModal onSelect={handleSelectTarget} />}
     </WebSocketProvider>
   );
 }
