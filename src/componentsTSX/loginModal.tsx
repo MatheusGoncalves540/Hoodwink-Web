@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useAuthStore } from "../../../hoodwinkWeb/src/store/authStore";
+import { useAuthStore } from "../store/authStore";
 import "./styles/loginModal.css";
 import GoogleAuth from "../componentsJSX/googleAuth";
 
@@ -17,7 +17,7 @@ function LoginModal() {
         <Dialog.Content className="dialog-content">
           <Dialog.Title className="dialog-title">Login</Dialog.Title>
           <Dialog.Description className="dialog-description">
-            Faça login com sua conta do Google para continuar
+            Faça login com sua conta Hoodwink
           </Dialog.Description>
 
           <GoogleAuth />
