@@ -1,9 +1,18 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import { useAuthStore } from "./store/authStore";
+import LoginModal from "./componentsTSX/LoginModal";
+import "./main.css";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>
-);
+function App() {
+  const openLogin = useAuthStore((state) => state.openLogin);
+
+  return (
+    <div>
+      <button onClick={openLogin}>Login</button>
+      <LoginModal />
+    </div>
+  );
+  // return <InGame />;
+}
+
+ReactDOM.createRoot(document.getElementById("root")!).render(<App />);

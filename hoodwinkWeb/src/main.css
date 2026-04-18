@@ -1,0 +1,47 @@
+[data-state="on"] {
+  background-color: #3b82f6;
+  color: white;
+}
+
+[data-state="off"] {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+button[type="button"] {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button[type="button"]:hover {
+  background-color: #f3f4f6;
+}
+
+button {
+  font-family: inherit;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Dialog Styles */
+[data-radix-dialog-overlay] {
+  z-index: 999;
+}
+
+[data-radix-dialog-content] {
+  z-index: 1000;
+}
