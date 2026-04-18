@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useAuthStore } from "../store/authStore";
 import "./styles/loginModal.css";
-import GoogleAuth from "../componentsJSX/googleAuth";
+import GoogleAuth from "./googleAuth";
 
 function LoginModal() {
   const { isLoginOpen, closeLogin } = useAuthStore();
@@ -17,11 +17,13 @@ function LoginModal() {
         <Dialog.Content className="dialog-content">
           <Dialog.Title className="dialog-title">Login</Dialog.Title>
           <Dialog.Description className="dialog-description">
-            Faça login com sua conta Hoodwink
+            Faça login com sua conta Hoodwink!
           </Dialog.Description>
 
+        {/* metodos de login */}
           <GoogleAuth />
 
+          <br />
           <Dialog.Close asChild>
             <button className="close-button">Fechar</button>
           </Dialog.Close>

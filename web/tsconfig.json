@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "types": ["google.accounts"],
+    "jsx": "react-jsx"
+  }
+}
